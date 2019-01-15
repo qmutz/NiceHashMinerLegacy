@@ -30,9 +30,8 @@ namespace NiceHashMiner.Miners
             return P;
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
-            var username = GetUsername(btcAdress, worker);
             LastCommandLine = GetDevicesCommandString() + " -a " + ApiPort + " -l " + url + " -u " + username;
             ProcessHandle = _Start();
         }

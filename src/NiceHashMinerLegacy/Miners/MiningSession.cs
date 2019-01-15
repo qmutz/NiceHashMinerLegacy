@@ -31,7 +31,6 @@ namespace NiceHashMiner.Miners
         private string _btcAdress;
         private string _worker;
         private List<MiningDevice> _miningDevices;
-        private readonly IRatesComunication _ratesComunication;
 
         private readonly AlgorithmSwitchingManager _switchingManager;
 
@@ -80,11 +79,9 @@ namespace NiceHashMiner.Miners
             }
         }
 
-        public MiningSession(List<ComputeDevice> devices, IRatesComunication ratesComunication,
-            string miningLocation, string worker, string btcAdress)
+        public MiningSession(List<ComputeDevice> devices, string miningLocation, string worker, string btcAdress)
         {
             // init fixed
-            _ratesComunication = ratesComunication;
             _miningLocation = miningLocation;
 
             _switchingManager = new AlgorithmSwitchingManager();
@@ -169,7 +166,7 @@ namespace NiceHashMiner.Miners
 
             _switchingManager.Stop();
 
-            _ratesComunication?.ClearRatesAll();
+            ApplicationStateManager.ClearRatesAll();
 
             // restroe/enable sleep
             _preventSleepTimer.Stop();
@@ -232,7 +229,7 @@ namespace NiceHashMiner.Miners
             }
 
             //_ratesComunication?.ClearRates(-1);
-            _ratesComunication?.ClearRatesAll();
+            ApplicationStateManager.ClearRatesAll();
         }
 
         #endregion Start/Stop
@@ -280,7 +277,8 @@ namespace NiceHashMiner.Miners
             foreach (var key in _runningGroupMiners.Keys)
             {
                 _runningGroupMiners[key].Stop();
-                _runningGroupMiners[key].Start(_miningLocation, _btcAdress, _worker);
+                var username = Globals.GetUsername();
+                _runningGroupMiners[key].Start(_miningLocation, username);
             }
         }
 
@@ -357,7 +355,7 @@ namespace NiceHashMiner.Miners
             var shouldMine = CheckIfProfitable(currentProfit, log) && _isConnectedToInternet;
             if (shouldMine)
             {
-                _ratesComunication.HideNotProfitable();
+                ApplicationStateManager.SetProfitableState(true);
             }
             else
             {
@@ -365,13 +363,11 @@ namespace NiceHashMiner.Miners
                 {
                     // change msg
                     if (log) Helpers.ConsolePrint(Tag, "NO INTERNET!!! Stopping mining.");
-                    _ratesComunication.ShowNotProfitable(
-                        Translations.Tr("CURRENTLY NOT MINING. NO INTERNET CONNECTION."));
+                    ApplicationStateManager.DisplayNoInternetConnection();
                 }
                 else
                 {
-                    _ratesComunication.ShowNotProfitable(
-                        Translations.Tr("CURRENTLY MINING NOT PROFITABLE."));
+                    ApplicationStateManager.SetProfitableState(false);
                 }
 
                 // return don't group
@@ -587,7 +583,7 @@ namespace NiceHashMiner.Miners
                 if ((toStopGroupMiners.Values.Count > 0) || (toRunNewGroupMiners.Values.Count > 0))
                 {
                     // There is a change in algorithms, change GUI
-                    _ratesComunication?.ClearRatesAll();
+                    ApplicationStateManager.ClearRatesAll();
 
                     var stringBuilderPreviousAlgo = new StringBuilder();
                     var stringBuilderCurrentAlgo = new StringBuilder();
@@ -622,11 +618,12 @@ namespace NiceHashMiner.Miners
                     }
 
                     // start new miners
+                    var username = Globals.GetUsername();
                     foreach (var toStart in toRunNewGroupMiners.Values)
                     {
                         stringBuilderCurrentAlgo.Append($"{toStart.DevicesInfoString}: {toStart.AlgorithmType}, ");
 
-                        toStart.Start(_miningLocation, _btcAdress, _worker);
+                        toStart.Start(_miningLocation, username);
                         _runningGroupMiners[toStart.Key] = toStart;
                     }
 
@@ -650,7 +647,9 @@ namespace NiceHashMiner.Miners
             //await MinerStatsCheck();
             //}
 
-            _ratesComunication?.ForceMinerStatsUpdate();
+            //ApplicationStateManager.ForceMinerStatsUpdate();
+            // TODO not awaited, but we probably don't care
+            MinerStatsCheck();
         }
 
         private static AlgorithmType GetMinerPairAlgorithmType(IEnumerable<MiningPair> miningPairs)
@@ -718,8 +717,10 @@ namespace NiceHashMiner.Miners
                     }
 
                     // Update GUI
-                    _ratesComunication.AddRateInfo(ad, groupMiners.CurrentRate, m.IsApiReadException);
+                    ApplicationStateManager.AddRateInfo(ad, groupMiners.CurrentRate, m.IsApiReadException);
                 }
+                // now we shoud have new global/total rate display it
+                ApplicationStateManager.DisplayTotalRate(GetTotalRate());
             }
             catch (Exception e) { Helpers.ConsolePrint(Tag, e.Message); }
         }

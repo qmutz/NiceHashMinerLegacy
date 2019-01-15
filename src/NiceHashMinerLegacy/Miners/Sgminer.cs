@@ -67,14 +67,13 @@ namespace NiceHashMiner.Miners
             Stop_cpu_ccminer_sgminer_nheqminer(willswitch);
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
             if (!IsInit)
             {
                 Helpers.ConsolePrint(MinerTag(), "MiningSetup is not initialized exiting Start()");
                 return;
             }
-            var username = GetUsername(btcAdress, worker);
 
             LastCommandLine = " --gpu-platform " + _gpuPlatformNumber +
                               " -k " + MiningSetup.MinerName +

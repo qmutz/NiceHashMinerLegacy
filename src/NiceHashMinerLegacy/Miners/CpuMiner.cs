@@ -19,7 +19,7 @@ namespace NiceHashMiner.Miners
             return 3600000; // 1hour
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
             if (!IsInit)
             {
@@ -27,15 +27,8 @@ namespace NiceHashMiner.Miners
                 return;
             }
 
-            var username = GetUsername(btcAdress, worker);
-
-            LastCommandLine = "--algo=" + MiningSetup.MinerName +
-                              " --url=" + url +
-                              " --userpass=" + username + ":x " +
-                              ExtraLaunchParametersParser.ParseForMiningSetup(
-                                  MiningSetup,
-                                  DeviceType.CPU) +
-                              " --api-bind=" + ApiPort;
+            var miningSetup = ExtraLaunchParametersParser.ParseForMiningSetup(MiningSetup, DeviceType.CPU);
+            LastCommandLine = $"--algo={MiningSetup.MinerName} --url={url} --userpass={username} {miningSetup} --api-bind={ApiPort}";
 
             ProcessHandle = _Start();
         }

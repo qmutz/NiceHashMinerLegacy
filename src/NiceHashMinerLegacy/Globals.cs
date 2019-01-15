@@ -57,5 +57,27 @@ namespace NiceHashMiner
                 : "";
             return $"{workername}:{RigID}";
         }
+
+        public static string GetUsername()
+        {
+            var (btc, worker, _) = ConfigManager.GeneralConfig.GetCredentials();
+            if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
+            {
+                return $"{btc}.{worker}:{RigID}";
+            }
+
+            return $"{btc}:{RigID}"; 
+        }
+
+        public static string GetDemoUsername()
+        {
+            var (_, worker, _) = ConfigManager.GeneralConfig.GetCredentials();
+            if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
+            {
+                return $"{DemoUser}.{worker}:{RigID}";
+            }
+
+            return $"{DemoUser}:{RigID}";
+        }
     }
 }

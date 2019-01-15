@@ -16,8 +16,9 @@ namespace NiceHashMiner.Miners {
             IsNeverHideMiningWindow = true;
         }
 
-        public override void Start(string url, string btcAdress, string worker) {
-            LastCommandLine = GetDevicesCommandString() + " -a " + ApiPort + " -l " + url + " -u " + btcAdress + " -w " + worker;
+        public override void Start(string url, string username) {
+
+            LastCommandLine = GetDevicesCommandString() + " -a " + ApiPort + " -l " + url + " -u " + username;
             ProcessHandle = _Start();
         }
 

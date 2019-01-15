@@ -76,7 +76,7 @@ namespace NiceHashMiner.Miners
             return "singlekeep";
         }
 
-        public void Start(string url, string btcAdress, string worker, List<MinerEtherum> usedMiners)
+        public void Start(string url, string username, List<MinerEtherum> usedMiners)
         {
             if (!IsInit)
             {
@@ -96,7 +96,6 @@ namespace NiceHashMiner.Miners
             IsPaused = false;
             if (ProcessHandle == null)
             {
-                var username = GetUsername(btcAdress, worker);
                 LastCommandLine = GetStartCommandStringPart(url, username) + GetDevicesCommandString();
                 ProcessHandle = _Start();
             }

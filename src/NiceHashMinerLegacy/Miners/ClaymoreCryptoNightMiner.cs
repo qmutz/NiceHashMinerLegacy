@@ -14,9 +14,8 @@ namespace NiceHashMiner.Miners
             // DevFee = 0
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
-            var username = GetUsername(btcAdress, worker);
             LastCommandLine =
                 $" {GetDevicesCommandString()} -mport 127.0.0.1:-{ApiPort} -xpool {url} -xwal {username} -xpsw x -dbg -1 -pow7 1";
             ProcessHandle = _Start();

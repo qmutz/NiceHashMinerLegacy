@@ -46,9 +46,8 @@ namespace NiceHashMiner.Miners.Equihash
         private bool _skipApiCheck = true;
         private readonly int _waitSeconds = 30;
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
-            var username = GetUsername(btcAdress, worker);
             LastCommandLine = " " + GetDevicesCommandString() + " -m " + ApiPort + " -s " + url + " -u " + username +
                               " -p x";
             ProcessHandle = _Start();

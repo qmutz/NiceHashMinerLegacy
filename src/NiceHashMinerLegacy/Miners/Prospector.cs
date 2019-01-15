@@ -319,21 +319,20 @@ namespace NiceHashMiner.Miners
             return ad;
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
             if (!IsInit)
             {
                 Helpers.ConsolePrint(MinerTag(), "MiningSetup is not initialized exiting Start()");
                 return;
             }
-            LastCommandLine = GetStartupCommand(url, btcAdress, worker);
+            LastCommandLine = GetStartupCommand(url, username);
 
             ProcessHandle = _Start();
         }
 
-        private string GetStartupCommand(string url, string btcAddress, string worker)
+        private string GetStartupCommand(string url, string username)
         {
-            var username = GetUsername(btcAddress, worker);
             PrepareConfigFile(url, username);
             return "--config " + GetConfigFileName();
         }
@@ -346,7 +345,7 @@ namespace NiceHashMiner.Miners
             _benchmarkTimeWait = time + 60;
             // network stub
             var url = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
-            return GetStartupCommand(url, Globals.GetBitcoinUser(), ConfigManager.GeneralConfig.WorkerName.Trim());
+            return GetStartupCommand(url, Globals.GetDemoUsername());
         }
 
         protected override void BenchmarkThreadRoutine(object commandLine)

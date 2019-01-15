@@ -33,14 +33,13 @@ namespace NiceHashMiner.Miners
             return 60 * 1000; // 1 minute max, whole waiting time 75seconds
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
             if (!IsInit)
             {
                 Helpers.ConsolePrint(MinerTag(), "MiningSetup is not initialized exiting Start()");
                 return;
             }
-            var username = GetUsername(btcAdress, worker);
 
             IsApiReadException = MiningSetup.MinerPath == MinerPaths.Data.CcminerCryptonight;
 

@@ -28,13 +28,13 @@ namespace NiceHashMiner.Miners
             return 60 * 1000 * 5;
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
-            LastCommandLine = GetStartCommand(url, btcAdress, worker);
+            LastCommandLine = GetStartCommand(url, username);
             ProcessHandle = _Start();
         }
 
-        private string GetStartCommand(string url, string btcAddress, string worker)
+        private string GetStartCommand(string url, string username)
         {
             var urls = url.Split(':');
             var server = urls.Length > 0 ? urls[0] : "";
@@ -42,7 +42,7 @@ namespace NiceHashMiner.Miners
             return $" {GetDeviceCommand()} " +
                    $"--server {server} " +
                    $"--port {port} " +
-                   $"--user {btcAddress}.{worker} " +
+                   $"--user {username} " +
                    $"--telemetry=127.0.0.1:{ApiPort} ";
         }
 
@@ -66,7 +66,7 @@ namespace NiceHashMiner.Miners
 
             _benchmarkTime = Math.Max(time, 60);
 
-            return GetStartCommand(url, Globals.GetBitcoinUser(), Globals.GetWorkerName()) +
+            return GetStartCommand(url, Globals.GetDemoUsername()) +
                    $" --logfile={GetLogFileName()}";
         }
 

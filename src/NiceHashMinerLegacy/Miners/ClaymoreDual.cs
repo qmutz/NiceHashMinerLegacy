@@ -49,10 +49,8 @@ namespace NiceHashMiner.Miners
             return 90 * 1000; // 1.5 minute max, whole waiting time 75seconds
         }
 
-        private string GetStartCommand(string url, string btcAdress, string worker)
+        private string GetStartCommand(string url, string username)
         {
-            var username = GetUsername(btcAdress, worker);
-
             var dualModeParams = "";
             if (!IsDual())
             {
@@ -106,7 +104,7 @@ namespace NiceHashMiner.Miners
                    + dualModeParams;
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
             // Update to most profitable intensity
             foreach (var mPair in MiningSetup.MiningPairs)
@@ -119,7 +117,7 @@ namespace NiceHashMiner.Miners
                 }
             }
 
-            LastCommandLine = GetStartCommand(url, btcAdress, worker) + " -dbg -1";
+            LastCommandLine = GetStartCommand(url, username) + " -dbg -1";
             ProcessHandle = _Start();
         }
 
@@ -138,7 +136,7 @@ namespace NiceHashMiner.Miners
             // network stub
             var url = GetServiceUrl(algorithm.NiceHashID);
             // demo for benchmark
-            var ret = GetStartCommand(url, Globals.GetBitcoinUser(), Globals.GetWorkerName())
+            var ret = GetStartCommand(url, Globals.GetDemoUsername())
                          + " -logfile " + GetLogFileName();
             // local benhcmark
             if (!IsDual())

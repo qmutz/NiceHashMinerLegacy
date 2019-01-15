@@ -48,7 +48,7 @@ namespace NiceHashMiner.Miners.XmrStak
             return second == 0x7d && last == 0x7d;
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
             if (!IsInit)
             {
@@ -57,7 +57,7 @@ namespace NiceHashMiner.Miners.XmrStak
             }
 
             var devConfigs = PrepareConfigFiles();
-            LastCommandLine = CreateLaunchCommand(devConfigs, url, GetUsername(btcAdress, worker));
+            LastCommandLine = CreateLaunchCommand(devConfigs, url, username);
 
             var envs = new Dictionary<string, string>
             {
@@ -182,7 +182,7 @@ namespace NiceHashMiner.Miners.XmrStak
         private string GetBenchmarkCommandLine(AlgorithmType algorithm, int time, Dictionary<DeviceType, string> devConfigs)
         {
             var url = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm, ConectionType);
-            var user = GetUsername(Globals.GetBitcoinUser(), ConfigManager.GeneralConfig.WorkerName);
+            var user = Globals.GetDemoUsername();
 
             BenchmarkTimeInSeconds = Math.Min(60, Math.Max(time, 10));
             

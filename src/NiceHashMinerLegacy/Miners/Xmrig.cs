@@ -16,16 +16,16 @@ namespace NiceHashMiner.Miners
         public Xmrig() : base("Xmrig")
         { }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
-            LastCommandLine = GetStartCommand(url, btcAdress, worker);
+            LastCommandLine = GetStartCommand(url, username);
             ProcessHandle = _Start();
         }
 
-        private string GetStartCommand(string url, string btcAdress, string worker)
+        private string GetStartCommand(string url, string username)
         {
             var extras = ExtraLaunchParametersParser.ParseForMiningSetup(MiningSetup, DeviceType.CPU);
-            return $" -o {url} -u {btcAdress}.{worker}:x --nicehash {extras} --api-port {ApiPort}";
+            return $" -o {url} -u {username} --nicehash {extras} --api-port {ApiPort}";
         }
 
         protected override void _Stop(MinerStopType willswitch)
@@ -54,7 +54,7 @@ namespace NiceHashMiner.Miners
         {
             var server = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
             _benchmarkTimeWait = time;
-            return GetStartCommand(server, Globals.GetBitcoinUser(), Globals.GetWorkerName())
+            return GetStartCommand(server, Globals.GetBitcoinUser())
                 + $" -l {GetLogFileName()} --print-time=2";
         }
 

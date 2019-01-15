@@ -55,9 +55,9 @@ namespace NiceHashMiner.Miners.Equihash
             IsNeverHideMiningWindow = true;
         }
 
-        public override void Start(string url, string btcAdress, string worker)
+        public override void Start(string url, string username)
         {
-            LastCommandLine = GetStartCommand(url, btcAdress, worker);
+            LastCommandLine = GetStartCommand(url, username);
             const string vcp = "msvcp120.dll";
             var vcpPath = WorkingDirectory + vcp;
             if (!File.Exists(vcpPath))
@@ -76,11 +76,11 @@ namespace NiceHashMiner.Miners.Equihash
             ProcessHandle = _Start();
         }
 
-        protected virtual string GetStartCommand(string url, string btcAddress, string worker)
+        protected virtual string GetStartCommand(string url, string username)
         {
             var ret = GetDevicesCommandString()
                       + " --server " + url.Split(':')[0]
-                      + " --user " + btcAddress + "." + worker + " --pass x --port "
+                      + " --user " + username + " --pass x --port "
                       + url.Split(':')[1] + " --api 127.0.0.1:" + ApiPort;
             if (!ret.Contains("--fee"))
             {
@@ -116,8 +116,7 @@ namespace NiceHashMiner.Miners.Equihash
             CleanOldLogs();
 
             var server = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
-            var ret = $" --log 2 --logfile {GetLogFileName()} " + GetStartCommand(server, Globals.GetBitcoinUser(),
-                          Globals.GetWorkerName());
+            var ret = $" --log 2 --logfile {GetLogFileName()} " + GetStartCommand(server, Globals.GetBitcoinUser());
             _benchmarkTimeWait = Math.Max(time * 3, 90); // EWBF takes a long time to get started
             return ret;
         }
