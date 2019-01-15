@@ -395,14 +395,14 @@ namespace NiceHashMiner.Algorithms
         {
             // Return false if no more needed increment
             if (!TuningEnabled) return false;
-            CurrentIntensity = SelectedIntensities.FirstOrDefault(IsIntensityEmpty);
+            CurrentIntensity = SelectedIntensities.FirstOrDefault(i => IsIntensityEmpty(i) && i > CurrentIntensity);
             return CurrentIntensity > 0;
         }
 
         public bool StartTuning()
         {
             // Return false if no benchmark needed
-            CurrentIntensity = TuningStart;
+            CurrentIntensity = -1;
             return IncrementToNextEmptyIntensity();
         }
 

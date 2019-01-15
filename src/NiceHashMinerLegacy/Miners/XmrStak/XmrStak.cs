@@ -35,7 +35,7 @@ namespace NiceHashMiner.Miners.XmrStak
 
         protected override void _Stop(MinerStopType willswitch)
         {
-            Stop_cpu_ccminer_sgminer_nheqminer(willswitch);
+            ShutdownMiner();
         }
 
         public override async Task<ApiData> GetSummaryAsync()
@@ -77,7 +77,7 @@ namespace NiceHashMiner.Miners.XmrStak
             }
 
             return $"-o {url} -u {user} --currency {MiningSetup.MinerName} -i {ApiPort} " +
-                   $"--use-nicehash -p x -r x {devs} --noUAC";
+                   $"--use-nicehash -p x -r x {devs}";
         }
 
         private Dictionary<DeviceType, string> PrepareConfigFiles()
@@ -191,11 +191,8 @@ namespace NiceHashMiner.Miners.XmrStak
 
         protected override bool BenchmarkParseLine(string outdata)
         {
-            if (!outdata.Contains("Benchmark Total:")) return false;
-
-            var hash = outdata.GetHashrateAfter("Benchmark Total:");
-            if (hash == null) return false;
-            BenchmarkAlgorithm.BenchmarkSpeed = hash.Value;
+            if (!outdata.TryGetHashrateAfter("Benchmark Total:", out var hash)) return false;
+            BenchmarkAlgorithm.BenchmarkSpeed = hash;
             return true;
         }
 
