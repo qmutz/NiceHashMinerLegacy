@@ -35,16 +35,16 @@ namespace NiceHashMiner.Miners
             return _curMiningSession != null ? _curMiningSession.ActiveDeviceIndexes : new List<int>();
         }
 
-        public static double GetTotalRate()
-        {
-            return _curMiningSession?.GetTotalRate() ?? 0;
-        }
+        //public static double GetTotalRate()
+        //{
+        //    return _curMiningSession?.GetTotalRate() ?? 0;
+        //}
 
-        public static bool StartInitialize(IRatesComunication ratesComunication,
-            string miningLocation, string worker, string btcAdress)
+        // TODO worker and btc are now username remove or replace
+        public static bool StartInitialize(string miningLocation, string worker, string btcAdress)
         {
             _curMiningSession = new MiningSession(ComputeDeviceManager.Available.Devices,
-                ratesComunication, miningLocation, worker, btcAdress);
+                miningLocation, worker, btcAdress);
 
             NiceHashStats.StateChanged();
 

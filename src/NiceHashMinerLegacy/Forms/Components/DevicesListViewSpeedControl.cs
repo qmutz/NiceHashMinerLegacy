@@ -33,8 +33,6 @@ namespace NiceHashMiner.Forms.Components
 
         private readonly List<List<int>> _indexTotals = new List<List<int>>();
 
-        public IGlobalRatesUpdate GlobalRates;
-
         private readonly Timer _diagTimer = new Timer();
 
         private bool _ignoreChecks = false;
@@ -371,7 +369,7 @@ namespace NiceHashMiner.Forms.Components
             }
         }
 
-        public void AddRateInfo(ApiData iApiData, double paying, bool isApiGetException)
+        private void addRateInfoGui(ApiData iApiData, double paying, bool isApiGetException)
         {
             Enabled = true;
 
@@ -437,20 +435,11 @@ namespace NiceHashMiner.Forms.Components
                     }
                 }
             }
-
-            GlobalRates?.UpdateGlobalRate();
         }
 
-        public void ShowNotProfitable(string msg)
+        public void AddRateInfo(ApiData iApiData, double paying, bool isApiGetException)
         {
-        }
-
-        public void HideNotProfitable()
-        {
-        }
-
-        public void ForceMinerStatsUpdate()
-        {
+            FormHelpers.SafeInvoke(this, () => { addRateInfoGui(iApiData, paying, isApiGetException); });
         }
 
         #endregion

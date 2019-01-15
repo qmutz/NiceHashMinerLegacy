@@ -366,9 +366,21 @@ namespace NiceHashMiner
         // And if there are missing mining requirements
         public static bool StartMining()
         {
+            if (IsCurrentlyMining)
+            {
+                return false;
+            }
             IsCurrentlyMining = true;
             StartMinerStatsCheckTimer();
-            return false;
+            StartComputeDevicesCheckTimer();
+            foreach (var s in _stateDisplayers)
+            {
+                if (s is IStartMiningDisplayer sStartMiningDisplayer)
+                {
+                    sStartMiningDisplayer.DisplayMiningStarted();
+                }
+            }
+            return true;
         }
 
         //public static bool StartDemoMining()
@@ -379,9 +391,21 @@ namespace NiceHashMiner
 
         public static bool StopMining()
         {
+            if (!IsCurrentlyMining)
+            {
+                return false;
+            }
             IsCurrentlyMining = false;
             StopMinerStatsCheckTimer();
-            return false;
+            StopComputeDevicesCheckTimer();
+            foreach (var s in _stateDisplayers)
+            {
+                if (s is IStopMiningDisplayer sStopMiningDisplayer)
+                {
+                    sStopMiningDisplayer.DisplayMiningStopped();
+                }
+            }
+            return true;
         }
     }
 }

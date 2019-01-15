@@ -76,14 +76,8 @@ namespace NiceHashMiner.Stats
         
         private static System.Threading.Timer _deviceUpdateTimer;
 
-        private static IGlobalRatesUpdate _mainForm;
-        private static IRatesComunication _ratesComunication;
-
-        public static void StartConnection(string address, IGlobalRatesUpdate mainForm, IRatesComunication ratesComunication)
+        public static void StartConnection(string address)
         {
-            _mainForm = mainForm;
-            _ratesComunication = ratesComunication;
-
             if (_socket == null)
             {
                 _socket = new NiceHashSocket(address);
@@ -414,10 +408,11 @@ namespace NiceHashMiner.Stats
                 // TODO this will all go out
                 var loc = "eu";//Globals.MiningLocation[ConfigManager.GeneralConfig.ServiceLocation];
 
-                if (!MinersManager.StartInitialize(_ratesComunication, loc, Globals.GetWorkerName(), Globals.GetBitcoinUser()))
+                if (!MinersManager.StartInitialize(loc, Globals.GetWorkerName(), Globals.GetBitcoinUser()))
                     throw new RpcException("Mining could not start", 42);
 
-                _mainForm?.StartMiningGui();
+                //_mainForm?.StartMiningGui();
+                ApplicationStateManager.StartMining();
             }
         }
 
@@ -436,13 +431,15 @@ namespace NiceHashMiner.Stats
                 {
                     // No devices are left enabled, stop all mining
                     MinersManager.StopAllMiners(true);
-                    _mainForm?.StopMiningGui();
+                    //_mainForm?.StopMiningGui();
+                    ApplicationStateManager.StopMining(); // TODO temp
                 }
             }
             else
             {
                 MinersManager.StopAllMiners(true);
-                _mainForm?.StopMiningGui();
+                //_mainForm?.StopMiningGui();
+                ApplicationStateManager.StopMining(); // TODO temp
             }
         }
 
