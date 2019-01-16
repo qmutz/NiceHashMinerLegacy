@@ -63,7 +63,10 @@ namespace NiceHashMiner.Switching
 
         public void Start()
         {
-            _smaCheckTimer = new Timer(100);
+            // Start right away so we fire up mining, this would fix 
+            SmaCheckTimerOnElapsed(null, null);
+            // 
+            _smaCheckTimer = new Timer(_smaCheckTime * 1000);
             _smaCheckTimer.Elapsed += SmaCheckTimerOnElapsed;
 
             _smaCheckTimer.Start();
@@ -71,7 +74,7 @@ namespace NiceHashMiner.Switching
 
         public void Stop()
         {
-            _smaCheckTimer.Stop();
+            _smaCheckTimer?.Stop();
             _smaCheckTimer = null;
         }
 
