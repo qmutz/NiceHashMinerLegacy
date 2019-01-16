@@ -45,8 +45,6 @@ namespace NiceHashMiner.Devices
             }
         }
 
-        public int TypeID = 0;
-
         // used for Claymore indexing
         public int BusID { get; protected set; } = -1;
         public int IDByBus = -1;

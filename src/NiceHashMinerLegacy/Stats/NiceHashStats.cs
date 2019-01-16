@@ -254,23 +254,25 @@ namespace NiceHashMiner.Stats
                 SetVersion(ess.Versions[1][0], ess.Versions[1][1]);
             }
 
-            if (ess?.Devices != null)
-            {
-                foreach (var map in ess.Devices)
-                {
-                    // Hacky way temporary
 
-                    if (!(map is JArray m && m.Count > 1)) continue;
-                    var name = m.Last().Value<string>();
-                    var i = m.First().Value<int>();
+            // this isn't really used anymore
+            //if (ess?.Devices != null)
+            //{
+            //    foreach (var map in ess.Devices)
+            //    {
+            //        // Hacky way temporary
 
-                    foreach (var dev in ComputeDeviceManager.Available.Devices)
-                    {
-                        if (dev.Name.Contains(name))
-                            dev.TypeID = i;
-                    }
-                }
-            }
+            //        if (!(map is JArray m && m.Count > 1)) continue;
+            //        var name = m.Last().Value<string>();
+            //        var i = m.First().Value<int>();
+
+            //        foreach (var dev in ComputeDeviceManager.Available.Devices)
+            //        {
+            //            if (dev.Name.Contains(name))
+            //                dev.TypeID = i;
+            //        }
+            //    }
+            //}
         }
 
         private static void SetAlgorithmRates(JArray data)
