@@ -60,14 +60,12 @@ namespace NiceHashMiner.Stats
         private const int DeviceUpdateLaunchDelay = 20 * 1000;
         private const int DeviceUpdateInterval = 60 * 1000;
 
-        public static double Balance { get; private set; }
+        //public static double Balance { get; private set; }
         public static string Version { get; private set; }
         public static string VersionLink { get; private set; }
         public static bool IsAlive => _socket?.IsAlive ?? false;
 
         // Event handlers for socket
-        public static event EventHandler OnBalanceUpdate;
-
         public static event EventHandler OnSmaUpdate;
         public static event EventHandler OnConnectionLost;
         public static event EventHandler<SocketEventArgs> OnVersionBurn;
@@ -176,29 +174,49 @@ namespace NiceHashMiner.Stats
                     return null;
                 case "mining.set.username":
                     executed = true;
-                    var user = (string)message.username;
-
-                    if (!BitcoinAddress.ValidateBitcoinAddress(user))
-                        throw new RpcException("Bitcoin address invalid", 1);
-
-                    ConfigManager.GeneralConfig.BitcoinAddress = user;
-                    MinersManager.UpdateBTC(user);
-                    return new ExecutedInfo { NewBtc = user };
+                    var btc = (string)message.username;
+                    var userSetResult = ApplicationStateManager.SetBTCIfValidOrDifferent(btc, true);
+                    switch (userSetResult)
+                    {
+                        case ApplicationStateManager.SetResult.INVALID:
+                            throw new RpcException("Bitcoin address invalid", -4);
+                        case ApplicationStateManager.SetResult.CHANGED:
+                            // we return executed
+                            break;
+                        case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
+                            throw new RpcException($"Nothing to change btc \"{btc}\" already set", -5);
+                    }
+                    return new ExecutedInfo { NewBtc = btc };
                 case "mining.set.worker":
                     executed = true;
                     var worker = (string)message.worker;
-
-                    if (!BitcoinAddress.ValidateWorkerName(worker))
-                        throw new RpcException("Worker name invalid", 1);
-
-                    ConfigManager.GeneralConfig.WorkerName = worker;
-                    MinersManager.UpdateWorker(worker);
+                    var workerSetResult = ApplicationStateManager.SetWorkerIfValidOrDifferent(worker, true);
+                    switch (workerSetResult)
+                    {
+                        case ApplicationStateManager.SetResult.INVALID:
+                            throw new RpcException("Worker name invalid", -5);
+                        case ApplicationStateManager.SetResult.CHANGED:
+                            // we return executed
+                            break;
+                        case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
+                            throw new RpcException($"Nothing to change worker name \"{worker}\" already set", -5);
+                    }
                     return new ExecutedInfo { NewWorker = worker };
                 case "mining.set.group":
                     executed = true;
                     var group = (string) message.group;
-                    ConfigManager.GeneralConfig.RigGroup = group;
-
+                    var groupSetResult = ApplicationStateManager.SetGroupIfValidOrDifferent(group, true);
+                    switch (groupSetResult)
+                    {
+                        case ApplicationStateManager.SetResult.INVALID:
+                            // TODO error code not correct
+                            throw new RpcException("Group name invalid", -1000);
+                        case ApplicationStateManager.SetResult.CHANGED:
+                            // we return executed
+                            break;
+                        case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
+                            throw new RpcException($"Nothing to change group \"{group}\" already set", -5);
+                    }
                     return new ExecutedInfo {NewRig = group};
                 case "mining.enable":
                     executed = true;
@@ -297,8 +315,7 @@ namespace NiceHashMiner.Stats
             {
                 if (double.TryParse(balance, NumberStyles.Float, CultureInfo.InvariantCulture, out var bal))
                 {
-                    Balance = bal;
-                    OnBalanceUpdate?.Invoke(null, EventArgs.Empty);
+                    ApplicationStateManager.OnBalanceUpdate(bal);
                 }
             }
             catch (Exception e)
@@ -454,7 +471,7 @@ namespace NiceHashMiner.Stats
 
         #region Outgoing socket calls
 
-        public static void SetCredentials(string btc, string worker)
+        public static void SetCredentials(string btc, string worker, string group)
         {
             if (BitcoinAddress.ValidateBitcoinAddress(btc) && BitcoinAddress.ValidateWorkerName(worker))
             {
@@ -462,7 +479,7 @@ namespace NiceHashMiner.Stats
                 Task.Factory.StartNew(() =>
                 {
                     SendMinerStatus(false);
-                    _socket?.StartConnection(btc, worker);
+                    _socket?.StartConnection(btc, worker, group);
                 });
             }
         }

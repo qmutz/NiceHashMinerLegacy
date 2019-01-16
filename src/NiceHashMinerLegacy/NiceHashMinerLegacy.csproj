@@ -9,11 +9,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NiceHashMiner</RootNamespace>
     <AssemblyName>NiceHashMinerLegacy</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,8 +30,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -111,7 +111,10 @@
     <Compile Include="3rdParty\PInvokeDelegateFactory.cs" />
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="Algorithms\DualAlgorithm.cs" />
-    <Compile Include="ApplicationStateManager.cs" />
+    <Compile Include="ApplicationStateManager\ApplicationStateManager.cs" />
+    <Compile Include="ApplicationStateManager\ApplicationStateManager.Init.cs" />
+    <Compile Include="ApplicationStateManager\ApplicationStateManager.MinerStatsCheck.cs" />
+    <Compile Include="ApplicationStateManager\ApplicationStateManager.Program.cs" />
     <Compile Include="Benchmarking\BenchChecker.cs" />
     <Compile Include="Benchmarking\BenchDeviationInfo.cs" />
     <Compile Include="Benchmarking\BenchHelpers\CpuBenchHelper.cs" />
@@ -141,6 +144,12 @@
       <DependentUpon>DevicesListViewSpeedControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormHelpers.cs" />
+    <Compile Include="Forms\StateDumpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StateDumpForm.Designer.cs">
+      <DependentUpon>StateDumpForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="IFTTT.cs" />
     <Compile Include="Configs\Data\DualAlgorithmConfig.cs" />
     <Compile Include="Forms\Form_DcriValues.cs">
@@ -151,6 +160,7 @@
     </Compile>
     <Compile Include="Interfaces\DataVisualizer\IBalanceBTCDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IBalanceFiatDisplayer.cs" />
+    <Compile Include="Interfaces\DataVisualizer\IGroupDisplayer.cs" />
     <Compile Include="Interfaces\IBenchmarkForm.cs" />
     <Compile Include="Interfaces\DataVisualizer\IBTCDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IServiceLocationDisplayer.cs" />
@@ -188,6 +198,7 @@
     <Compile Include="Switching\AlgorithmHistory.cs" />
     <Compile Include="Switching\AlgorithmSwitchingManager.cs" />
     <Compile Include="Switching\Interval.cs" />
+    <Compile Include="Translations\Translations.cs" />
     <Compile Include="Utils\AlgorithmNiceHashNames.cs" />
     <Compile Include="Configs\ConfigJsonFile\FOLDERS.cs" />
     <Compile Include="Configs\ConfigManager.cs" />
@@ -245,12 +256,6 @@
     <Compile Include="Forms\Components\Field.Designer.cs">
       <DependentUpon>Field.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Components\GroupProfitControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Components\GroupProfitControl.Designer.cs">
-      <DependentUpon>GroupProfitControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Form_Benchmark.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -282,7 +287,6 @@
     <Compile Include="Interfaces\IRatesComunication.cs" />
     <Compile Include="Interfaces\IMessageNotifier.cs" />
     <Compile Include="Interfaces\IMinerUpdateIndicator.cs" />
-    <Compile Include="International.cs" />
     <Compile Include="Utils\Guid\Constants.cs" />
     <Compile Include="Utils\Guid\Providers\HashProvider.cs" />
     <Compile Include="Utils\Guid\Providers\RandomNumberProvider.cs" />
@@ -386,9 +390,6 @@
     <EmbeddedResource Include="Forms\Components\Field.resx">
       <DependentUpon>Field.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Components\GroupProfitControl.resx">
-      <DependentUpon>GroupProfitControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form_Benchmark.resx">
       <DependentUpon>Form_Benchmark.cs</DependentUpon>
     </EmbeddedResource>
@@ -416,6 +417,9 @@
     <EmbeddedResource Include="Forms\MinerFileNotFoundDialog.resx">
       <DependentUpon>MinerFileNotFoundDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StateDumpForm.resx">
+      <DependentUpon>StateDumpForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -427,35 +431,10 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="langs\bg.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\en.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\es.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\it.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\pl.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\pt.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\ro.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\ru.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="langs\langs.json" />
+    <None Include="langs\meta.json" />
     <None Include="OnGPUsLost.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\zh_cn.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -525,7 +504,6 @@
       <Name>NiceHashMinerLegacy.Extensions</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -534,6 +512,14 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(ProjectDir)\langs\langs.json" "$(SolutionDir)$(Configuration)\langs\langs.json"
+copy /Y "$(ProjectDir)\langs\meta.json" "$(SolutionDir)$(Configuration)\langs\meta.json"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

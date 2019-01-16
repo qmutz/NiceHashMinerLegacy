@@ -1,5 +1,6 @@
 ﻿using NiceHashMiner.Configs;
 using NiceHashMiner.Interfaces.DataVisualizer;
+using NiceHashMiner.Miners;
 using NiceHashMiner.Stats;
 using NiceHashMinerLegacy.Common.Enums;
 using System;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 
 namespace NiceHashMiner
 {
-    static class ApplicationStateManager
+    static partial class ApplicationStateManager
     {
         #region StateDisplayers boilerplate
         static List<IDataVisualizer> _stateDisplayers = new List<IDataVisualizer>();
@@ -32,6 +33,14 @@ namespace NiceHashMiner
             if (stateDisplayer is IServiceLocationDisplayer sServiceLocationDisplayer)
             {
                 sServiceLocationDisplayer.DisplayServiceLocation(ConfigManager.GeneralConfig.ServiceLocation);
+            }
+            if (stateDisplayer is IBalanceBTCDisplayer sBalanceBTCDisplayer)
+            {
+                sBalanceBTCDisplayer.DisplayBTCBalance(0);
+            }
+            if (stateDisplayer is IBalanceFiatDisplayer sBalanceFiatDisplayer)
+            {
+                sBalanceFiatDisplayer.DisplayFiatBalance(0, ExchangeRateApi.ActiveDisplayCurrency);
             }
         }
 
@@ -79,7 +88,7 @@ namespace NiceHashMiner
             // not sure why BetaAlphaPostfixString is being checked
             if (ret < 0 || (ret == 0 && BetaAlphaPostfixString != ""))
             {
-                var displayNewVer = string.Format(International.GetText("Form_Main_new_version_released"), version);
+                var displayNewVer = string.Format(Translations.Tr("IMPORTANT! New version v{0} has\r\nbeen released. Click here to download it."), version);
                 // display new version
                 // notify all components
                 foreach (var s in _stateDisplayers)
@@ -106,6 +115,28 @@ namespace NiceHashMiner
 
         #region Balance
         public static double Balance { get; private set; }
+        public static void OnBalanceUpdate(double btcBalance)
+        {
+            Balance = btcBalance;
+            var usdAmount = (Balance * ExchangeRateApi.GetUsdExchangeRate());
+            var fiatBalance = ExchangeRateApi.ConvertToActiveCurrency(usdAmount);
+            // btc
+            foreach (var s in _stateDisplayers)
+            {
+                if (s is IBalanceBTCDisplayer sBalanceBTCDisplayer)
+                {
+                    sBalanceBTCDisplayer.DisplayBTCBalance(Balance);
+                }
+            }
+            // fiat
+            foreach (var s in _stateDisplayers)
+            {
+                if (s is IBalanceFiatDisplayer sBalanceFiatDisplayer)
+                {
+                    sBalanceFiatDisplayer.DisplayFiatBalance(fiatBalance, ExchangeRateApi.ActiveDisplayCurrency);
+                }
+            }
+        }
         #endregion
 
         [Flags]
@@ -119,6 +150,7 @@ namespace NiceHashMiner
 
         public static CredentialsValidState GetCredentialsValidState()
         {
+            var (btc, worker, _) = ConfigManager.GeneralConfig.GetCredentials();
             // assume it is valid
             var ret = CredentialsValidState.VALID;
 
@@ -136,14 +168,15 @@ namespace NiceHashMiner
 
         // TODO this function is probably not at the right place now
         // We call this when we change BTC and Workername and this is most likely wrong
-        private static void ResetNiceHashStatsCredentials()
+        public static void ResetNiceHashStatsCredentials()
         {
             // check if we have valid credentials
             var state = GetCredentialsValidState();
             if (state == CredentialsValidState.VALID)
             {
                 // Reset credentials
-                NiceHashStats.SetCredentials(ConfigManager.GeneralConfig.BitcoinAddress, ConfigManager.GeneralConfig.WorkerName);
+                var (btc, worker, group) = ConfigManager.GeneralConfig.GetCredentials();
+                NiceHashStats.SetCredentials(btc, worker, group);
             }
             else
             {
@@ -202,7 +235,7 @@ namespace NiceHashMiner
         #region BTC setter
 
         // make sure to pass in trimmedBtc
-        public static SetResult SetBTCIfValidOrDifferent(string btc)
+        public static SetResult SetBTCIfValidOrDifferent(string btc, bool skipCredentialsSet = false)
         {
             if (btc == ConfigManager.GeneralConfig.BitcoinAddress)
             {
@@ -213,7 +246,10 @@ namespace NiceHashMiner
                 return SetResult.INVALID;
             }
             SetBTC(btc);
-            ResetNiceHashStatsCredentials();
+            if (!skipCredentialsSet)
+            {
+                ResetNiceHashStatsCredentials();
+            }
             return SetResult.CHANGED;
         }
 
@@ -222,6 +258,11 @@ namespace NiceHashMiner
             // change in memory and save changes to file
             ConfigManager.GeneralConfig.BitcoinAddress = btc;
             ConfigManager.GeneralConfigFileCommit();
+            if (IsCurrentlyMining)
+            {
+                MinersManager.UpdateBTC(btc);
+            }
+            
             // notify all components
             foreach (var s in _stateDisplayers)
             {
@@ -236,7 +277,8 @@ namespace NiceHashMiner
         #region Worker setter
 
         // make sure to pass in trimmed workerName
-        public static SetResult SetWorkerIfValidOrDifferent(string workerName)
+        // skipCredentialsSet when calling from RPC, workaround so RPC will work
+        public static SetResult SetWorkerIfValidOrDifferent(string workerName, bool skipCredentialsSet = false)
         {
             if (workerName == ConfigManager.GeneralConfig.WorkerName)
             {
@@ -247,7 +289,11 @@ namespace NiceHashMiner
                 return SetResult.INVALID;
             }
             SetWorker(workerName);
-            ResetNiceHashStatsCredentials();
+            if (!skipCredentialsSet)
+            {
+                ResetNiceHashStatsCredentials();
+            }
+            
             return SetResult.CHANGED;
         }
 
@@ -256,6 +302,11 @@ namespace NiceHashMiner
             // change in memory and save changes to file
             ConfigManager.GeneralConfig.WorkerName = workerName;
             ConfigManager.GeneralConfigFileCommit();
+            // if mining update the mining manager
+            if (IsCurrentlyMining)
+            {
+                MinersManager.UpdateWorker(workerName);
+            }
             // notify all components
             foreach (var s in _stateDisplayers)
             {
@@ -266,5 +317,71 @@ namespace NiceHashMiner
             }
         }
         #endregion
+
+        #region Group setter
+
+        // make sure to pass in trimmed GroupName
+        // skipCredentialsSet when calling from RPC, workaround so RPC will work
+        public static SetResult SetGroupIfValidOrDifferent(string groupName, bool skipCredentialsSet = false)
+        {
+            if (groupName == ConfigManager.GeneralConfig.RigGroup)
+            {
+                return SetResult.NOTHING_TO_CHANGE;
+            }
+            // TODO group validator
+            var groupValid = true; /*!BitcoinAddress.ValidateGroupName(GroupName)*/
+            if (!groupValid)
+            {
+                return SetResult.INVALID;
+            }
+            SetGroup(groupName);
+            if (!skipCredentialsSet)
+            {
+                ResetNiceHashStatsCredentials();
+            }
+
+            return SetResult.CHANGED;
+        }
+
+        private static void SetGroup(string groupName)
+        {
+            // change in memory and save changes to file
+            ConfigManager.GeneralConfig.RigGroup = groupName;
+            ConfigManager.GeneralConfigFileCommit();
+            // notify all components
+            foreach (var s in _stateDisplayers)
+            {
+                if (s is IGroupDisplayer sGroupDisplayer)
+                {
+                    sGroupDisplayer.DisplayGroup(groupName);
+                }
+            }
+        }
+        #endregion
+
+
+        public static bool IsCurrentlyMining { get; private set; }
+        // StartMining function should be called only if all mining requirements are met, btc or demo, valid workername, and sma data
+        // don't call this function ever unless credentials are valid or if we will be using Demo mining
+        // And if there are missing mining requirements
+        public static bool StartMining()
+        {
+            IsCurrentlyMining = true;
+            StartMinerStatsCheckTimer();
+            return false;
+        }
+
+        //public static bool StartDemoMining()
+        //{
+        //    StopMinerStatsCheckTimer();
+        //    return false;
+        //}
+
+        public static bool StopMining()
+        {
+            IsCurrentlyMining = false;
+            StopMinerStatsCheckTimer();
+            return false;
+        }
     }
 }
