@@ -60,7 +60,8 @@ namespace NiceHashMiner
 
         public static string GetUsername()
         {
-            var (btc, worker, _) = ConfigManager.GeneralConfig.GetCredentials();
+            var btc = ConfigManager.GeneralConfig.BitcoinAddress?.Trim();
+            var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
             if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
             {
                 return $"{btc}.{worker}:{RigID}";
@@ -71,7 +72,7 @@ namespace NiceHashMiner
 
         public static string GetDemoUsername()
         {
-            var (_, worker, _) = ConfigManager.GeneralConfig.GetCredentials();
+            var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
             if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
             {
                 return $"{DemoUser}.{worker}:{RigID}";

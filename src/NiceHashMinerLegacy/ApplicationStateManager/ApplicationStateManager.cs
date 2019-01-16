@@ -150,7 +150,6 @@ namespace NiceHashMiner
 
         public static CredentialsValidState GetCredentialsValidState()
         {
-            var (btc, worker, _) = ConfigManager.GeneralConfig.GetCredentials();
             // assume it is valid
             var ret = CredentialsValidState.VALID;
 
@@ -175,7 +174,10 @@ namespace NiceHashMiner
             if (state == CredentialsValidState.VALID)
             {
                 // Reset credentials
-                var (btc, worker, group) = ConfigManager.GeneralConfig.GetCredentials();
+                //var (btc, worker, group) = ConfigManager.GeneralConfig.GetCredentials();
+                var btc = ConfigManager.GeneralConfig.BitcoinAddress?.Trim();
+                var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
+                var group = ConfigManager.GeneralConfig.RigGroup?.Trim();
                 NiceHashStats.SetCredentials(btc, worker, group);
             }
             else
