@@ -1,18 +1,16 @@
-﻿using NiceHashMiner.Configs;
-using NiceHashMiner.Devices;
+﻿using NiceHashMiner.Devices;
 using NiceHashMiner.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace NiceHashMiner.Forms.Components
 {
+    /// <summary>
+    /// List view to show algorithm info with disable/enable and bench status colours
+    /// </summary>
     public partial class DevicesListViewBenchmarkControl : DevicesListViewEnableControl
     {
-        private const int ENABLED = 0;
-        private const int DEVICE = 1;
-
         private class DefaultDevicesColorSeter : IListItemCheckColorSetter
         {
             private static readonly Color EnabledColor = Color.White;
@@ -82,7 +80,6 @@ namespace NiceHashMiner.Forms.Components
             SaveToGeneralConfig = false;
             // intialize ListView callbacks
             listViewDevices.ItemChecked += ListViewDevicesItemChecked;
-            //listViewDevices.CheckBoxes = false;
             IsMining = false;
             BenchmarkCalculation = null;
         }
