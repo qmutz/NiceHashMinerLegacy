@@ -42,8 +42,6 @@ namespace NiceHashMiner.Forms.Components
             InitializeComponent();
 
             SaveToGeneralConfig = false;
-            // intialize ListView callbacks
-            //listViewDevices.ItemChecked += ListViewDevicesItemChecked;
 
             _diagTimer.Interval = 2000;
             _diagTimer.Tick += DiagTimerOnTick;

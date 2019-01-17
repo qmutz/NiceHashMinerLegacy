@@ -10,6 +10,9 @@ using NiceHashMiner.Stats.Models;
 
 namespace NiceHashMiner.Forms.Components
 {
+    /// <summary>
+    /// ListView to show algorithm information and enable/disable checkboxes
+    /// </summary>
     public partial class DevicesListViewEnableControl : UserControl
     {
         private const int ENABLED = 0;
@@ -60,7 +63,6 @@ namespace NiceHashMiner.Forms.Components
                     Text = computeDevice.GetFullName(),
                     Tag = computeDevice
                 };
-                //lvi.SubItems.Add(computeDevice.Name);
                 listViewDevices.Items.Add(lvi);
                 SetLvi(lvi, computeDevice.Index);
             }
@@ -71,9 +73,7 @@ namespace NiceHashMiner.Forms.Components
         }
 
         protected virtual void SetLvi(ListViewItem lvi, int index)
-        {
-
-        }
+        { }
 
         public void ResetComputeDevices(List<ComputeDevice> computeDevices)
         {
@@ -129,8 +129,6 @@ namespace NiceHashMiner.Forms.Components
         }
 
         protected virtual void ListViewDevices_MouseClick(object sender, MouseEventArgs e)
-        {
-
-        }
+        { }
     }
 }

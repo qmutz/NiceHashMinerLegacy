@@ -1,11 +1,14 @@
 ﻿using NiceHashMiner.Configs;
 using NiceHashMiner.Devices;
 using NiceHashMiner.Forms;
-using NiceHashMiner.Forms.Components;
 using NiceHashMiner.Interfaces;
 using NiceHashMiner.Interfaces.DataVisualizer;
 using NiceHashMiner.Miners;
+using NiceHashMiner.Miners.IdleChecking;
+using NiceHashMiner.Stats;
+using NiceHashMiner.Switching;
 using NiceHashMiner.Utils;
+using NiceHashMinerLegacy.Common.Enums;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -14,10 +17,6 @@ using System.Linq;
 using System.Management;
 using System.Threading;
 using System.Windows.Forms;
-using NiceHashMiner.Miners.IdleChecking;
-using NiceHashMiner.Stats;
-using NiceHashMiner.Switching;
-using NiceHashMinerLegacy.Common.Enums;
 using SystemTimer = System.Timers.Timer;
 using Timer = System.Windows.Forms.Timer;
 
@@ -63,8 +62,6 @@ namespace NiceHashMiner
             }
 
             Text += ApplicationStateManager.Title;
-
-            //label_NotProfitable.Visible = false;
 
             InitMainConfigGuiData();
         }
@@ -115,9 +112,6 @@ namespace NiceHashMiner
             buttonStartMining.Text = Translations.Tr("&Start");
             buttonStopMining.Text = Translations.Tr("St&op");
             buttonHelp.Text = Translations.Tr("&Help");
-
-            //label_NotProfitable.Text = Translations.Tr("CURRENTLY MINING NOT PROFITABLE.");
-            //groupBox1.Text = Translations.Tr("Group/Device Rates:");
         }
 
         // InitMainConfigGuiData gets called after settings are changed and whatnot but this is a crude and tightly coupled way of doing things
@@ -154,8 +148,7 @@ namespace NiceHashMiner
 
             IdleCheckManager.StartIdleCheck(ConfigManager.GeneralConfig.IdleCheckType, IdleCheck);
         }
-
-
+        
         private void IdleCheck(object sender, IdleChangedEventArgs e)
         {
             if (!ConfigManager.GeneralConfig.StartMiningWhenIdle || _isManuallyStarted) return;
@@ -459,9 +452,6 @@ namespace NiceHashMiner
 
         private void ExchangeCallback(object sender, EventArgs e)
         {
-            //// We are getting data from socket so stop checking manually
-            //_bitcoinExchangeCheck?.Stop();
-            //Helpers.ConsolePrint("NICEHASH", "Bitcoin rate get");
             if (InvokeRequired)
             {
                 Invoke((MethodInvoker) UpdateExchange);
