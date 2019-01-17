@@ -31,8 +31,8 @@
 
         // SMA Socket
 #if TESTNET
-        public const string NhmSocketAddress = "https://nhmws-test.nicehash.com/v3/nhm3";
-        //public const string NhmSocketAddress = "https://nhmws-test.nicehash.com/v3/nhml"; // new endpoint with balances and exchanges
+        //public const string NhmSocketAddress = "https://nhmws-test.nicehash.com/v3/nhm3";
+        public const string NhmSocketAddress = "https://nhmws-test.nicehash.com/v3/nhml"; // new endpoint with balances and exchanges
 #else
         public const string NhmSocketAddress = "https://nhmws.nicehash.com/v2/nhm";
 #endif    
