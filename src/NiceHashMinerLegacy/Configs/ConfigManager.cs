@@ -145,6 +145,7 @@ namespace NiceHashMiner.Configs
 
         public static void AfterDeviceQueryInitialization()
         {
+            // TODO Move this
             // extra check (probably will never happen but just in case)
             {
                 var invalidDevices = new List<ComputeDevice>();
@@ -160,7 +161,7 @@ namespace NiceHashMiner.Configs
                 // remove invalids
                 foreach (var invalid in invalidDevices)
                 {
-                    ComputeDeviceManager.Available.Devices.Remove(invalid);
+                    ComputeDeviceManager.Available.Remove(invalid);
                 }
             }
             // set enabled/disabled devs

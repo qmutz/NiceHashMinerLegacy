@@ -11,9 +11,9 @@ namespace NiceHashMiner.Stats.Models
     {
         public readonly List<ComputeDevice> Devices;
 
-        public DeviceUpdateEventArgs(List<ComputeDevice> devs)
+        public DeviceUpdateEventArgs(IEnumerable<ComputeDevice> devs)
         {
-            Devices = devs;
+            Devices = devs.ToList();
         }
     }
 }

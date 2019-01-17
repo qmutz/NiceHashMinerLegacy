@@ -47,7 +47,7 @@ namespace NiceHashMiner.Forms.Components
             _algorithmsListView = algorithmsListView;
         }
 
-        public virtual void SetComputeDevices(List<ComputeDevice> computeDevices)
+        public virtual void SetComputeDevices(IEnumerable<ComputeDevice> computeDevices)
         {
             // to not run callbacks when setting new
             var tmpSaveToGeneralConfig = SaveToGeneralConfig;
@@ -75,7 +75,7 @@ namespace NiceHashMiner.Forms.Components
         protected virtual void SetLvi(ListViewItem lvi, int index)
         { }
 
-        public void ResetComputeDevices(List<ComputeDevice> computeDevices)
+        public void ResetComputeDevices(IEnumerable<ComputeDevice> computeDevices)
         {
             SetComputeDevices(computeDevices);
         }

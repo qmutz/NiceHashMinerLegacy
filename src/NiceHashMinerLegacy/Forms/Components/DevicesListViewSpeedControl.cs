@@ -85,9 +85,9 @@ namespace NiceHashMiner.Forms.Components
 
         #region ListView updating
 
-        public override void SetComputeDevices(List<ComputeDevice> devices)
+        public override void SetComputeDevices(IEnumerable<ComputeDevice> devices)
         {
-            _devices = devices;
+            _devices = devices.ToList();
             UpdateListView();
 
             if (!ShowDiagCols) return;

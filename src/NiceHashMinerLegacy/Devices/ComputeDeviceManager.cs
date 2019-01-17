@@ -305,14 +305,14 @@ namespace NiceHashMiner.Devices
                 }
 
                 // create AMD bus ordering for Claymore
-                var amdDevices = Available.Devices.FindAll((a) => a.DeviceType == DeviceType.AMD);
+                var amdDevices = Available.Devices.Where((a) => a.DeviceType == DeviceType.AMD).ToList();
                 amdDevices.Sort((a, b) => a.BusID.CompareTo(b.BusID));
                 for (var i = 0; i < amdDevices.Count; i++)
                 {
                     amdDevices[i].IDByBus = i;
                 }
                 //create NV bus ordering for Claymore
-                var nvDevices = Available.Devices.FindAll((a) => a.DeviceType == DeviceType.NVIDIA);
+                var nvDevices = Available.Devices.Where((a) => a.DeviceType == DeviceType.NVIDIA).ToList();
                 nvDevices.Sort((a, b) => a.BusID.CompareTo(b.BusID));
                 for (var i = 0; i < nvDevices.Count; i++)
                 {
@@ -501,7 +501,7 @@ namespace NiceHashMiner.Devices
                     {
                         if (Available.CpusCount == 1)
                         {
-                            Available.Devices.Add(
+                            Available.Add(
                                 new CpuComputeDevice(0, "CPU0", CpuID.GetCpuName().Trim(), threadsPerCpu, 0,
                                     ++CpuCount, GetCpuInfo().FirstOrDefault())
                             );
@@ -512,7 +512,7 @@ namespace NiceHashMiner.Devices
                             for (var i = 0; i < Available.CpusCount; i++)
                             {
                                 var info = infos.Count > i ? infos[i] : default(CpuInfo);
-                                Available.Devices.Add(
+                                Available.Add(
                                     new CpuComputeDevice(i, "CPU" + i, CpuID.GetCpuName().Trim(), threadsPerCpu,
                                         CpuID.CreateAffinityMask(i, threadsPerCpuMask), ++CpuCount, info)
                                 );
@@ -683,9 +683,7 @@ namespace NiceHashMiner.Devices
                                 }
 
                                 idHandles.TryGetValue(cudaDev.pciBusID, out var handle);
-                                Available.Devices.Add(
-                                    new CudaComputeDevice(cudaDev, group, ++GpuCount, handle, nvmlHandle)
-                                );
+                                Available.Add(new CudaComputeDevice(cudaDev, group, ++GpuCount, handle, nvmlHandle));
                             }
                         }
                         Helpers.ConsolePrint(Tag, stringBuilder.ToString());
@@ -939,12 +937,14 @@ namespace NiceHashMiner.Devices
             }
         }
 
+        // TODO This could be cleaner
+        // TODO internal members are intended to only be accessible within device init classes (will take force once broken out to own project)
         public static class Available
         {
-            public static bool HasNvidia = false;
-            public static bool HasAmd = false;
-            public static bool HasCpu = false;
-            public static int CpusCount = 0;
+            public static bool HasNvidia { get; internal set; } = false;
+            public static bool HasAmd { get; internal set; } = false;
+            public static bool HasCpu { get; internal set; } = false;
+            public static int CpusCount { get; internal set; } = 0;
 
             public static int AvailCpus
             {
@@ -962,13 +962,14 @@ namespace NiceHashMiner.Devices
             }
 
             public static int AvailGpUs => AvailAmdGpus + AvailNVGpus;
-            public static int AmdOpenCLPlatformNum = -1;
-            public static bool IsHyperThreadingEnabled = false;
+            public static int AmdOpenCLPlatformNum { get; internal set; } = -1;
+            public static bool IsHyperThreadingEnabled { get; internal set; } = false;
 
-            public static ulong NvidiaRamSum = 0;
-            public static ulong AmdRamSum = 0;
+            public static ulong NvidiaRamSum { get; internal set; } = 0;
+            public static ulong AmdRamSum { get; internal set; } = 0;
 
-            public static readonly List<ComputeDevice> Devices = new List<ComputeDevice>();
+            private static readonly List<ComputeDevice> _devices = new List<ComputeDevice>();
+            public static IReadOnlyList<ComputeDevice> Devices => _devices;
 
             // methods
             public static ComputeDevice GetDeviceWithUuid(string uuid)
@@ -992,6 +993,16 @@ namespace NiceHashMiner.Devices
             public static int GetCountForType(DeviceType type)
             {
                 return Devices.Count(device => device.DeviceType == type);
+            }
+
+            internal static void Add(ComputeDevice dev)
+            {
+                _devices.Add(dev);
+            }
+
+            internal static void Remove(ComputeDevice dev)
+            {
+                _devices.Remove(dev);
             }
         }
 
@@ -1034,7 +1045,7 @@ namespace NiceHashMiner.Devices
             var r = new Random();
             for (var i = 0; i < 4; i++)
             {
-                Available.Devices.Add(new ComputeDevice(r.Next()));
+                Available.Add(new ComputeDevice(r.Next()));
             }
         }
     }

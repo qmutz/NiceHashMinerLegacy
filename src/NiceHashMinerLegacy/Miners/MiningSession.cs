@@ -80,7 +80,7 @@ namespace NiceHashMiner.Miners
             }
         }
 
-        public MiningSession(List<ComputeDevice> devices, IRatesComunication ratesComunication,
+        public MiningSession(IEnumerable<ComputeDevice> devices, IRatesComunication ratesComunication,
             string miningLocation, string worker, string btcAdress)
         {
             // init fixed
