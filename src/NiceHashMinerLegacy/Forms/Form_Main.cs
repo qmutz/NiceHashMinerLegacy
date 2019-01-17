@@ -19,6 +19,7 @@ using System.Threading;
 using System.Windows.Forms;
 using SystemTimer = System.Timers.Timer;
 using Timer = System.Windows.Forms.Timer;
+using static NiceHashMiner.Translations; // consider using static
 
 namespace NiceHashMiner
 {
@@ -331,7 +332,7 @@ namespace NiceHashMiner
 
         private void Form_Main_Shown(object sender, EventArgs e)
         {
-            new StateDumpForm().Show();
+            //new StateDumpForm().Show();
             // general loading indicator
             const int totalLoadSteps = 11;
             _loadingScreen = new Form_Loading(this,
@@ -562,8 +563,6 @@ namespace NiceHashMiner
 
         private void ButtonBenchmark_Click(object sender, EventArgs e)
         {
-            ConfigManager.GeneralConfig.ServiceLocation = comboBoxLocation.SelectedIndex;
-
             _benchmarkForm = new Form_Benchmark();
             SetChildFormCenter(_benchmarkForm);
             _benchmarkForm.ShowDialog();
