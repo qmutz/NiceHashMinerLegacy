@@ -19,6 +19,8 @@ namespace NiceHashMiner.Forms.Components
 
         protected AlgorithmsListView _algorithmsListView;
 
+        protected bool IgnoreChecks;
+
         public string FirstColumnText
         {
             get => listViewDevices.Columns[ENABLED].Text;
@@ -39,7 +41,7 @@ namespace NiceHashMiner.Forms.Components
             // intialize ListView callbacks
             listViewDevices.ItemChecked += ListViewDevicesItemChecked;
             //listViewDevices.CheckBoxes = false;
-            NiceHashStats.OnDeviceUpdate += UpdateDevices;
+            ComputeDeviceManager.Available.OnDeviceUpdate += UpdateDeviceStatuses;
         }
 
         public void SetAlgorithmsListView(AlgorithmsListView algorithmsListView)
@@ -47,8 +49,31 @@ namespace NiceHashMiner.Forms.Components
             _algorithmsListView = algorithmsListView;
         }
 
+        private void SetComputeDeviceStatuses(IEnumerable<ComputeDevice> devs)
+        {
+            listViewDevices.BeginUpdate();
+            IgnoreChecks = true;
+            foreach (var dev in devs)
+            {
+                foreach (var lviObj in listViewDevices.Items)
+                {
+                    if (!(lviObj is ListViewItem lvi) ||
+                        !(lvi.Tag is ComputeDevice lvDev) ||
+                        lvDev.Index != dev.Index)
+                    {
+                        continue;
+                    }
+
+                    lvi.Checked = dev.Enabled;
+                }
+            }
+            listViewDevices.EndUpdate();
+            IgnoreChecks = false;
+        }
+
         public virtual void SetComputeDevices(IEnumerable<ComputeDevice> computeDevices)
         {
+            IgnoreChecks = true;
             // to not run callbacks when setting new
             var tmpSaveToGeneralConfig = SaveToGeneralConfig;
             SaveToGeneralConfig = false;
@@ -70,6 +95,7 @@ namespace NiceHashMiner.Forms.Components
             listViewDevices.Invalidate(true);
             // reset properties
             SaveToGeneralConfig = tmpSaveToGeneralConfig;
+            IgnoreChecks = false;
         }
 
         protected virtual void SetLvi(ListViewItem lvi, int index)
@@ -80,18 +106,18 @@ namespace NiceHashMiner.Forms.Components
             SetComputeDevices(computeDevices);
         }
 
-        private void UpdateDevices(object sender, DeviceUpdateEventArgs e)
+        private void UpdateDeviceStatuses(object sender, DeviceUpdateEventArgs e)
         {
             if (InvokeRequired)
             {
                 Invoke((Action) delegate
                 {
-                    SetComputeDevices(e.Devices);
+                    SetComputeDeviceStatuses(e.Devices);
                 });
             }
             else
             {
-                SetComputeDevices(e.Devices);
+                SetComputeDeviceStatuses(e.Devices);
             }
         }
         
@@ -102,18 +128,18 @@ namespace NiceHashMiner.Forms.Components
 
         protected virtual void ListViewDevicesItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (e.Item.Tag is ComputeDevice cDevice)
+            if (IgnoreChecks || listViewDevices.FocusedItem == null || 
+                !(e.Item.Tag is ComputeDevice cDevice)) return;
+
+            ComputeDeviceManager.Available.UpdateDeviceStatus(e.Item.Checked, cDevice.Index);
+
+            if (SaveToGeneralConfig)
             {
-                ComputeDeviceManager.Available.UpdateDeviceStatus(e.Item.Checked, cDevice.Index);
-
-                if (SaveToGeneralConfig)
-                {
-                    ConfigManager.GeneralConfigFileCommit();
-                }
-
-                // TODO this should be done in callback from call above
-                _algorithmsListView?.RepaintStatus(cDevice.Enabled, cDevice.Uuid);
+                ConfigManager.GeneralConfigFileCommit();
             }
+
+            // TODO this should be done in callback from call above
+            _algorithmsListView?.RepaintStatus(cDevice.Enabled, cDevice.Uuid);
         }
 
         public void SetDeviceSelectionChangedCallback(ListViewItemSelectionChangedEventHandler callback)

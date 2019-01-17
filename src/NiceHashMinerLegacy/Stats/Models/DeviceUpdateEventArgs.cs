@@ -1,19 +1,16 @@
-﻿using System;
+﻿using NiceHashMiner.Devices;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NiceHashMiner.Devices;
 
 namespace NiceHashMiner.Stats.Models
 {
     public class DeviceUpdateEventArgs : EventArgs
     {
-        public readonly List<ComputeDevice> Devices;
+        public IEnumerable<ComputeDevice> Devices { get; }
 
         public DeviceUpdateEventArgs(IEnumerable<ComputeDevice> devs)
         {
-            Devices = devs.ToList();
+            Devices = devs;
         }
     }
 }

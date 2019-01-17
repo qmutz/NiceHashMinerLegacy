@@ -16,6 +16,7 @@ using System.Text;
 using System.Windows.Forms;
 using NiceHashMiner.Devices.Querying;
 using NiceHashMiner.Forms;
+using NiceHashMiner.Stats.Models;
 using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Devices
@@ -941,6 +942,8 @@ namespace NiceHashMiner.Devices
         // TODO internal members are intended to only be accessible within device init classes (will take force once broken out to own project)
         public static class Available
         {
+            public static event EventHandler<DeviceUpdateEventArgs> OnDeviceUpdate;
+
             public static bool HasNvidia { get; internal set; } = false;
             public static bool HasAmd { get; internal set; } = false;
             public static bool HasCpu { get; internal set; } = false;
@@ -1008,15 +1011,15 @@ namespace NiceHashMiner.Devices
             private static bool UpdateDeviceStatus(bool enabled, Func<ComputeDevice, bool> predicate)
             {
                 var dev = Devices.FirstOrDefault(predicate);
-                if (dev == null)
+                if (dev == null || dev.Enabled == enabled)
                 {
-                    // Device not found, for now return false
+                    // Device not found or is already set, for now return false
                     return false;
                 }
 
                 dev.Enabled = enabled;
 
-                // TODO
+                OnDeviceUpdate?.Invoke(null, new DeviceUpdateEventArgs(new List<ComputeDevice> { dev }));
 
                 return true;
             }
@@ -1037,6 +1040,8 @@ namespace NiceHashMiner.Devices
                 {
                     dev.Enabled = enabled;
                 }
+
+                OnDeviceUpdate?.Invoke(null, new DeviceUpdateEventArgs(Devices));
             }
         }
 

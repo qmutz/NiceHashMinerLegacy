@@ -70,7 +70,6 @@ namespace NiceHashMiner.Stats
         public static event EventHandler OnConnectionLost;
         public static event EventHandler<SocketEventArgs> OnVersionBurn;
         public static event EventHandler OnExchangeUpdate;
-        public static event EventHandler<DeviceUpdateEventArgs> OnDeviceUpdate;
 
         private static NiceHashSocket _socket;
         
@@ -388,8 +387,6 @@ namespace NiceHashMiner.Stats
 
             if (!found)
                 throw new RpcException("Device not found", 1);
-
-            OnDeviceUpdate?.Invoke(null, new DeviceUpdateEventArgs(ComputeDeviceManager.Available.Devices));
         }
 
         private static void StartMining(string devs)

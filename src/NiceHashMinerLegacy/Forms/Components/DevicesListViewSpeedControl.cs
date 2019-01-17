@@ -37,8 +37,6 @@ namespace NiceHashMiner.Forms.Components
 
         private readonly Timer _diagTimer = new Timer();
 
-        private bool _ignoreChecks = false;
-
         public DevicesListViewSpeedControl()
         {
             InitializeComponent();
@@ -63,10 +61,10 @@ namespace NiceHashMiner.Forms.Components
 
         public void SetIsMining(bool isMining)
         {
-            _ignoreChecks = true;
+            IgnoreChecks = true;
             listViewDevices.CheckBoxes = !isMining;
             Enabled = !isMining;
-            _ignoreChecks = false;
+            IgnoreChecks = false;
         }
 
         public override void InitLocale()
@@ -79,7 +77,6 @@ namespace NiceHashMiner.Forms.Components
 
         protected override void ListViewDevicesItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (_ignoreChecks) return;
             base.ListViewDevicesItemChecked(sender, e);
         }
 
@@ -87,11 +84,13 @@ namespace NiceHashMiner.Forms.Components
 
         public override void SetComputeDevices(IEnumerable<ComputeDevice> devices)
         {
+            IgnoreChecks = true;
             _devices = devices.ToList();
             UpdateListView();
 
             if (!ShowDiagCols) return;
             _diagTimer.Start();
+            IgnoreChecks = false;
         }
 
         private void UpdateListView()
@@ -376,11 +375,11 @@ namespace NiceHashMiner.Forms.Components
             // Ensure we have disabled group
             if (listViewDevices.Groups[DefaultKey] == null)
             {
-                _ignoreChecks = true;  // For some reason without this it will enable some checkboxes
+                IgnoreChecks = true;  // For some reason without this it will enable some checkboxes
                 listViewDevices.Groups.Clear();
                 var disGrp = new ListViewGroup(DefaultKey, Translations.Tr("Disabled"));
                 listViewDevices.Groups.Add(disGrp);
-                _ignoreChecks = false;
+                IgnoreChecks = false;
             }
 
             // ID for algo/miner combo
