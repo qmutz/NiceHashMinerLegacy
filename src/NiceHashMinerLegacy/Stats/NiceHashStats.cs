@@ -358,31 +358,38 @@ namespace NiceHashMiner.Stats
             }
         }
 
-        private static bool SetDevicesEnabled(string devs, bool enabled)
+        private static void SetDevicesEnabled(string devs, bool enabled)
         {
             var found = false;
             if (!ComputeDeviceManager.Available.Devices.Any())
                 throw new RpcException("No devices to set", 1);
 
-            var anyStillRunning = false;
-
-            foreach (var dev in ComputeDeviceManager.Available.Devices)
+            if (devs == "*")
             {
-                if (devs == "*" || dev.B64Uuid == devs)
-                {
-                    found = true;
-                    dev.Enabled = enabled;
-                }
-
-                anyStillRunning = anyStillRunning || dev.Enabled;
+                ComputeDeviceManager.Available.UpdateAllDeviceStatuses(enabled);
+                found = true;
             }
+            else
+            {
+                found = ComputeDeviceManager.Available.UpdateDeviceStatus(enabled, devs);
+            }
+
+            // TODO move this to method on Available. anyStillRunning should be handled by miners manager (stop mining if all disabled)
+            //foreach (var dev in ComputeDeviceManager.Available.Devices)
+            //{
+            //    if (devs == "*" || dev.B64Uuid == devs)
+            //    {
+            //        found = true;
+            //        ComputeDeviceManager.Available.UpdateDeviceStatus(enabled, dev.Index);
+            //    }
+
+            //    anyStillRunning = anyStillRunning || dev.Enabled;
+            //}
 
             if (!found)
                 throw new RpcException("Device not found", 1);
 
             OnDeviceUpdate?.Invoke(null, new DeviceUpdateEventArgs(ComputeDeviceManager.Available.Devices));
-
-            return anyStillRunning;
         }
 
         private static void StartMining(string devs)
@@ -405,10 +412,7 @@ namespace NiceHashMiner.Stats
                 if (devs != "*")
                 {
                     // Only mine with the one selected
-                    foreach (var dev in ComputeDeviceManager.Available.Devices)
-                    {
-                        dev.Enabled = false;
-                    }
+                    ComputeDeviceManager.Available.UpdateAllDeviceStatuses(false);
                     SetDevicesEnabled(devs, true);
                 }
                 // TODO this will all go out
@@ -426,24 +430,26 @@ namespace NiceHashMiner.Stats
             if (!MinersManager.IsMiningEnabled())
                 throw new RpcException("Mining already stopped", 50);
 
-            if (devs != "*")
-            {
-                if (SetDevicesEnabled(devs, false))
-                {
-                    MinersManager.UpdateUsedDevices(ComputeDeviceManager.Available.Devices);
-                }
-                else
-                {
-                    // No devices are left enabled, stop all mining
-                    MinersManager.StopAllMiners(true);
-                    _mainForm?.StopMiningGui();
-                }
-            }
-            else
-            {
-                MinersManager.StopAllMiners(true);
-                _mainForm?.StopMiningGui();
-            }
+            SetDevicesEnabled(devs, false);
+
+            //if (devs != "*")
+            //{
+            //    if ()
+            //    {
+            //        MinersManager.UpdateUsedDevices(ComputeDeviceManager.Available.Devices);
+            //    }
+            //    else
+            //    {
+            //        // No devices are left enabled, stop all mining
+            //        MinersManager.StopAllMiners(true);
+            //        _mainForm?.StopMiningGui();
+            //    }
+            //}
+            //else
+            //{
+            //    MinersManager.StopAllMiners(true);
+            //    _mainForm?.StopMiningGui();
+            //}
         }
 
         private static void SetPowerMode(string device, PowerLevel level)

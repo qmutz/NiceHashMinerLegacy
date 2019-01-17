@@ -764,13 +764,14 @@ namespace NiceHashMiner
                 }
                 else if (result == DialogResult.No)
                 {
+                    // TODO figure out where to put this
                     // check devices without benchmarks
                     foreach (var cdev in ComputeDeviceManager.Available.Devices)
                     {
                         if (cdev.Enabled)
                         {
                             var enabled = cdev.GetAlgorithmSettings().Any(algo => algo.BenchmarkSpeed > 0);
-                            cdev.Enabled = enabled;
+                            ComputeDeviceManager.Available.UpdateDeviceStatus(enabled, cdev.Index);
                         }
                     }
                 }

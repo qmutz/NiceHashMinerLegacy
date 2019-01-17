@@ -104,12 +104,14 @@ namespace NiceHashMiner.Forms.Components
         {
             if (e.Item.Tag is ComputeDevice cDevice)
             {
-                cDevice.Enabled = e.Item.Checked;
+                ComputeDeviceManager.Available.UpdateDeviceStatus(e.Item.Checked, cDevice.Index);
 
                 if (SaveToGeneralConfig)
                 {
                     ConfigManager.GeneralConfigFileCommit();
                 }
+
+                // TODO this should be done in callback from call above
                 _algorithmsListView?.RepaintStatus(cDevice.Enabled, cDevice.Uuid);
             }
         }

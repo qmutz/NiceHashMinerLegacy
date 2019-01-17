@@ -65,12 +65,9 @@ namespace NiceHashMinerLegacy.Tests.Stats
         [TestMethod]
         public void EnableDevicesShouldMatch()
         {
-            var devs = ComputeDeviceManager.Available.Devices;
             // Start all false
-            foreach (var dev in devs)
-            {
-                dev.Enabled = false;
-            }
+            ComputeDeviceManager.Available.UpdateAllDeviceStatuses(false);
+            var devs = ComputeDeviceManager.Available.Devices;
 
             var first = devs.First();
 

@@ -1004,6 +1004,40 @@ namespace NiceHashMiner.Devices
             {
                 _devices.Remove(dev);
             }
+
+            private static bool UpdateDeviceStatus(bool enabled, Func<ComputeDevice, bool> predicate)
+            {
+                var dev = Devices.FirstOrDefault(predicate);
+                if (dev == null)
+                {
+                    // Device not found, for now return false
+                    return false;
+                }
+
+                dev.Enabled = enabled;
+
+                // TODO
+
+                return true;
+            }
+
+            public static bool UpdateDeviceStatus(bool enabled, int devIndex)
+            {
+                return UpdateDeviceStatus(enabled, d => d.Index == devIndex);
+            }
+
+            public static bool UpdateDeviceStatus(bool enabled, string devb64)
+            {
+                return UpdateDeviceStatus(enabled, d => d.B64Uuid == devb64);
+            }
+
+            public static void UpdateAllDeviceStatuses(bool enabled)
+            {
+                foreach (var dev in Devices)
+                {
+                    dev.Enabled = enabled;
+                }
+            }
         }
 
         public static class Group

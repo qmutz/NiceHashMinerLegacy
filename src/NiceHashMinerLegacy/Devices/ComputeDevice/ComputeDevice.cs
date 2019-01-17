@@ -24,7 +24,7 @@ namespace NiceHashMiner.Devices
 
         // name count is the short name for displaying in moning groups
         public readonly string NameCount;
-        public bool Enabled;
+        public bool Enabled { get; internal set; }
 
         public readonly DeviceGroupType DeviceGroupType;
 
