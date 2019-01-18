@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
-using NiceHashMiner.Algorithms;
-using NiceHashMiner.Benchmarking;
+﻿using NiceHashMiner.Benchmarking;
 using NiceHashMiner.Configs;
 using NiceHashMiner.Devices;
 using NiceHashMiner.Interfaces;
-using NiceHashMiner.Miners;
-using NiceHashMiner.Miners.Grouping;
 using NiceHashMiner.Properties;
 using NiceHashMinerLegacy.Common.Enums;
+using System;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace NiceHashMiner.Forms
@@ -196,14 +192,14 @@ namespace NiceHashMiner.Forms
 
         #region Start/Stop methods
 
-        private void StartStopBtn_Click(object sender, EventArgs e)
+        private async void StartStopBtn_Click(object sender, EventArgs e)
         {
             if (BenchmarkManager.InBenchmark)
             {
                 StopButonClick();
                 BenchmarkStoppedGuiSettings();
             }
-            else if (StartButonClick())
+            else if (await StartButonClick())
             {
                 StartStopBtn.Text = Translations.Tr("St&op benchmark");
             }
@@ -250,7 +246,7 @@ namespace NiceHashMiner.Forms
             if (_exitWhenFinished) Close();
         }
 
-        private bool StartButonClick()
+        private async Task<bool> StartButonClick()
         {
             CalcBenchmarkDevicesAlgorithmQueue();
             // device selection check scope
@@ -287,9 +283,9 @@ namespace NiceHashMiner.Forms
                 if (deviceAlgosTuple.Item1 != null)
                     algorithmsListView1.RepaintStatus(deviceAlgosTuple.Item1.Enabled, deviceAlgosTuple.Item1.Uuid);
             }
-            
-            BenchmarkManager.Start(benchmarkOptions1.PerformanceType, this);
+
             _benchmarkingTimer.Start();
+            await BenchmarkManager.Start(benchmarkOptions1.PerformanceType, this);
 
             return true;
         }

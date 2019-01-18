@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using NiceHashMiner.Stats;
 
 namespace NiceHashMiner.Benchmarking
@@ -179,10 +180,11 @@ namespace NiceHashMiner.Benchmarking
 
         #region Start/Stop methods
 
-        public static void Start(BenchmarkPerformanceType perfType, IBenchmarkForm form)
+        public static async Task Start(BenchmarkPerformanceType perfType, IBenchmarkForm form)
         {
             _benchForm = form;
             _hasFailedAlgorithms = false;
+            var tasks = new List<Task>();
             lock (_runningBenchmarkThreads)
             lock (_statusCheckAlgos)
             {
@@ -192,16 +194,18 @@ namespace NiceHashMiner.Benchmarking
                 foreach (var pair in BenchDevAlgoQueue)
                 {
                     var handler = new BenchmarkThread(pair.Item1, pair.Item2, perfType);
-                    _runningBenchmarkThreads.Add(handler);
+                    //_runningBenchmarkThreads.Add(handler);
                 }
                 // Don't start until list is populated
                 foreach (var thread in _runningBenchmarkThreads)
                 {
-                    thread.Start(CancellationToken.None);
+                    tasks.Add(thread.Start(CancellationToken.None));
                 }
             }
 
             InBenchmark = true;
+
+            await Task.WhenAll(tasks);
         }
 
         public static void Stop()
