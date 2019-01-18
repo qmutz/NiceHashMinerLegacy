@@ -281,7 +281,7 @@ namespace NiceHashMiner.Miners
 
                 if (BenchmarkSignalTimedout)
                 {
-                    throw new Exception("Benchmark timedout");
+                    throw new TimeoutException("Benchmark timedout");
                 }
                 if (BenchmarkException != null)
                 {
@@ -289,7 +289,7 @@ namespace NiceHashMiner.Miners
                 }
                 if (cancelToken.IsCancellationRequested)
                 {
-                    throw new Exception("Termined by user request");
+                    throw new OperationCanceledException(cancelToken);
                 }
                 if (BenchmarkSignalHanged || !exited)
                 {

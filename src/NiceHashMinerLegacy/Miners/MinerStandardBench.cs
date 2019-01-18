@@ -44,7 +44,7 @@ namespace NiceHashMiner.Miners
                 var exited = BenchmarkHandle.WaitForExit((BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds) + 20) * 1000);
                 if (BenchmarkSignalTimedout && !TimeoutStandard)
                 {
-                    throw new Exception("Benchmark timedout");
+                    throw new TimeoutException("Benchmark timedout");
                 }
 
                 if (BenchmarkException != null)
@@ -54,7 +54,7 @@ namespace NiceHashMiner.Miners
 
                 if (cancelToken.IsCancellationRequested)
                 {
-                    throw new Exception("Terminated by user request");
+                    throw new OperationCanceledException(cancelToken);
                 }
 
                 if (BenchmarkSignalHanged || !exited)
