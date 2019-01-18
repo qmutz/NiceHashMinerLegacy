@@ -23,7 +23,7 @@ namespace NiceHashMiner.Benchmarking
 
         private static readonly Dictionary<ComputeDevice, Algorithm> _statusCheckAlgos;
 
-        private static readonly List<BenchmarkHandler> _runningBenchmarkThreads;
+        private static readonly List<BenchmarkThread> _runningBenchmarkThreads;
 
         private static IBenchmarkForm _benchForm;
 
@@ -76,7 +76,7 @@ namespace NiceHashMiner.Benchmarking
             _benchDevAlgoStatus = new Dictionary<string, BenchmarkSettingsStatus>();
             _benchDevAlgoQueue = new List<Tuple<ComputeDevice, Queue<Algorithm>>>();
             _statusCheckAlgos = new Dictionary<ComputeDevice, Algorithm>();
-            _runningBenchmarkThreads = new List<BenchmarkHandler>();
+            _runningBenchmarkThreads = new List<BenchmarkThread>();
         }
 
         #region Public get helpers
@@ -190,7 +190,7 @@ namespace NiceHashMiner.Benchmarking
 
                 foreach (var pair in BenchDevAlgoQueue)
                 {
-                    var handler = new BenchmarkHandler(pair.Item1, pair.Item2, perfType);
+                    var handler = new BenchmarkThread(pair.Item1, pair.Item2, perfType);
                     _runningBenchmarkThreads.Add(handler);
                 }
                 // Don't start until list is populated

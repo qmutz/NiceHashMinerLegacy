@@ -12,7 +12,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Benchmarking
 {
-    public class BenchmarkHandler : IBenchmarkComunicator, IDisposable
+    public class BenchmarkThread : IBenchmarkComunicator, IDisposable
     {
         private readonly Queue<Algorithm> _benchmarkAlgorithmQueue;
         private readonly int _benchmarkAlgorithmsCount;
@@ -33,7 +33,7 @@ namespace NiceHashMiner.Benchmarking
             AlgorithmType.CryptoNight
         };
 
-        public BenchmarkHandler(ComputeDevice device, Queue<Algorithm> algorithms, BenchmarkPerformanceType performance)
+        public BenchmarkThread(ComputeDevice device, Queue<Algorithm> algorithms, BenchmarkPerformanceType performance)
         {
             Device = device;
             _benchmarkAlgorithmQueue = algorithms;
