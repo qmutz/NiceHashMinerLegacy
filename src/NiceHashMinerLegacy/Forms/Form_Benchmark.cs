@@ -199,6 +199,7 @@ namespace NiceHashMiner.Forms
                 StopButonClick();
                 BenchmarkStoppedGuiSettings();
             }
+            // TODO this won't set button text until after benchmark complete
             else if (await StartButonClick())
             {
                 StartStopBtn.Text = Translations.Tr("St&op benchmark");
@@ -241,6 +242,7 @@ namespace NiceHashMiner.Forms
             //// copy benchmarked
             //CopyBenchmarks();
 
+            // TODO use cancellation token
             BenchmarkManager.Stop();
 
             if (_exitWhenFinished) Close();
@@ -317,6 +319,7 @@ namespace NiceHashMiner.Forms
 
                     if (result == DialogResult.Retry)
                     {
+                        // TODO this won't do anything as it's not awaited
                         StartButonClick();
                         return;
                     }

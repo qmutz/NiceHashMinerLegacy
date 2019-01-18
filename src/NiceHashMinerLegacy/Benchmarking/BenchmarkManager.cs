@@ -25,7 +25,7 @@ namespace NiceHashMiner.Benchmarking
 
         private static readonly Dictionary<ComputeDevice, Algorithm> _statusCheckAlgos;
 
-        private static readonly List<BenchmarkThread> _runningBenchmarkThreads;
+        private static readonly List<BenchmarkTask> _runningBenchmarkThreads;
 
         private static IBenchmarkForm _benchForm;
 
@@ -78,7 +78,7 @@ namespace NiceHashMiner.Benchmarking
             _benchDevAlgoStatus = new Dictionary<string, BenchmarkSettingsStatus>();
             _benchDevAlgoQueue = new List<Tuple<ComputeDevice, Queue<Algorithm>>>();
             _statusCheckAlgos = new Dictionary<ComputeDevice, Algorithm>();
-            _runningBenchmarkThreads = new List<BenchmarkThread>();
+            _runningBenchmarkThreads = new List<BenchmarkTask>();
         }
 
         #region Public get helpers
@@ -193,14 +193,16 @@ namespace NiceHashMiner.Benchmarking
 
                 foreach (var pair in BenchDevAlgoQueue)
                 {
-                    var handler = new BenchmarkThread(pair.Item1, pair.Item2, perfType);
+                    var handler = new BenchmarkTask(pair.Item1, pair.Item2, perfType);
                     //_runningBenchmarkThreads.Add(handler);
+                    // TODO add cancel token from source
+                    tasks.Add(handler.Start(CancellationToken.None));
                 }
                 // Don't start until list is populated
-                foreach (var thread in _runningBenchmarkThreads)
-                {
-                    tasks.Add(thread.Start(CancellationToken.None));
-                }
+                //foreach (var thread in _runningBenchmarkThreads)
+                //{
+                //    tasks.Add(thread.Start(CancellationToken.None));
+                //}
             }
 
             InBenchmark = true;

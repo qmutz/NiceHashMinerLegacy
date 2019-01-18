@@ -119,7 +119,7 @@
     <Compile Include="Benchmarking\BenchDeviationInfo.cs" />
     <Compile Include="Benchmarking\BenchHelpers\CpuBenchHelper.cs" />
     <Compile Include="Benchmarking\BenchHelpers\PowerHelper.cs" />
-    <Compile Include="Benchmarking\BenchmarkThread.cs" />
+    <Compile Include="Benchmarking\BenchmarkTask.cs" />
     <Compile Include="Benchmarking\BenchHelpers\ClaymoreZcashBenchHelper.cs" />
     <Compile Include="Benchmarking\BenchmarkManager.cs" />
     <Compile Include="Devices\Algorithms\DefaultAlgorithms.cs" />
