@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NiceHashMiner.Interfaces.DataVisualizer
 {
-    interface IBalanceBTCDisplayer
+    interface IBalanceBTCDisplayer : IDataVisualizer
     {
         void DisplayBTCBalance(double btcBalance);
     }

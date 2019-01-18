@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NiceHashMiner.Interfaces.DataVisualizer
 {
-    interface IGroupDisplayer
+    interface IGroupDisplayer : IDataVisualizer
     {
         void DisplayGroup(string group);
     }

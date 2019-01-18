@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NiceHashMiner.Interfaces.DataVisualizer
 {
-    interface IBalanceFiatDisplayer
+    interface IBalanceFiatDisplayer : IDataVisualizer
     {
         void DisplayFiatBalance(double fiatBalance, string fiatCurrencySymbol);
     }
