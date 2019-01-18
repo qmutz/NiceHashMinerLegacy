@@ -15,17 +15,18 @@ namespace NiceHashMiner.Miners
     {
         private Stopwatch _benchmarkTimeOutStopWatch;
         protected readonly List<string> BenchLines = new List<string>();
+        private CancellationToken _cancelToken;
 
         protected MinerStandardBench(string name) :
             base(name)
         { }
 
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine)
+        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
         {
-            BenchmarkSignalQuit = false;
             BenchmarkSignalHanged = false;
             BenchmarkSignalFinnished = false;
             BenchmarkException = null;
+            _cancelToken = cancelToken;
             
             Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS);
 
@@ -51,9 +52,9 @@ namespace NiceHashMiner.Miners
                     throw BenchmarkException;
                 }
 
-                if (BenchmarkSignalQuit)
+                if (cancelToken.IsCancellationRequested)
                 {
-                    throw new Exception("Termined by user request");
+                    throw new Exception("Terminated by user request");
                 }
 
                 if (BenchmarkSignalHanged || !exited)
@@ -99,7 +100,7 @@ namespace NiceHashMiner.Miners
             }
 
             // terminate process situations
-            if (BenchmarkSignalQuit
+            if (_cancelToken.IsCancellationRequested
                 || BenchmarkSignalFinnished
                 || BenchmarkSignalHanged
                 || BenchmarkSignalTimedout
@@ -109,12 +110,12 @@ namespace NiceHashMiner.Miners
             }
         }
 
-        public override (bool, string) BenchmarkStart(int time)
+        public override (bool, string) BenchmarkStart(int time, CancellationToken cancelToken)
         {
             _benchmarkTimeOutStopWatch = null;
             BenchLines.Clear();
 
-            return base.BenchmarkStart(time);
+            return base.BenchmarkStart(time, cancelToken);
         }
 
         protected void CheckOutdata(string outdata)

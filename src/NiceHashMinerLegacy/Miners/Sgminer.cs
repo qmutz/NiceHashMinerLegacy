@@ -242,9 +242,8 @@ namespace NiceHashMiner.Miners
             return base.GetFinalBenchmarkString();
         }
 
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine)
+        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
         {
-            BenchmarkSignalQuit = false;
             BenchmarkSignalHanged = false;
             BenchmarkSignalFinnished = false;
             BenchmarkException = null;
@@ -288,7 +287,7 @@ namespace NiceHashMiner.Miners
                 {
                     throw BenchmarkException;
                 }
-                if (BenchmarkSignalQuit)
+                if (cancelToken.IsCancellationRequested)
                 {
                     throw new Exception("Termined by user request");
                 }

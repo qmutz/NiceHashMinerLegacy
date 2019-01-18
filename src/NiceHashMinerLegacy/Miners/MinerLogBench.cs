@@ -30,11 +30,10 @@ namespace NiceHashMiner.Miners
         /// Thread routine for miners that cannot be scheduled to stop and need speed data read from command line
         /// </summary>
         /// <param name="commandLine"></param>
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine)
+        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
         {
             CleanOldLogs();
-
-            BenchmarkSignalQuit = false;
+            
             BenchmarkSignalHanged = false;
             BenchmarkSignalFinnished = false;
             BenchmarkException = null;
@@ -65,11 +64,11 @@ namespace NiceHashMiner.Miners
                     //BenchmarkOutputErrorDataReceivedImpl(outdata);
                     // terminate process situations
                     if (benchmarkTimer.Elapsed.TotalSeconds >= (BenchmarkTimeWait + 2)
-                        || BenchmarkSignalQuit
                         || BenchmarkSignalFinnished
                         || BenchmarkSignalHanged
                         || BenchmarkSignalTimedout
-                        || BenchmarkException != null)
+                        || BenchmarkException != null
+                        || cancelToken.IsCancellationRequested)
                     {
                         var imageName = MinerExeName.Replace(".exe", "");
                         // maybe will have to KILL process
@@ -84,7 +83,7 @@ namespace NiceHashMiner.Miners
                             throw BenchmarkException;
                         }
 
-                        if (BenchmarkSignalQuit)
+                        if (cancelToken.IsCancellationRequested)
                         {
                             throw new Exception("Termined by user request");
                         }

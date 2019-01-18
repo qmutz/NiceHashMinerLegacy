@@ -6,6 +6,7 @@ using NiceHashMinerLegacy.Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NiceHashMiner.Stats;
 
 namespace NiceHashMiner.Benchmarking
@@ -196,7 +197,7 @@ namespace NiceHashMiner.Benchmarking
                 // Don't start until list is populated
                 foreach (var thread in _runningBenchmarkThreads)
                 {
-                    thread.Start();
+                    thread.Start(CancellationToken.None);
                 }
             }
 

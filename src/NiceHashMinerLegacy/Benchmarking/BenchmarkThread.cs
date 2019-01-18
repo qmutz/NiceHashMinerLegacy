@@ -27,6 +27,8 @@ namespace NiceHashMiner.Benchmarking
 
         private readonly PowerHelper _powerHelper;
 
+        private CancellationToken _cancelToken;
+
         // CPU sweet spots
         private readonly List<AlgorithmType> _cpuAlgos = new List<AlgorithmType>
         {
@@ -45,8 +47,9 @@ namespace NiceHashMiner.Benchmarking
 
         public ComputeDevice Device { get; }
 
-        public void Start()
+        public void Start(CancellationToken cancelToken)
         {
+            _cancelToken = cancelToken;
             var thread = new Thread(NextBenchmark);
             if (thread.Name == null)
                 thread.Name = $"dev_{Device.DeviceType}-{Device.ID}_benchmark";
@@ -132,17 +135,17 @@ namespace NiceHashMiner.Benchmarking
 
                 if (_cpuBenchmarkStatus != null)
                 {
-                    _currentMiner.BenchmarkStart(_cpuBenchmarkStatus.Time);
+                    _currentMiner.BenchmarkStart(_cpuBenchmarkStatus.Time, _cancelToken);
                 }
                 else if (_claymoreZcashStatus != null)
                 {
-                    _currentMiner.BenchmarkStart(_claymoreZcashStatus.Time);
+                    _currentMiner.BenchmarkStart(_claymoreZcashStatus.Time, _cancelToken);
                 }
                 else if (dualAlgo != null && dualAlgo.TuningEnabled)
                 {
                     var time = ConfigManager.GeneralConfig.BenchmarkTimeLimits
                         .GetBenchamrktime(_performanceType, Device.DeviceGroupType);
-                    _currentMiner.BenchmarkStart(time);
+                    _currentMiner.BenchmarkStart(time, _cancelToken);
                 }
             }
             else
@@ -211,7 +214,7 @@ namespace NiceHashMiner.Benchmarking
                 BenchmarkManager.AddToStatusCheck(Device, _currentAlgorithm);
 
                 _powerHelper.Start();
-                var (success, status) = _currentMiner.BenchmarkStart(time);
+                var (success, status) = _currentMiner.BenchmarkStart(time, _cancelToken);
                 OnBenchmarkComplete(success, status);
             }
             else
@@ -230,11 +233,6 @@ namespace NiceHashMiner.Benchmarking
         {            
             // clear benchmark pending status
             _currentAlgorithm?.ClearBenchmarkPending();
-            if (_currentMiner != null)
-            {
-                _currentMiner.BenchmarkSignalQuit = true;
-                _currentMiner.InvokeBenchmarkSignalQuit();
-            }
             _currentMiner?.Dispose();
             _powerHelper?.Dispose();
         }

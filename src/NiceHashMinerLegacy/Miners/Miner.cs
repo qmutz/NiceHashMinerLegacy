@@ -78,8 +78,6 @@ namespace NiceHashMiner
 
         #region Benchmarking fields/properties
 
-        public bool BenchmarkSignalQuit;
-
         protected bool BenchmarkSignalHanged;
         protected bool BenchmarkSignalTimedout;
         protected bool BenchmarkSignalFinnished;
@@ -383,7 +381,7 @@ namespace NiceHashMiner
         // The benchmark config and algorithm must guarantee that they are compatible with miner
         // we guarantee algorithm is supported
         // we will not have empty benchmark configs, all benchmark configs will have device list
-        public virtual (bool, string) BenchmarkStart(int time)
+        public virtual (bool, string) BenchmarkStart(int time, CancellationToken cancelToken)
         {
             BenchmarkTimeInSeconds = time;
             BenchmarkSignalFinnished = true;
@@ -405,7 +403,7 @@ namespace NiceHashMiner
 
             var commandLine = BenchmarkCreateCommandLine(BenchmarkAlgorithm, time);
 
-            return BenchmarkThreadRoutine(commandLine);
+            return BenchmarkThreadRoutine(commandLine, cancelToken);
         }
 
         protected virtual Process BenchmarkStartProcess(string commandLine)
@@ -576,7 +574,7 @@ namespace NiceHashMiner
             return (isOK, isOK ? "" : msg);
         }
 
-        protected abstract (bool, string) BenchmarkThreadRoutine(string commandLine);
+        protected abstract (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken);
 
         protected string GetServiceUrl(AlgorithmType algo)
         {

@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NiceHashMiner.Algorithms;
 using NiceHashMinerLegacy.Common.Enums;
@@ -211,7 +212,7 @@ namespace NiceHashMiner.Miners
 
         // benchmark stuff
 
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine)
+        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
         {
             if (BenchmarkAlgorithm is DualAlgorithm dualBenchAlgo && dualBenchAlgo.TuningEnabled)
             {
@@ -223,7 +224,7 @@ namespace NiceHashMiner.Miners
                     $"Starting benchmark for intensity {dualBenchAlgo.CurrentIntensity} out of {dualBenchAlgo.TuningEnd}");
             }
 
-            return base.BenchmarkThreadRoutine(commandLine);
+            return base.BenchmarkThreadRoutine(commandLine, cancelToken);
         }
     }
 }
