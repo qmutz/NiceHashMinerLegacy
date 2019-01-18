@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NiceHashMiner.Devices;
+using System;
 using System.Timers;
-using NiceHashMiner.Algorithms;
-using NiceHashMiner.Devices;
 
 namespace NiceHashMiner.Benchmarking.BenchHelpers
 {
-    public class PowerHelper
+    public class PowerHelper : IDisposable
     {
         private Timer _timer;
 
@@ -94,6 +89,11 @@ namespace NiceHashMiner.Benchmarking.BenchHelpers
             _started = false;
 
             return power;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

@@ -999,7 +999,11 @@ namespace NiceHashMiner
 
         protected virtual void Dispose(bool disposing)
         {
-            Stop();
+            if (IsRunning)
+            {
+                Stop(MinerStopType.FORCE_END);
+            }
+
             InvokeBenchmarkSignalQuit();
             // free the port
             MinersApiPortsManager.RemovePort(ApiPort);

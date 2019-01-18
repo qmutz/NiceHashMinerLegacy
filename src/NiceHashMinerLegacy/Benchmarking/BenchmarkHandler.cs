@@ -1,4 +1,5 @@
-﻿using NiceHashMiner.Algorithms;
+﻿using System;
+using NiceHashMiner.Algorithms;
 using NiceHashMiner.Benchmarking.BenchHelpers;
 using NiceHashMiner.Configs;
 using NiceHashMiner.Devices;
@@ -11,7 +12,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Benchmarking
 {
-    public class BenchmarkHandler : IBenchmarkComunicator
+    public class BenchmarkHandler : IBenchmarkComunicator, IDisposable
     {
         private readonly Queue<Algorithm> _benchmarkAlgorithmQueue;
         private readonly int _benchmarkAlgorithmsCount;
@@ -224,8 +225,8 @@ namespace NiceHashMiner.Benchmarking
             BenchmarkManager.EndBenchmarkForDevice(Device, _benchmarkFailedAlgo.Count > 0);
         }
 
-        public void InvokeQuit()
-        {
+        public void Dispose()
+        {            
             // clear benchmark pending status
             _currentAlgorithm?.ClearBenchmarkPending();
             if (_currentMiner != null)
@@ -233,8 +234,8 @@ namespace NiceHashMiner.Benchmarking
                 _currentMiner.BenchmarkSignalQuit = true;
                 _currentMiner.InvokeBenchmarkSignalQuit();
             }
-
-            _currentMiner = null;
+            _currentMiner?.Dispose();
+            _powerHelper?.Dispose();
         }
     }
 }
