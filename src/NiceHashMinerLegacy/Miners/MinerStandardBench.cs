@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using NiceHashMiner.Interfaces;
 
 namespace NiceHashMiner.Miners
@@ -24,14 +25,14 @@ namespace NiceHashMiner.Miners
             base(name)
         { }
 
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
+        protected override async Task<(bool, string)> BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
         {
             BenchmarkSignalHanged = false;
             BenchmarkSignalFinnished = false;
             BenchmarkException = null;
             _cancelToken = cancelToken;
             
-            Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS * BenchWaitFactor);
+            await Task.Delay(ConfigManager.GeneralConfig.MinerRestartDelayMS * BenchWaitFactor, cancelToken);
 
             try
             {
@@ -44,12 +45,16 @@ namespace NiceHashMiner.Miners
                 //var exitSucces = BenchmarkHandle.WaitForExit(timeoutTime * 1000);
                 // don't use wait for it breaks everything
                 BenchmarkProcessStatus = BenchmarkProcessStatus.Running;
-                var exited = BenchmarkHandle.WaitForExit((BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds) + 20) * 1000);
+                
+                var exited = await Task.Run(() => 
+                        BenchmarkHandle.WaitForExit((BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds) + 20) * 1000),
+                    cancelToken
+                    );
 
                 // No duplicate code in Sgminer.cs
-                if (!exited)
+                if (!exited && OnNotExitAction != null)
                 {
-                    OnNotExitAction?.Invoke();
+                    await Task.Run(OnNotExitAction);
                 }
 
                 if (BenchmarkSignalTimedout && !TimeoutStandard)
@@ -82,7 +87,7 @@ namespace NiceHashMiner.Miners
                 BenchmarkThreadRoutineCatch(ex);
             }
 
-            return BenchmarkThreadRoutineFinish(_benchLines);
+            return await BenchmarkThreadRoutineFinish(_benchLines);
         }
 
         protected abstract bool BenchmarkParseLine(string outdata);
@@ -120,7 +125,7 @@ namespace NiceHashMiner.Miners
             }
         }
 
-        public override (bool, string) BenchmarkStart(int time, CancellationToken cancelToken)
+        public override Task<(bool, string)> BenchmarkStart(int time, CancellationToken cancelToken)
         {
             _benchmarkTimeOutStopWatch = null;
             _benchLines.Clear();

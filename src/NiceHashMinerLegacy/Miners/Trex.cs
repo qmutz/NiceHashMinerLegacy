@@ -87,7 +87,7 @@ namespace NiceHashMiner.Miners
             return false;
         }
 
-        protected override (bool, string) BenchmarkThreadRoutineFinish(IEnumerable<string> lines)
+        protected override Task<(bool, string)> BenchmarkThreadRoutineFinish(IEnumerable<string> lines)
         {
             if (_benchIters != 0 && BenchmarkAlgorithm != null)
             {

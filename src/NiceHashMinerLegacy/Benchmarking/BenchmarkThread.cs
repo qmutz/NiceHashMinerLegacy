@@ -8,11 +8,12 @@ using NiceHashMiner.Miners;
 using NiceHashMiner.Miners.Grouping;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Benchmarking
 {
-    public class BenchmarkThread : IBenchmarkComunicator, IDisposable
+    public class BenchmarkThread : IDisposable
     {
         private readonly Queue<Algorithm> _benchmarkAlgorithmQueue;
         private readonly int _benchmarkAlgorithmsCount;
@@ -26,8 +27,6 @@ namespace NiceHashMiner.Benchmarking
         private CpuBenchHelper _cpuBenchmarkStatus;
 
         private readonly PowerHelper _powerHelper;
-
-        private CancellationToken _cancelToken;
 
         // CPU sweet spots
         private readonly List<AlgorithmType> _cpuAlgos = new List<AlgorithmType>
@@ -47,16 +46,16 @@ namespace NiceHashMiner.Benchmarking
 
         public ComputeDevice Device { get; }
 
-        public void Start(CancellationToken cancelToken)
+        public Task Start(CancellationToken cancelToken)
         {
-            _cancelToken = cancelToken;
-            var thread = new Thread(NextBenchmark);
-            if (thread.Name == null)
-                thread.Name = $"dev_{Device.DeviceType}-{Device.ID}_benchmark";
-            thread.Start();
+            //var thread = new Thread(NextBenchmark);
+            //if (thread.Name == null)
+            //    thread.Name = $"dev_{Device.DeviceType}-{Device.ID}_benchmark";
+            //thread.Start();
+            return NextBenchmark(cancelToken);
         }
 
-        public void OnBenchmarkComplete(bool success, string status)
+        private async Task OnBenchmarkComplete(bool success, string status, CancellationToken cancelToken)
         {
             if (!BenchmarkManager.InBenchmark) return;
 
@@ -132,29 +131,35 @@ namespace NiceHashMiner.Benchmarking
             if (rebenchSame)
             {
                 _powerHelper.Start();
+                var time = -1;
 
                 if (_cpuBenchmarkStatus != null)
                 {
-                    _currentMiner.BenchmarkStart(_cpuBenchmarkStatus.Time, _cancelToken);
+                    time = _cpuBenchmarkStatus.Time;
                 }
                 else if (_claymoreZcashStatus != null)
                 {
-                    _currentMiner.BenchmarkStart(_claymoreZcashStatus.Time, _cancelToken);
+                    time = _claymoreZcashStatus.Time;
                 }
                 else if (dualAlgo != null && dualAlgo.TuningEnabled)
                 {
-                    var time = ConfigManager.GeneralConfig.BenchmarkTimeLimits
+                    time = ConfigManager.GeneralConfig.BenchmarkTimeLimits
                         .GetBenchamrktime(_performanceType, Device.DeviceGroupType);
-                    _currentMiner.BenchmarkStart(time, _cancelToken);
+                }
+
+                if (time > 0)
+                {
+                    (success, status) = await _currentMiner.BenchmarkStart(time, cancelToken);
+                    await OnBenchmarkComplete(success, status, cancelToken);
                 }
             }
             else
             {
-                NextBenchmark();
+                await NextBenchmark(cancelToken);
             }
         }
 
-        private void NextBenchmark()
+        private async Task NextBenchmark(CancellationToken cancelToken)
         {
             ++_benchmarkCurrentIndex;
             if (_benchmarkCurrentIndex > 0) BenchmarkManager.StepUpBenchmarkStepProgress();
@@ -214,12 +219,12 @@ namespace NiceHashMiner.Benchmarking
                 BenchmarkManager.AddToStatusCheck(Device, _currentAlgorithm);
 
                 _powerHelper.Start();
-                var (success, status) = _currentMiner.BenchmarkStart(time, _cancelToken);
-                OnBenchmarkComplete(success, status);
+                var (success, status) = await _currentMiner.BenchmarkStart(time, cancelToken);
+                await OnBenchmarkComplete(success, status, cancelToken);
             }
             else
             {
-                NextBenchmark();
+                await NextBenchmark(cancelToken);
             }
         }
 

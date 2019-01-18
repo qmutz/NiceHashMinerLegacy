@@ -212,7 +212,7 @@ namespace NiceHashMiner.Miners
 
         // benchmark stuff
 
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
+        protected override Task<(bool, string)> BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
         {
             if (BenchmarkAlgorithm is DualAlgorithm dualBenchAlgo && dualBenchAlgo.TuningEnabled)
             {

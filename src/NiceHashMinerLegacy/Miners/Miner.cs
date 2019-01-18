@@ -381,7 +381,7 @@ namespace NiceHashMiner
         // The benchmark config and algorithm must guarantee that they are compatible with miner
         // we guarantee algorithm is supported
         // we will not have empty benchmark configs, all benchmark configs will have device list
-        public virtual (bool, string) BenchmarkStart(int time, CancellationToken cancelToken)
+        public virtual Task<(bool, string)> BenchmarkStart(int time, CancellationToken cancelToken)
         {
             BenchmarkTimeInSeconds = time;
             BenchmarkSignalFinnished = true;
@@ -528,7 +528,7 @@ namespace NiceHashMiner
                 : Translations.Tr("Terminated");
         }
 
-        protected virtual (bool, string) BenchmarkThreadRoutineFinish(IEnumerable<string> benchLines)
+        protected virtual async Task<(bool, string)> BenchmarkThreadRoutineFinish(IEnumerable<string> benchLines)
         {
             var status = BenchmarkProcessStatus.Finished;
 
@@ -543,7 +543,7 @@ namespace NiceHashMiner
                 {
                     foreach (var line in benchLines)
                     {
-                        sw.WriteLine(line);
+                        await sw.WriteLineAsync(line);
                     }
                 }
             }
@@ -574,7 +574,7 @@ namespace NiceHashMiner
             return (isOK, isOK ? "" : msg);
         }
 
-        protected abstract (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken);
+        protected abstract Task<(bool, string)> BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken);
 
         protected string GetServiceUrl(AlgorithmType algo)
         {

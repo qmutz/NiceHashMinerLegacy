@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using NiceHashMinerLegacy.Extensions;
 
 namespace NiceHashMiner.Miners
@@ -30,7 +31,7 @@ namespace NiceHashMiner.Miners
         /// Thread routine for miners that cannot be scheduled to stop and need speed data read from command line
         /// </summary>
         /// <param name="commandLine"></param>
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
+        protected override async Task<(bool, string)> BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
         {
             CleanOldLogs();
             
@@ -40,7 +41,7 @@ namespace NiceHashMiner.Miners
 
             string[] lines;
 
-            Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS);
+            await Task.Delay(ConfigManager.GeneralConfig.MinerRestartDelayMS, cancelToken);
 
             try
             {
@@ -98,7 +99,7 @@ namespace NiceHashMiner.Miners
                     }
 
                     // wait a second reduce CPU load
-                    Thread.Sleep(1000);
+                    await Task.Delay(1000, cancelToken);
                 }
             }
             catch (Exception ex)
@@ -131,7 +132,7 @@ namespace NiceHashMiner.Miners
                 }
             }
 
-            return BenchmarkThreadRoutineFinish(lines);
+            return await BenchmarkThreadRoutineFinish(lines);
         }
 
         protected void CleanOldLogs()
