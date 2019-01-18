@@ -209,7 +209,7 @@ namespace NiceHashMiner.Benchmarking
 
             lock (_runningBenchmarkThreads)
             {
-                foreach (var handler in _runningBenchmarkThreads) handler.InvokeQuit();
+                foreach (var handler in _runningBenchmarkThreads) handler.Dispose();
             }
         }
 

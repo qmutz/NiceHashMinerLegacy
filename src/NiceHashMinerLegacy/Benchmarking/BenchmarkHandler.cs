@@ -132,17 +132,17 @@ namespace NiceHashMiner.Benchmarking
 
                 if (_cpuBenchmarkStatus != null)
                 {
-                    _currentMiner.BenchmarkStart(_cpuBenchmarkStatus.Time, this);
+                    _currentMiner.BenchmarkStart(_cpuBenchmarkStatus.Time);
                 }
                 else if (_claymoreZcashStatus != null)
                 {
-                    _currentMiner.BenchmarkStart(_claymoreZcashStatus.Time, this);
+                    _currentMiner.BenchmarkStart(_claymoreZcashStatus.Time);
                 }
                 else if (dualAlgo != null && dualAlgo.TuningEnabled)
                 {
                     var time = ConfigManager.GeneralConfig.BenchmarkTimeLimits
                         .GetBenchamrktime(_performanceType, Device.DeviceGroupType);
-                    _currentMiner.BenchmarkStart(time, this);
+                    _currentMiner.BenchmarkStart(time);
                 }
             }
             else
@@ -210,8 +210,9 @@ namespace NiceHashMiner.Benchmarking
 
                 BenchmarkManager.AddToStatusCheck(Device, _currentAlgorithm);
 
-                _currentMiner.BenchmarkStart(time, this);
                 _powerHelper.Start();
+                var (success, status) = _currentMiner.BenchmarkStart(time);
+                OnBenchmarkComplete(success, status);
             }
             else
             {

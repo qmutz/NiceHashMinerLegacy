@@ -20,7 +20,7 @@ namespace NiceHashMiner.Miners
             base(name)
         { }
 
-        protected override void BenchmarkThreadRoutine(object commandLine)
+        protected override (bool, string) BenchmarkThreadRoutine(string commandLine)
         {
             BenchmarkSignalQuit = false;
             BenchmarkSignalHanged = false;
@@ -32,7 +32,7 @@ namespace NiceHashMiner.Miners
             try
             {
                 Helpers.ConsolePrint("BENCHMARK", "Benchmark starts");
-                BenchmarkHandle = BenchmarkStartProcess((string)commandLine);
+                BenchmarkHandle = BenchmarkStartProcess(commandLine);
 
                 BenchmarkThreadRoutineStartSettup();
                 // wait a little longer then the benchmark routine if exit false throw
@@ -70,10 +70,8 @@ namespace NiceHashMiner.Miners
             {
                 BenchmarkThreadRoutineCatch(ex);
             }
-            finally
-            {
-                BenchmarkThreadRoutineFinish(BenchLines);
-            }
+
+            return BenchmarkThreadRoutineFinish(BenchLines);
         }
 
         protected abstract bool BenchmarkParseLine(string outdata);
@@ -111,12 +109,12 @@ namespace NiceHashMiner.Miners
             }
         }
 
-        public override void BenchmarkStart(int time, IBenchmarkComunicator benchmarkComunicator)
+        public override (bool, string) BenchmarkStart(int time)
         {
             _benchmarkTimeOutStopWatch = null;
             BenchLines.Clear();
 
-            base.BenchmarkStart(time, benchmarkComunicator);
+            return base.BenchmarkStart(time);
         }
 
         protected void CheckOutdata(string outdata)

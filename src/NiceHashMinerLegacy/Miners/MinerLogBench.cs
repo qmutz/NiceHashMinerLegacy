@@ -30,7 +30,7 @@ namespace NiceHashMiner.Miners
         /// Thread routine for miners that cannot be scheduled to stop and need speed data read from command line
         /// </summary>
         /// <param name="commandLine"></param>
-        protected override void BenchmarkThreadRoutine(object commandLine)
+        protected override (bool, string) BenchmarkThreadRoutine(string commandLine)
         {
             CleanOldLogs();
 
@@ -39,13 +39,15 @@ namespace NiceHashMiner.Miners
             BenchmarkSignalFinnished = false;
             BenchmarkException = null;
 
+            string[] lines;
+
             Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS);
 
             try
             {
                 Helpers.ConsolePrint("BENCHMARK", "Benchmark starts");
                 Helpers.ConsolePrint(MinerTag(), "Benchmark should end in : " + BenchmarkTimeWait + " seconds");
-                BenchmarkHandle = BenchmarkStartProcess((string)commandLine);
+                BenchmarkHandle = BenchmarkStartProcess(commandLine);
                 BenchmarkHandle.WaitForExit(BenchmarkTimeWait + 2);
                 var benchmarkTimer = new Stopwatch();
                 benchmarkTimer.Reset();
@@ -119,7 +121,6 @@ namespace NiceHashMiner.Miners
                 BenchmarkHandle?.WaitForExit(10000);
 
                 // read file log
-                string[] lines;
                 if (File.Exists(WorkingDirectory + latestLogFile))
                 {
                     lines = File.ReadAllLines(WorkingDirectory + latestLogFile);
@@ -129,9 +130,9 @@ namespace NiceHashMiner.Miners
                 {
                     lines = new string[0];
                 }
-
-                BenchmarkThreadRoutineFinish(lines);
             }
+
+            return BenchmarkThreadRoutineFinish(lines);
         }
 
         protected void CleanOldLogs()

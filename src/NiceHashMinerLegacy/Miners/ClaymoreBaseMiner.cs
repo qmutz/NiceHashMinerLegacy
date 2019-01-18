@@ -211,7 +211,7 @@ namespace NiceHashMiner.Miners
 
         // benchmark stuff
 
-        protected override void BenchmarkThreadRoutine(object commandLine)
+        protected override (bool, string) BenchmarkThreadRoutine(string commandLine)
         {
             if (BenchmarkAlgorithm is DualAlgorithm dualBenchAlgo && dualBenchAlgo.TuningEnabled)
             {
@@ -223,7 +223,7 @@ namespace NiceHashMiner.Miners
                     $"Starting benchmark for intensity {dualBenchAlgo.CurrentIntensity} out of {dualBenchAlgo.TuningEnd}");
             }
 
-            base.BenchmarkThreadRoutine(commandLine);
+            return base.BenchmarkThreadRoutine(commandLine);
         }
     }
 }

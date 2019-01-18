@@ -87,8 +87,7 @@ namespace NiceHashMiner
         protected Exception BenchmarkException;
         protected int BenchmarkTimeInSeconds;
         protected bool TimeoutStandard;
-
-        private IBenchmarkComunicator _benchmarkComunicator;
+        
         private bool _benchmarkCompleteCalled;
         private string _benchmarkLogPath = "";
 
@@ -384,9 +383,8 @@ namespace NiceHashMiner
         // The benchmark config and algorithm must guarantee that they are compatible with miner
         // we guarantee algorithm is supported
         // we will not have empty benchmark configs, all benchmark configs will have device list
-        public virtual void BenchmarkStart(int time, IBenchmarkComunicator benchmarkComunicator)
+        public virtual (bool, string) BenchmarkStart(int time)
         {
-            _benchmarkComunicator = benchmarkComunicator;
             BenchmarkTimeInSeconds = time;
             BenchmarkSignalFinnished = true;
             // check and kill 
@@ -407,8 +405,7 @@ namespace NiceHashMiner
 
             var commandLine = BenchmarkCreateCommandLine(BenchmarkAlgorithm, time);
 
-            var benchmarkThread = new Thread(BenchmarkThreadRoutine);
-            benchmarkThread.Start(commandLine);
+            return BenchmarkThreadRoutine(commandLine);
         }
 
         protected virtual Process BenchmarkStartProcess(string commandLine)
@@ -522,11 +519,8 @@ namespace NiceHashMiner
             BenchmarkAlgorithm.BenchmarkSpeed = 0;
 
             Helpers.ConsolePrint(MinerTag(), "Benchmark Exception: " + ex.Message);
-            if (_benchmarkComunicator != null && !_benchmarkCompleteCalled)
-            {
-                _benchmarkCompleteCalled = true;
-                _benchmarkComunicator.OnBenchmarkComplete(false, GetFinalBenchmarkString());
-            }
+
+            BenchmarkException = ex;
         }
 
         protected virtual string GetFinalBenchmarkString()
@@ -536,7 +530,7 @@ namespace NiceHashMiner
                 : Translations.Tr("Terminated");
         }
 
-        protected virtual void BenchmarkThreadRoutineFinish(IEnumerable<string> benchLines)
+        protected virtual (bool, string) BenchmarkThreadRoutineFinish(IEnumerable<string> benchLines)
         {
             var status = BenchmarkProcessStatus.Finished;
 
@@ -576,16 +570,13 @@ namespace NiceHashMiner
             }
 
             Helpers.ConsolePrint("BENCHMARK", "Benchmark ends");
-            if (_benchmarkComunicator != null && !_benchmarkCompleteCalled)
-            {
-                _benchmarkCompleteCalled = true;
-                var isOK = BenchmarkProcessStatus.Success == status;
-                var msg = GetFinalBenchmarkString();
-                _benchmarkComunicator.OnBenchmarkComplete(isOK, isOK ? "" : msg);
-            }
+
+            var isOK = BenchmarkProcessStatus.Success == status && BenchmarkException == null;
+            var msg = GetFinalBenchmarkString();
+            return (isOK, isOK ? "" : msg);
         }
 
-        protected abstract void BenchmarkThreadRoutine(object commandLine);
+        protected abstract (bool, string) BenchmarkThreadRoutine(string commandLine);
 
         protected string GetServiceUrl(AlgorithmType algo)
         {
