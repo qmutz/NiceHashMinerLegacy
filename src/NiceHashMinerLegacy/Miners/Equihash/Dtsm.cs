@@ -66,14 +66,6 @@ namespace NiceHashMiner.Miners
                    $" --logfile={GetLogFileName()}";
         }
 
-        protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)
-        { }
-
-        protected override bool BenchmarkParseLine(string outdata)
-        {
-            return false;
-        }
-
         #endregion
 
         #region API

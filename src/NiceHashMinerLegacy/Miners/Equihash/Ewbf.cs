@@ -117,18 +117,6 @@ namespace NiceHashMiner.Miners.Equihash
             return ret;
         }
 
-        // stub benchmarks read from file
-        protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)
-        {
-            CheckOutdata(outdata);
-        }
-
-        protected override bool BenchmarkParseLine(string outdata)
-        {
-            Helpers.ConsolePrint("BENCHMARK", outdata);
-            return false;
-        }
-
         public override async Task<ApiData> GetSummaryAsync()
         {
             CurrentMinerReadStatus = MinerApiReadStatus.NONE;

@@ -87,7 +87,7 @@ namespace NiceHashMiner.Miners
             return false;
         }
 
-        protected override void BenchmarkThreadRoutineFinish()
+        protected override void BenchmarkThreadRoutineFinish(IEnumerable<string> lines)
         {
             if (_benchIters != 0 && BenchmarkAlgorithm != null)
             {
@@ -99,7 +99,7 @@ namespace NiceHashMiner.Miners
                 }
             }
 
-            base.BenchmarkThreadRoutineFinish();
+            base.BenchmarkThreadRoutineFinish(lines);
         }
 
         protected override int GetMaxCooldownTimeInMilliseconds()

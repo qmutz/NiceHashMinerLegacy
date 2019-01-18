@@ -142,6 +142,47 @@ namespace NiceHashMiner.Miners
             return false;
         }
 
+        // TODO this probably isn't needed
+        private static double BenchmarkParseLine_cpu_ccminer_extra(string outdata)
+        {
+            // parse line
+            if (outdata.Contains("Benchmark: ") && outdata.Contains("/s"))
+            {
+                var i = outdata.IndexOf("Benchmark:");
+                var k = outdata.IndexOf("/s");
+                var hashspeed = outdata.Substring(i + 11, k - i - 9);
+                Helpers.ConsolePrint("BENCHMARK", "Final Speed: " + hashspeed);
+
+                // save speed
+                var b = hashspeed.IndexOf(" ");
+                if (b < 0)
+                {
+                    for (var j = hashspeed.Length - 1; j >= 0; --j)
+                    {
+                        if (!int.TryParse(hashspeed[j].ToString(), out var _)) continue;
+                        b = j;
+                        break;
+                    }
+                }
+
+                if (b >= 0)
+                {
+                    var speedStr = hashspeed.Substring(0, b);
+                    var spd = Helpers.ParseDouble(speedStr);
+                    if (hashspeed.Contains("kH/s"))
+                        spd *= 1000;
+                    else if (hashspeed.Contains("MH/s"))
+                        spd *= 1000000;
+                    else if (hashspeed.Contains("GH/s"))
+                        spd *= 1000000000;
+
+                    return spd;
+                }
+            }
+
+            return 0.0d;
+        }
+
         protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)
         {
             CheckOutdata(outdata);

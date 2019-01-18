@@ -225,17 +225,5 @@ namespace NiceHashMiner.Miners
 
             base.BenchmarkThreadRoutine(commandLine);
         }
-
-        // stub benchmarks read from file
-        protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)
-        {
-            CheckOutdata(outdata);
-        }
-
-        protected override bool BenchmarkParseLine(string outdata)
-        {
-            Helpers.ConsolePrint("BENCHMARK", outdata);
-            return false;
-        }
     }
 }

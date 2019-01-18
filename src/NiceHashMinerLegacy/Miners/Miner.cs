@@ -33,9 +33,8 @@ namespace NiceHashMiner
 
     public abstract class Miner
     {
-        // MinerIDCount used to identify miners creation
-        protected static long MinerIDCount { get; private set; }
-
+        // _minerIDCount used to identify miners creation
+        private static long _minerIDCount;
 
         public NhmConectionType ConectionType { get; protected set; }
 
@@ -43,27 +42,28 @@ namespace NiceHashMiner
         protected readonly long MinerID;
 
         private string _minerTag;
-        public string MinerDeviceName { get; set; }
+
+        public string MinerDeviceName { get; }
 
         protected int ApiPort { get; private set; }
 
         // if miner has no API bind port for reading curentlly only CryptoNight on ccminer
         public bool IsApiReadException { get; protected set; }
 
-        public bool IsNeverHideMiningWindow { get; protected set; }
+        protected bool IsNeverHideMiningWindow;
 
         // mining algorithm stuff
         protected bool IsInit { get; private set; }
 
-        public MiningSetup MiningSetup { get; protected set; }
+        public MiningSetup MiningSetup { get; private set; }
 
         // sgminer/zcash claymore workaround
-        protected bool IsKillAllUsedMinerProcs { get; set; }
+        protected bool IsKillAllUsedMinerProcs;
 
         public bool IsRunning { get; protected set; }
         protected string Path { get; private set; }
 
-        protected string LastCommandLine { get; set; }
+        protected string LastCommandLine;
 
         // TODO check this 
         protected double PreviousTotalMH;
@@ -76,26 +76,27 @@ namespace NiceHashMiner
         private MinerPidData _currentPidData;
         private readonly List<MinerPidData> _allPidData = new List<MinerPidData>();
 
-        // Benchmark stuff
+        #region Benchmarking fields/properties
+
         public bool BenchmarkSignalQuit;
 
-        public bool BenchmarkSignalHanged;
-        private Stopwatch _benchmarkTimeOutStopWatch;
-        public bool BenchmarkSignalTimedout;
+        protected bool BenchmarkSignalHanged;
+        protected bool BenchmarkSignalTimedout;
         protected bool BenchmarkSignalFinnished;
-        protected IBenchmarkComunicator BenchmarkComunicator;
-        protected bool OnBenchmarkCompleteCalled;
-        protected Algorithm BenchmarkAlgorithm { get; set; }
-        public BenchmarkProcessStatus BenchmarkProcessStatus { get; protected set; }
-        protected string BenchmarkProcessPath { get; set; }
-        protected Process BenchmarkHandle { get; set; }
+        protected BenchmarkProcessStatus BenchmarkProcessStatus;
         protected Exception BenchmarkException;
         protected int BenchmarkTimeInSeconds;
-
-        private string _benchmarkLogPath = "";
-        protected List<string> BenchLines;
-
         protected bool TimeoutStandard;
+
+        private IBenchmarkComunicator _benchmarkComunicator;
+        private bool _benchmarkCompleteCalled;
+        private string _benchmarkLogPath = "";
+
+        protected Algorithm BenchmarkAlgorithm { get; private set; }
+        protected string BenchmarkProcessPath { get; private set; }
+        protected Process BenchmarkHandle { get; set; }
+
+        #endregion
 
 
         // TODO maybe set for individual miner cooldown/retries logic variables
@@ -129,7 +130,7 @@ namespace NiceHashMiner
             ConectionType = NhmConectionType.STRATUM_TCP;
             MiningSetup = new MiningSetup(null);
             IsInit = false;
-            MinerID = MinerIDCount++;
+            MinerID = _minerIDCount++;
 
             MinerDeviceName = minerDeviceName;
 
@@ -392,14 +393,12 @@ namespace NiceHashMiner
         // we will not have empty benchmark configs, all benchmark configs will have device list
         public virtual void BenchmarkStart(int time, IBenchmarkComunicator benchmarkComunicator)
         {
-            BenchmarkComunicator = benchmarkComunicator;
+            _benchmarkComunicator = benchmarkComunicator;
             BenchmarkTimeInSeconds = time;
             BenchmarkSignalFinnished = true;
             // check and kill 
             BenchmarkHandle = null;
-            OnBenchmarkCompleteCalled = false;
-            _benchmarkTimeOutStopWatch = null;
-
+            _benchmarkCompleteCalled = false;
 
             try
             {
@@ -410,7 +409,6 @@ namespace NiceHashMiner
             }
             catch { }
 
-            BenchLines = new List<string>();
             _benchmarkLogPath =
                 $"{Logger.LogPath}Bench_{MiningSetup.MiningPairs[0].Device.Uuid}_{MiningSetup.MiningPairs[0].Algorithm.AlgorithmStringID}.log";
 
@@ -486,117 +484,11 @@ namespace NiceHashMiner
             BenchmarkSignalFinnished = true;
         }
 
-        private void BenchmarkOutputErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (_benchmarkTimeOutStopWatch == null)
-            {
-                _benchmarkTimeOutStopWatch = new Stopwatch();
-                _benchmarkTimeOutStopWatch.Start();
-            }
-            else if (_benchmarkTimeOutStopWatch.Elapsed.TotalSeconds >
-                     BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds))
-            {
-                _benchmarkTimeOutStopWatch.Stop();
-                BenchmarkSignalTimedout = true;
-            }
-
-            var outdata = e.Data;
-            if (e.Data != null)
-            {
-                BenchmarkOutputErrorDataReceivedImpl(outdata);
-            }
-
-            // terminate process situations
-            if (BenchmarkSignalQuit
-                || BenchmarkSignalFinnished
-                || BenchmarkSignalHanged
-                || BenchmarkSignalTimedout
-                || BenchmarkException != null)
-            {
-                FinishUpBenchmark();
-                EndBenchmarkProcces();
-            }
-        }
-
-        protected virtual void FinishUpBenchmark()
-        { }
-
-        protected abstract void BenchmarkOutputErrorDataReceivedImpl(string outdata);
-
-        protected void CheckOutdata(string outdata)
-        {
-            //Helpers.ConsolePrint("BENCHMARK" + benchmarkLogPath, outdata);
-            BenchLines.Add(outdata);
-            // ccminer, cpuminer
-            if (outdata.Contains("Cuda error"))
-                BenchmarkException = new Exception("CUDA error");
-            if (outdata.Contains("is not supported"))
-                BenchmarkException = new Exception("N/A");
-            if (outdata.Contains("illegal memory access"))
-                BenchmarkException = new Exception("CUDA error");
-            if (outdata.Contains("unknown error"))
-                BenchmarkException = new Exception("Unknown error");
-            if (outdata.Contains("No servers could be used! Exiting."))
-                BenchmarkException = new Exception("No pools or work can be used for benchmarking");
-            //if (outdata.Contains("error") || outdata.Contains("Error"))
-            //    BenchmarkException = new Exception("Unknown error #2");
-            // Ethminer
-            if (outdata.Contains("No GPU device with sufficient memory was found"))
-                BenchmarkException = new Exception("[daggerhashimoto] No GPU device with sufficient memory was found.");
-            // xmr-stak
-            if (outdata.Contains("Press any key to exit"))
-                BenchmarkException = new Exception("Xmr-Stak erred, check its logs");
-
-            // lastly parse data
-            if (BenchmarkParseLine(outdata))
-            {
-                BenchmarkSignalFinnished = true;
-            }
-        }
+        protected abstract void BenchmarkOutputErrorDataReceived(object sender, DataReceivedEventArgs e);
 
         public void InvokeBenchmarkSignalQuit()
         {
             KillAllUsedMinerProcesses();
-        }
-
-        protected double BenchmarkParseLine_cpu_ccminer_extra(string outdata)
-        {
-            // parse line
-            if (outdata.Contains("Benchmark: ") && outdata.Contains("/s"))
-            {
-                var i = outdata.IndexOf("Benchmark:");
-                var k = outdata.IndexOf("/s");
-                var hashspeed = outdata.Substring(i + 11, k - i - 9);
-                Helpers.ConsolePrint("BENCHMARK", "Final Speed: " + hashspeed);
-
-                // save speed
-                var b = hashspeed.IndexOf(" ");
-                if (b < 0)
-                {
-                    for (var j = hashspeed.Length - 1; j >= 0; --j)
-                    {
-                        if (!int.TryParse(hashspeed[j].ToString(), out var _)) continue;
-                        b = j;
-                        break;
-                    }
-                }
-
-                if (b >= 0)
-                {
-                    var speedStr = hashspeed.Substring(0, b);
-                    var spd = Helpers.ParseDouble(speedStr);
-                    if (hashspeed.Contains("kH/s"))
-                        spd *= 1000;
-                    else if (hashspeed.Contains("MH/s"))
-                        spd *= 1000000;
-                    else if (hashspeed.Contains("GH/s"))
-                        spd *= 1000000000;
-
-                    return spd;
-                }
-            }
-
-            return 0.0d;
         }
 
         // killing proccesses can take time
@@ -637,10 +529,10 @@ namespace NiceHashMiner
             BenchmarkAlgorithm.BenchmarkSpeed = 0;
 
             Helpers.ConsolePrint(MinerTag(), "Benchmark Exception: " + ex.Message);
-            if (BenchmarkComunicator != null && !OnBenchmarkCompleteCalled)
+            if (_benchmarkComunicator != null && !_benchmarkCompleteCalled)
             {
-                OnBenchmarkCompleteCalled = true;
-                BenchmarkComunicator.OnBenchmarkComplete(false, GetFinalBenchmarkString());
+                _benchmarkCompleteCalled = true;
+                _benchmarkComunicator.OnBenchmarkComplete(false, GetFinalBenchmarkString());
             }
         }
 
@@ -651,7 +543,7 @@ namespace NiceHashMiner
                 : Translations.Tr("Terminated");
         }
 
-        protected virtual void BenchmarkThreadRoutineFinish()
+        protected virtual void BenchmarkThreadRoutineFinish(IEnumerable<string> benchLines)
         {
             var status = BenchmarkProcessStatus.Finished;
 
@@ -664,7 +556,7 @@ namespace NiceHashMiner
             {
                 using (var sw = File.AppendText(_benchmarkLogPath))
                 {
-                    foreach (var line in BenchLines)
+                    foreach (var line in benchLines)
                     {
                         sw.WriteLine(line);
                     }
@@ -691,34 +583,20 @@ namespace NiceHashMiner
             }
 
             Helpers.ConsolePrint("BENCHMARK", "Benchmark ends");
-            if (BenchmarkComunicator != null && !OnBenchmarkCompleteCalled)
+            if (_benchmarkComunicator != null && !_benchmarkCompleteCalled)
             {
-                OnBenchmarkCompleteCalled = true;
+                _benchmarkCompleteCalled = true;
                 var isOK = BenchmarkProcessStatus.Success == status;
                 var msg = GetFinalBenchmarkString();
-                BenchmarkComunicator.OnBenchmarkComplete(isOK, isOK ? "" : msg);
+                _benchmarkComunicator.OnBenchmarkComplete(isOK, isOK ? "" : msg);
             }
         }
 
         protected abstract void BenchmarkThreadRoutine(object commandLine);
 
-        protected abstract bool BenchmarkParseLine(string outdata);
-
         protected string GetServiceUrl(AlgorithmType algo)
         {
             return ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algo, ConectionType);
-        }
-
-        protected bool IsActiveProcess(int pid)
-        {
-            try
-            {
-                return Process.GetProcessById(pid) != null;
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         #endregion //BENCHMARK DE-COUPLED Decoupled benchmarking routines

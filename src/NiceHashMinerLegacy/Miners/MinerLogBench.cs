@@ -30,7 +30,6 @@ namespace NiceHashMiner.Miners
         /// Thread routine for miners that cannot be scheduled to stop and need speed data read from command line
         /// </summary>
         /// <param name="commandLine"></param>
-        /// <param name="benchmarkTimeWait"></param>
         protected override void BenchmarkThreadRoutine(object commandLine)
         {
             CleanOldLogs();
@@ -118,14 +117,20 @@ namespace NiceHashMiner.Miners
                 }
 
                 BenchmarkHandle?.WaitForExit(10000);
+
                 // read file log
+                string[] lines;
                 if (File.Exists(WorkingDirectory + latestLogFile))
                 {
-                    var lines = File.ReadAllLines(WorkingDirectory + latestLogFile);
+                    lines = File.ReadAllLines(WorkingDirectory + latestLogFile);
                     ProcessBenchLines(lines);
                 }
+                else
+                {
+                    lines = new string[0];
+                }
 
-                BenchmarkThreadRoutineFinish();
+                BenchmarkThreadRoutineFinish(lines);
             }
         }
 
@@ -208,6 +213,21 @@ namespace NiceHashMiner.Miners
         protected virtual void ProcessBenchResults(double primarySpeed, double secondarySpeed)
         {
             BenchmarkAlgorithm.BenchmarkSpeed = primarySpeed;
+        }
+
+        protected override void BenchmarkOutputErrorDataReceived(object sender, DataReceivedEventArgs e)
+        { }
+
+        private static bool IsActiveProcess(int pid)
+        {
+            try
+            {
+                return Process.GetProcessById(pid) != null;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -70,7 +70,6 @@ namespace NiceHashMiner.Miners
 
             foreach (var line in lines)
             {
-                BenchLines.Add(line);
                 var lineLowered = line.ToLower();
                 if (!lineLowered.Contains(LookForStart)) continue;
                 var speeds = Regex.Match(lineLowered, $"{LookForStart} (.+?) {LookForEnd}").Groups[1].Value.Split();
@@ -97,17 +96,6 @@ namespace NiceHashMiner.Miners
                 // Run iff no 60s averages are reported but 2.5s are
                 BenchmarkAlgorithm.BenchmarkSpeed = twoSecTotal / twoSecCount;
             }
-        }
-
-        protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)
-        {
-            CheckOutdata(outdata);
-        }
-
-        protected override bool BenchmarkParseLine(string outdata)
-        {
-            Helpers.ConsolePrint(MinerTag(), outdata);
-            return false;
         }
 
         #endregion

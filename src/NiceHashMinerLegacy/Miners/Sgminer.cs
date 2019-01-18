@@ -13,7 +13,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners
 {
-    internal class Sgminer : Miner
+    internal class Sgminer : MinerStandardBench
     {
         private readonly int _gpuPlatformNumber;
         private readonly Stopwatch _benchmarkTimer = new Stopwatch();
@@ -314,7 +314,7 @@ namespace NiceHashMiner.Miners
             }
             finally
             {
-                BenchmarkThreadRoutineFinish();
+                BenchmarkThreadRoutineFinish(BenchLines);
             }
         }
 
