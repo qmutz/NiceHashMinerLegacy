@@ -662,7 +662,7 @@ namespace NiceHashMiner
 
             try
             {
-                using (StreamWriter sw = File.AppendText(_benchmarkLogPath))
+                using (var sw = File.AppendText(_benchmarkLogPath))
                 {
                     foreach (var line in BenchLines)
                     {

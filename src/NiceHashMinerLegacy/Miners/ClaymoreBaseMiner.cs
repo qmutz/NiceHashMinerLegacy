@@ -16,20 +16,6 @@ namespace NiceHashMiner.Miners
 {
     public abstract class ClaymoreBaseMiner : MinerLogBench
     {
-        protected int BenchmarkTimeWait = 2 * 45; // Ok... this was all wrong 
-        private int _benchmarkReadCount;
-        private double _benchmarkSum;
-        private int _secondaryBenchmarkReadCount;
-        private double _secondaryBenchmarkSum;
-        protected string LookForStart;
-        protected string LookForEnd = "h/s";
-        protected string SecondaryLookForStart;
-
-        protected double DevFee;
-
-        // only dagger change
-        protected bool IgnoreZero = false;
-
         protected double ApiReadMult = 1;
         protected AlgorithmType SecondaryAlgorithmType = AlgorithmType.NONE;
 
@@ -237,61 +223,7 @@ namespace NiceHashMiner.Miners
                     $"Starting benchmark for intensity {dualBenchAlgo.CurrentIntensity} out of {dualBenchAlgo.TuningEnd}");
             }
 
-            _benchmarkReadCount = 0;
-            _benchmarkSum = 0;
-            _secondaryBenchmarkReadCount = 0;
-            _secondaryBenchmarkSum = 0;
-
             base.BenchmarkThreadRoutine(commandLine);
-        }
-
-        protected override void ProcessBenchLines(string[] lines)
-        {
-            foreach (var line in lines)
-            {
-                if (line != null)
-                {
-                    BenchLines.Add(line);
-                    var lineLowered = line.ToLower();
-                    if (lineLowered.Contains(LookForStart))
-                    {
-                        var got = GetNumber(lineLowered);
-                        if (!IgnoreZero || got > 0)
-                        {
-                            _benchmarkSum += got;
-                            ++_benchmarkReadCount;
-                        }
-                    }
-                    else if (!string.IsNullOrEmpty(SecondaryLookForStart) &&
-                             lineLowered.Contains(SecondaryLookForStart))
-                    {
-                        var got = GetNumber(lineLowered, SecondaryLookForStart, LookForEnd);
-                        if (IgnoreZero || got > 0)
-                        {
-                            _secondaryBenchmarkSum += got;
-                            ++_secondaryBenchmarkReadCount;
-                        }
-                    }
-                }
-            }
-
-            if (_benchmarkReadCount > 0)
-            {
-                var speed = _benchmarkSum / _benchmarkReadCount;
-                BenchmarkAlgorithm.BenchmarkSpeed = speed;
-                if (BenchmarkAlgorithm is DualAlgorithm dualBenchAlgo)
-                {
-                    var secondarySpeed = _secondaryBenchmarkSum / Math.Max(1, _secondaryBenchmarkReadCount);
-                    if (dualBenchAlgo.TuningEnabled)
-                    {
-                        dualBenchAlgo.SetIntensitySpeedsForCurrent(speed, secondarySpeed);
-                    }
-                    else
-                    {
-                        dualBenchAlgo.SecondaryBenchmarkSpeed = secondarySpeed;
-                    }
-                }
-            }
         }
 
         // stub benchmarks read from file
@@ -304,45 +236,6 @@ namespace NiceHashMiner.Miners
         {
             Helpers.ConsolePrint("BENCHMARK", outdata);
             return false;
-        }
-
-        protected double GetNumber(string outdata)
-        {
-            return GetNumber(outdata, LookForStart, LookForEnd);
-        }
-
-        protected double GetNumber(string outdata, string LOOK_FOR_START, string LOOK_FOR_END)
-        {
-            try
-            {
-                double mult = 1;
-                var speedStart = outdata.IndexOf(LOOK_FOR_START, StringComparison.Ordinal);
-                var speed = outdata.Substring(speedStart, outdata.Length - speedStart);
-                speed = speed.Replace(LOOK_FOR_START, "");
-                speed = speed.Substring(0, speed.IndexOf(LOOK_FOR_END, StringComparison.Ordinal));
-
-                if (speed.Contains("k"))
-                {
-                    mult = 1000;
-                    speed = speed.Replace("k", "");
-                }
-                else if (speed.Contains("m"))
-                {
-                    mult = 1000000;
-                    speed = speed.Replace("m", "");
-                }
-
-                //Helpers.ConsolePrint("speed", speed);
-                speed = speed.Trim();
-                return (double.Parse(speed, CultureInfo.InvariantCulture) * mult) * (1.0 - DevFee * 0.01);
-            }
-            catch (Exception ex)
-            {
-                Helpers.ConsolePrint("GetNumber",
-                    ex.Message + " | args => " + outdata + " | " + LOOK_FOR_END + " | " + LOOK_FOR_START);
-            }
-
-            return 0;
         }
     }
 }

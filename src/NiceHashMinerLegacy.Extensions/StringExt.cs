@@ -36,7 +36,7 @@ namespace NiceHashMinerLegacy.Extensions
             else
                 hashrate = hash;
 
-            return true;
+            return hashrate > 0;
         }
 
         public static string GetStringAfter(this string s, string after)

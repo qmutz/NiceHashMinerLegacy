@@ -1,13 +1,12 @@
-﻿using System;
+﻿using NiceHashMiner.Configs;
+using NiceHashMinerLegacy.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using NiceHashMiner.Configs;
-using NiceHashMinerLegacy.Common.Enums;
+using NiceHashMinerLegacy.Extensions;
 
 namespace NiceHashMiner.Miners
 {
@@ -17,6 +16,11 @@ namespace NiceHashMiner.Miners
     public abstract class MinerLogBench : Miner
     {
         protected int BenchmarkTimeWait = 120;
+
+        protected string PrimaryLookForStart;
+        protected string SecondaryLookForStart;
+
+        protected double DevFee;
 
         protected MinerLogBench(string name) :
             base(name)
@@ -105,7 +109,7 @@ namespace NiceHashMiner.Miners
             {
                 BenchmarkAlgorithm.BenchmarkSpeed = 0;
                 // find latest log file
-                string latestLogFile = "";
+                var latestLogFile = "";
                 var dirInfo = new DirectoryInfo(WorkingDirectory);
                 foreach (var file in dirInfo.GetFiles(GetLogFileName()))
                 {
@@ -166,6 +170,44 @@ namespace NiceHashMiner.Miners
             return $"{GetDeviceID()}_log.txt";
         }
 
-        protected abstract void ProcessBenchLines(string[] lines);
+        protected virtual void ProcessBenchLines(IEnumerable<string> lines)
+        {
+            var primarySpeedSum = 0d;
+            var primarySpeedCount = 0;
+            var secondarySpeedSum = 0d;
+            var secondarySpeedCount = 0;
+
+            // Iterate over non-null lowercased lines
+            foreach (var line in lines.Where(l => l != null).Select(l => l.ToLower()))
+            {
+                if (line.Contains(PrimaryLookForStart))
+                {
+                    if (!line.TryGetHashrateAfter(PrimaryLookForStart, out var primary))
+                        continue;
+
+                    primarySpeedSum += primary;
+                    primarySpeedCount++;
+                }
+                else if (!string.IsNullOrWhiteSpace(SecondaryLookForStart) &&
+                         line.Contains(SecondaryLookForStart))
+                {
+                    if (!line.TryGetHashrateAfter(SecondaryLookForStart, out var secondary))
+                        continue;
+
+                    secondarySpeedSum += secondary;
+                    secondarySpeedCount++;
+                }
+            }
+
+            var primarySpeed = primarySpeedCount > 0 ? primarySpeedSum / primarySpeedCount : 0;
+            var secondarySpeed = secondarySpeedCount > 0 ? secondarySpeedSum / secondarySpeedCount : 0;
+
+            ProcessBenchResults(primarySpeed * (100 - DevFee), secondarySpeed * (100 - DevFee));
+        }
+
+        protected virtual void ProcessBenchResults(double primarySpeed, double secondarySpeed)
+        {
+            BenchmarkAlgorithm.BenchmarkSpeed = primarySpeed;
+        }
     }
 }

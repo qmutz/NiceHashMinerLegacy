@@ -10,12 +10,11 @@ namespace NiceHashMiner.Miners
         public ClaymoreDual(AlgorithmType secondaryAlgorithmType)
             : base("ClaymoreDual")
         {
-            IgnoreZero = true;
             ApiReadMult = 1000;
             ConectionType = NhmConectionType.STRATUM_TCP;
             SecondaryAlgorithmType = secondaryAlgorithmType;
 
-            LookForStart = "eth - total speed:";
+            PrimaryLookForStart = "eth - total speed:";
             SecondaryLookForStart = SecondaryShortName() + " - total speed:";
             DevFee = 1.0;
 
@@ -150,6 +149,21 @@ namespace NiceHashMiner.Miners
             // dual seems to stop mining after this time if redirect output is true
             BenchmarkTimeWait = Math.Max(60, Math.Min(120, time * 3));
             return ret;
+        }
+
+        protected override void ProcessBenchResults(double primarySpeed, double secondarySpeed)
+        {
+            if (!(BenchmarkAlgorithm is DualAlgorithm dual)) return;
+
+            if (dual.TuningEnabled)
+            {
+                dual.SetIntensitySpeedsForCurrent(primarySpeed, secondarySpeed);
+            }
+            else
+            {
+                base.ProcessBenchResults(primarySpeed, secondarySpeed);
+                dual.SecondaryBenchmarkSpeed = secondarySpeed;
+            }
         }
     }
 }

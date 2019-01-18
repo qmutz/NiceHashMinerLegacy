@@ -1,4 +1,6 @@
-﻿using NiceHashMiner.Configs;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using NiceHashMiner.Configs;
 using NiceHashMiner.Miners.Parsing;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,7 +11,6 @@ namespace NiceHashMiner.Miners
 {
     public class Xmrig : MinerLogBench
     {
-        private int _benchmarkTimeWait = 120;
         private const string LookForStart = "speed 2.5s/60s/15m";
         private const string LookForEnd = "h/s max";
 
@@ -53,12 +54,12 @@ namespace NiceHashMiner.Miners
         protected override string BenchmarkCreateCommandLine(Algorithm algorithm, int time)
         {
             var server = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
-            _benchmarkTimeWait = time;
+            BenchmarkTimeWait = time;
             return GetStartCommand(server, Globals.GetBitcoinUser(), Globals.GetWorkerName())
                 + $" -l {GetLogFileName()} --print-time=2";
         }
 
-        protected override void ProcessBenchLines(string[] lines)
+        protected override void ProcessBenchLines(IEnumerable<string> lines)
         {
             // Xmrig reports 2.5s and 60s averages, so prefer to use 60s values for benchmark
             // but fall back on 2.5s values if 60s time isn't hit
@@ -73,12 +74,12 @@ namespace NiceHashMiner.Miners
                 var lineLowered = line.ToLower();
                 if (!lineLowered.Contains(LookForStart)) continue;
                 var speeds = Regex.Match(lineLowered, $"{LookForStart} (.+?) {LookForEnd}").Groups[1].Value.Split();
-                if (double.TryParse(speeds[1], out var sixtySecSpeed))
+                if (double.TryParse(speeds[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var sixtySecSpeed))
                 {
                     sixtySecTotal += sixtySecSpeed;
                     ++sixtySecCount;
                 }
-                else if (double.TryParse(speeds[0], out var twoSecSpeed))
+                else if (double.TryParse(speeds[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var twoSecSpeed))
                 {
                     // Store 2.5s data in case 60s is never reached
                     twoSecTotal += twoSecSpeed;

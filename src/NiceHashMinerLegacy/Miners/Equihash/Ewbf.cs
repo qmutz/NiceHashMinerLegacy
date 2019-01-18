@@ -41,18 +41,13 @@ namespace NiceHashMiner.Miners.Equihash
             public List<Result> result { get; set; }
         }
 #pragma warning restore IDE1006
-
-        private int _benchmarkTimeWait = 2 * 45;
-        private int _benchmarkReadCount;
-        private double _benchmarkSum;
-        private const string LookForStart = "total speed: ";
-        private const string LookForEnd = "sol/s";
-        private const double DevFee = 2.0;
-
+        
         public Ewbf(string name = "ewbf") : base(name)
         {
             ConectionType = NhmConectionType.NONE;
             IsNeverHideMiningWindow = true;
+            PrimaryLookForStart = "total speed: ";
+            DevFee = 2.0;
         }
 
         public override void Start(string url, string btcAdress, string worker)
@@ -118,13 +113,8 @@ namespace NiceHashMiner.Miners.Equihash
             var server = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
             var ret = $" --log 2 --logfile {GetLogFileName()} " + GetStartCommand(server, Globals.GetBitcoinUser(),
                           Globals.GetWorkerName());
-            _benchmarkTimeWait = Math.Max(time * 3, 90); // EWBF takes a long time to get started
+            BenchmarkTimeWait = Math.Max(time * 3, 90); // EWBF takes a long time to get started
             return ret;
-        }
-
-        protected override void ProcessBenchLines(string[] lines)
-        {
-            throw new NotImplementedException();
         }
 
         // stub benchmarks read from file

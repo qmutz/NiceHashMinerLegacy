@@ -13,15 +13,11 @@ namespace NiceHashMiner.Miners
 {
     public class Dtsm : MinerLogBench
     {
-        private const double DevFee = 2.0;
-        private const string LookForStart = "sol/s: ";
-        private const string LookForEnd = "sol/w";
-
-        private int _benchmarkTime = 60;
-
         public Dtsm() : base("dtsm")
         {
             ConectionType = NhmConectionType.NONE;
+            PrimaryLookForStart = "sol/s: ";
+            DevFee = 2.0;
         }
         protected override int GetMaxCooldownTimeInMilliseconds()
         {
@@ -64,36 +60,10 @@ namespace NiceHashMiner.Miners
         {
             var url = GetServiceUrl(algorithm.NiceHashID);
 
-            _benchmarkTime = Math.Max(time, 60);
+            BenchmarkTimeWait = Math.Max(time, 60);
 
             return GetStartCommand(url, Globals.GetBitcoinUser(), Globals.GetWorkerName()) +
                    $" --logfile={GetLogFileName()}";
-        }
-
-        protected override void ProcessBenchLines(string[] lines)
-        {
-            var benchSum = 0d;
-            var benchCount = 0;
-
-            foreach (var line in lines)
-            {
-                BenchLines.Add(line);
-                var lowered = line.ToLower();
-
-                var start = lowered.IndexOf(LookForStart, StringComparison.Ordinal);
-                if (start <= -1) continue;
-                lowered = lowered.Substring(start, lowered.Length - start);
-                lowered = lowered.Replace(LookForStart, "");
-                var end = lowered.IndexOf(LookForEnd, StringComparison.Ordinal);
-                lowered = lowered.Substring(0, end);
-                if (double.TryParse(lowered, out var speed))
-                {
-                    benchSum += speed;
-                    benchCount++;
-                }
-            }
-
-            BenchmarkAlgorithm.BenchmarkSpeed = (benchSum / Math.Max(1, benchCount)) * (1 - DevFee * 0.01);
         }
 
         protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)

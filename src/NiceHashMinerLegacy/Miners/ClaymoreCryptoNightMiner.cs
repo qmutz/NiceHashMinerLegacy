@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using NiceHashMiner.Algorithms;
-using NiceHashMiner.Configs;
-using NiceHashMiner.Miners.Parsing;
+﻿using NiceHashMiner.Algorithms;
 
 namespace NiceHashMiner.Miners
 {
@@ -10,7 +7,7 @@ namespace NiceHashMiner.Miners
         public ClaymoreCryptoNightMiner()
             : base("ClaymoreCryptoNightMiner")
         {
-            LookForStart = "xmr - total speed:";
+            PrimaryLookForStart = "xmr - total speed:";
             // DevFee = 0
         }
 

@@ -7,8 +7,7 @@ namespace NiceHashMiner.Miners
         public ClaymoreZcashMiner()
             : base("ClaymoreZcashMiner")
         {
-            IgnoreZero = true;
-            LookForStart = "zec - total speed:";
+            PrimaryLookForStart = "zec - total speed:";
             DevFee = 2.0;
         }
 
