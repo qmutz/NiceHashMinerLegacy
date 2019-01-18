@@ -31,7 +31,7 @@ namespace NiceHashMiner
         public int Pid = -1;
     }
 
-    public abstract class Miner
+    public abstract class Miner : IDisposable
     {
         // _minerIDCount used to identify miners creation
         private static long _minerIDCount;
@@ -149,13 +149,6 @@ namespace NiceHashMiner
             _maxCooldownTimeInMilliseconds = GetMaxCooldownTimeInMilliseconds();
             // 
             Helpers.ConsolePrint(MinerTag(), "NEW MINER CREATED");
-        }
-
-        ~Miner()
-        {
-            // free the port
-            MinersApiPortsManager.RemovePort(ApiPort);
-            Helpers.ConsolePrint(MinerTag(), "MINER DESTROYED");
         }
 
         protected void SetWorkingDirAndProgName(string fullPath)
@@ -291,7 +284,7 @@ namespace NiceHashMiner
 
         protected abstract void _Stop(MinerStopType willswitch);
 
-        public virtual void Stop(MinerStopType willswitch = MinerStopType.SWITCH)
+        public void Stop(MinerStopType willswitch = MinerStopType.SWITCH)
         {
             _cooldownCheckTimer?.Stop();
             _Stop(willswitch);
@@ -1003,5 +996,30 @@ namespace NiceHashMiner
         }
 
         #endregion //Cooldown/retry logic
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Stop();
+            InvokeBenchmarkSignalQuit();
+            // free the port
+            MinersApiPortsManager.RemovePort(ApiPort);
+            if (disposing)
+            {
+                _cooldownCheckTimer?.Dispose();
+                BenchmarkHandle?.Dispose();
+            }
+            Helpers.ConsolePrint(MinerTag(), "MINER DESTROYED");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~Miner()
+        {
+            Dispose(false);
+        }
     }
 }
