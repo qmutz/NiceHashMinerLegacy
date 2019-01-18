@@ -14,8 +14,11 @@ namespace NiceHashMiner.Miners
     public abstract class MinerStandardBench : Miner
     {
         private Stopwatch _benchmarkTimeOutStopWatch;
-        protected readonly List<string> BenchLines = new List<string>();
+        private readonly List<string> _benchLines = new List<string>();
         private CancellationToken _cancelToken;
+
+        protected Action OnNotExitAction;
+        protected int BenchWaitFactor = 1;
 
         protected MinerStandardBench(string name) :
             base(name)
@@ -28,7 +31,7 @@ namespace NiceHashMiner.Miners
             BenchmarkException = null;
             _cancelToken = cancelToken;
             
-            Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS);
+            Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS * BenchWaitFactor);
 
             try
             {
@@ -42,6 +45,13 @@ namespace NiceHashMiner.Miners
                 // don't use wait for it breaks everything
                 BenchmarkProcessStatus = BenchmarkProcessStatus.Running;
                 var exited = BenchmarkHandle.WaitForExit((BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds) + 20) * 1000);
+
+                // No duplicate code in Sgminer.cs
+                if (!exited)
+                {
+                    OnNotExitAction?.Invoke();
+                }
+
                 if (BenchmarkSignalTimedout && !TimeoutStandard)
                 {
                     throw new TimeoutException("Benchmark timedout");
@@ -72,7 +82,7 @@ namespace NiceHashMiner.Miners
                 BenchmarkThreadRoutineCatch(ex);
             }
 
-            return BenchmarkThreadRoutineFinish(BenchLines);
+            return BenchmarkThreadRoutineFinish(_benchLines);
         }
 
         protected abstract bool BenchmarkParseLine(string outdata);
@@ -113,7 +123,7 @@ namespace NiceHashMiner.Miners
         public override (bool, string) BenchmarkStart(int time, CancellationToken cancelToken)
         {
             _benchmarkTimeOutStopWatch = null;
-            BenchLines.Clear();
+            _benchLines.Clear();
 
             return base.BenchmarkStart(time, cancelToken);
         }
@@ -121,7 +131,7 @@ namespace NiceHashMiner.Miners
         protected void CheckOutdata(string outdata)
         {
             //Helpers.ConsolePrint("BENCHMARK" + benchmarkLogPath, outdata);
-            BenchLines.Add(outdata);
+            _benchLines.Add(outdata);
             // ccminer, cpuminer
             if (outdata.Contains("Cuda error"))
                 BenchmarkException = new Exception("CUDA error");

@@ -23,6 +23,8 @@ namespace NiceHashMiner.Miners
         {
             _gpuPlatformNumber = ComputeDeviceManager.Available.AmdOpenCLPlatformNum;
             IsKillAllUsedMinerProcs = true;
+            OnNotExitAction = KillSgminer;
+            BenchWaitFactor = 3;
         }
 
         // use ONLY for exiting a benchmark
@@ -240,79 +242,6 @@ namespace NiceHashMiner.Miners
                 return Translations.Tr("Failed - try Precise");
             }
             return base.GetFinalBenchmarkString();
-        }
-
-        protected override (bool, string) BenchmarkThreadRoutine(string commandLine, CancellationToken cancelToken)
-        {
-            BenchmarkSignalHanged = false;
-            BenchmarkSignalFinnished = false;
-            BenchmarkException = null;
-            
-            Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS * 3); // increase wait for sgminer
-
-            try
-            {
-                Helpers.ConsolePrint("BENCHMARK", "Benchmark starts");
-                BenchmarkHandle = BenchmarkStartProcess(commandLine);
-                BenchmarkThreadRoutineStartSettup();
-                // wait a little longer then the benchmark routine if exit false throw
-                //var timeoutTime = BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds);
-                //var exitSucces = BenchmarkHandle.WaitForExit(timeoutTime * 1000);
-                // don't use wait for it breaks everything
-                BenchmarkProcessStatus = BenchmarkProcessStatus.Running;
-                //while (true)
-                //{
-                //    var outdata = BenchmarkHandle.StandardOutput.ReadLine();
-
-                //    BenchmarkOutputErrorDataReceivedImpl(outdata);
-                //    // terminate process situations
-                //    if (BenchmarkSignalQuit
-                //        || BenchmarkSignalFinnished
-                //        || BenchmarkSignalHanged
-                //        || BenchmarkSignalTimedout
-                //        || BenchmarkException != null)
-                //    {
-                //EndBenchmarkProcces();
-                // this is safe in a benchmark
-
-                var exited = BenchmarkHandle.WaitForExit((BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds) + 20) * 1000);
-
-                if (!exited) KillSgminer();
-
-                if (BenchmarkSignalTimedout)
-                {
-                    throw new TimeoutException("Benchmark timedout");
-                }
-                if (BenchmarkException != null)
-                {
-                    throw BenchmarkException;
-                }
-                if (cancelToken.IsCancellationRequested)
-                {
-                    throw new OperationCanceledException(cancelToken);
-                }
-                if (BenchmarkSignalHanged || !exited)
-                {
-                    throw new Exception("SGMiner is not responding");
-                }
-                if (BenchmarkSignalFinnished)
-                {
-                    //break;
-                }
-                //    }
-                //    else
-                //    {
-                //        // wait a second reduce CPU load
-                //        Thread.Sleep(1000);
-                //    }
-                //}
-            }
-            catch (Exception ex)
-            {
-                BenchmarkThreadRoutineCatch(ex);
-            }
-
-            return BenchmarkThreadRoutineFinish(BenchLines);
         }
 
         #endregion // Decoupled benchmarking routines
