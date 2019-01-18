@@ -7,7 +7,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners
 {
-    public class CpuMiner : Miner
+    public class CpuMiner : MinerStandardBench
     {
         public CpuMiner()
             : base("cpuminer_CPU")

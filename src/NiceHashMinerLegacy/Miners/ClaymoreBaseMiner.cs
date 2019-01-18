@@ -14,7 +14,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners
 {
-    public abstract class ClaymoreBaseMiner : Miner
+    public abstract class ClaymoreBaseMiner : MinerLogBench
     {
         protected int BenchmarkTimeWait = 2 * 45; // Ok... this was all wrong 
         private int _benchmarkReadCount;
@@ -242,10 +242,10 @@ namespace NiceHashMiner.Miners
             _secondaryBenchmarkReadCount = 0;
             _secondaryBenchmarkSum = 0;
 
-            BenchmarkThreadRoutineAlternate(commandLine, BenchmarkTimeWait);
+            base.BenchmarkThreadRoutine(commandLine);
         }
 
-        protected override void ProcessBenchLinesAlternate(string[] lines)
+        protected override void ProcessBenchLines(string[] lines)
         {
             foreach (var line in lines)
             {

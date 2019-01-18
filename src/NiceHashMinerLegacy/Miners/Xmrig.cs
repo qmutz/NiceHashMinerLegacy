@@ -7,7 +7,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners
 {
-    public class Xmrig : Miner
+    public class Xmrig : MinerLogBench
     {
         private int _benchmarkTimeWait = 120;
         private const string LookForStart = "speed 2.5s/60s/15m";
@@ -58,12 +58,7 @@ namespace NiceHashMiner.Miners
                 + $" -l {GetLogFileName()} --print-time=2";
         }
 
-        protected override void BenchmarkThreadRoutine(object commandLine)
-        {
-            BenchmarkThreadRoutineAlternate(commandLine, _benchmarkTimeWait);
-        }
-
-        protected override void ProcessBenchLinesAlternate(string[] lines)
+        protected override void ProcessBenchLines(string[] lines)
         {
             // Xmrig reports 2.5s and 60s averages, so prefer to use 60s values for benchmark
             // but fall back on 2.5s values if 60s time isn't hit

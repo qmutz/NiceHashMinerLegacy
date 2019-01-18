@@ -12,7 +12,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners.Equihash
 {
-    public class OptiminerZcashMiner : Miner
+    public class OptiminerZcashMiner : MinerStandardBench
     {
         public OptiminerZcashMiner()
             : base("OptiminerZcashMiner")

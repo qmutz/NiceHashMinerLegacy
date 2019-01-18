@@ -11,7 +11,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners
 {
-    public class Dtsm : Miner
+    public class Dtsm : MinerLogBench
     {
         private const double DevFee = 2.0;
         private const string LookForStart = "sol/s: ";
@@ -70,12 +70,7 @@ namespace NiceHashMiner.Miners
                    $" --logfile={GetLogFileName()}";
         }
 
-        protected override void BenchmarkThreadRoutine(object commandLine)
-        {
-            BenchmarkThreadRoutineAlternate(commandLine, _benchmarkTime);
-        }
-
-        protected override void ProcessBenchLinesAlternate(string[] lines)
+        protected override void ProcessBenchLines(string[] lines)
         {
             var benchSum = 0d;
             var benchCount = 0;

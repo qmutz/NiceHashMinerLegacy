@@ -16,7 +16,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners.Equihash
 {
-    public class Ewbf : Miner
+    public class Ewbf : MinerLogBench
     {
 #pragma warning disable IDE1006
         private class Result
@@ -122,145 +122,9 @@ namespace NiceHashMiner.Miners.Equihash
             return ret;
         }
 
-        protected override void BenchmarkThreadRoutine(object commandLine)
+        protected override void ProcessBenchLines(string[] lines)
         {
-            BenchmarkSignalQuit = false;
-            BenchmarkSignalHanged = false;
-            BenchmarkSignalFinnished = false;
-            BenchmarkException = null;
-            
-            Thread.Sleep(ConfigManager.GeneralConfig.MinerRestartDelayMS);
-
-            try
-            {
-                Helpers.ConsolePrint("BENCHMARK", "Benchmark starts");
-                Helpers.ConsolePrint(MinerTag(), "Benchmark should end in : " + _benchmarkTimeWait + " seconds");
-                BenchmarkHandle = BenchmarkStartProcess((string) commandLine);
-                BenchmarkHandle.WaitForExit(_benchmarkTimeWait + 2);
-                var benchmarkTimer = new Stopwatch();
-                benchmarkTimer.Reset();
-                benchmarkTimer.Start();
-                //BenchmarkThreadRoutineStartSettup();
-                // wait a little longer then the benchmark routine if exit false throw
-                //var timeoutTime = BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds);
-                //var exitSucces = BenchmarkHandle.WaitForExit(timeoutTime * 1000);
-                // don't use wait for it breaks everything
-                BenchmarkProcessStatus = BenchmarkProcessStatus.Running;
-                var keepRunning = true;
-                while (keepRunning && IsActiveProcess(BenchmarkHandle.Id))
-                {
-                    //string outdata = BenchmarkHandle.StandardOutput.ReadLine();
-                    //BenchmarkOutputErrorDataReceivedImpl(outdata);
-                    // terminate process situations
-                    if (benchmarkTimer.Elapsed.TotalSeconds >= (_benchmarkTimeWait + 2)
-                        || BenchmarkSignalQuit
-                        || BenchmarkSignalFinnished
-                        || BenchmarkSignalHanged
-                        || BenchmarkSignalTimedout
-                        || BenchmarkException != null)
-                    {
-                        var imageName = MinerExeName.Replace(".exe", "");
-                        // maybe will have to KILL process
-                        KillMinerBase(imageName);
-                        if (BenchmarkSignalTimedout)
-                        {
-                            throw new Exception("Benchmark timedout");
-                        }
-
-                        if (BenchmarkException != null)
-                        {
-                            throw BenchmarkException;
-                        }
-
-                        if (BenchmarkSignalQuit)
-                        {
-                            throw new Exception("Termined by user request");
-                        }
-
-                        if (BenchmarkSignalFinnished)
-                        {
-                            break;
-                        }
-
-                        keepRunning = false;
-                        break;
-                    }
-
-                    // wait a second reduce CPU load
-                    Thread.Sleep(1000);
-                }
-            }
-            catch (Exception ex)
-            {
-                BenchmarkThreadRoutineCatch(ex);
-            }
-            finally
-            {
-                BenchmarkAlgorithm.BenchmarkSpeed = 0;
-                // find latest log file
-                var latestLogFile = "";
-                var dirInfo = new DirectoryInfo(WorkingDirectory);
-                foreach (var file in dirInfo.GetFiles(GetLogFileName()))
-                {
-                    latestLogFile = file.Name;
-                    break;
-                }
-
-                // read file log
-                if (File.Exists(WorkingDirectory + latestLogFile))
-                {
-                    var lines = new string[0];
-                    var read = false;
-                    var iteration = 0;
-                    while (!read)
-                    {
-                        if (iteration < 10)
-                        {
-                            try
-                            {
-                                lines = File.ReadAllLines(WorkingDirectory + latestLogFile);
-                                read = true;
-                                Helpers.ConsolePrint(MinerTag(),
-                                    "Successfully read log after " + iteration + " iterations");
-                            }
-                            catch (Exception ex)
-                            {
-                                Helpers.ConsolePrint(MinerTag(), ex.Message);
-                                Thread.Sleep(1000);
-                            }
-
-                            iteration++;
-                        }
-                        else
-                        {
-                            read = true; // Give up after 10s
-                            Helpers.ConsolePrint(MinerTag(), "Gave up on iteration " + iteration);
-                        }
-                    }
-
-                    var addBenchLines = BenchLines.Count == 0;
-                    foreach (var line in lines)
-                    {
-                        if (line != null)
-                        {
-                            BenchLines.Add(line);
-                            var lineLowered = line.ToLower();
-                            if (lineLowered.Contains(LookForStart))
-                            {
-                                _benchmarkSum += GetNumber(lineLowered);
-                                ++_benchmarkReadCount;
-                            }
-                        }
-                    }
-
-                    if (_benchmarkReadCount > 0)
-                    {
-                        BenchmarkAlgorithm.BenchmarkSpeed = _benchmarkSum / _benchmarkReadCount;
-                    }
-                }
-
-                BenchmarkThreadRoutineFinish();
-            }
+            throw new NotImplementedException();
         }
 
         // stub benchmarks read from file
@@ -273,45 +137,6 @@ namespace NiceHashMiner.Miners.Equihash
         {
             Helpers.ConsolePrint("BENCHMARK", outdata);
             return false;
-        }
-
-        protected double GetNumber(string outdata)
-        {
-            return GetNumber(outdata, LookForStart, LookForEnd);
-        }
-
-        protected double GetNumber(string outdata, string lookForStart, string lookForEnd)
-        {
-            try
-            {
-                double mult = 1;
-                var speedStart = outdata.IndexOf(lookForStart);
-                var speed = outdata.Substring(speedStart, outdata.Length - speedStart);
-                speed = speed.Replace(lookForStart, "");
-                speed = speed.Substring(0, speed.IndexOf(lookForEnd));
-
-                if (speed.Contains("k"))
-                {
-                    mult = 1000;
-                    speed = speed.Replace("k", "");
-                }
-                else if (speed.Contains("m"))
-                {
-                    mult = 1000000;
-                    speed = speed.Replace("m", "");
-                }
-
-                //Helpers.ConsolePrint("speed", speed);
-                speed = speed.Trim();
-                return double.Parse(speed, CultureInfo.InvariantCulture) * mult;
-            }
-            catch (Exception ex)
-            {
-                Helpers.ConsolePrint("GetNumber",
-                    ex.Message + " | args => " + outdata + " | " + lookForEnd + " | " + lookForStart);
-            }
-
-            return 0;
         }
 
         public override async Task<ApiData> GetSummaryAsync()

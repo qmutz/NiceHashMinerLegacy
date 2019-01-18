@@ -137,14 +137,14 @@ namespace NiceHashMiner.Devices.Algorithms
                     new Algorithm(MinerBaseType.OptiminerAMD, AlgorithmType.Equihash, "equihash")
                 }
             },
-            {
-                MinerBaseType.Prospector,
-                new List<Algorithm>
-                {
-                    new Algorithm(MinerBaseType.Prospector, AlgorithmType.Skunk, "sigt", false),
-                    new Algorithm(MinerBaseType.Prospector, AlgorithmType.Sia, "sia", false)
-                }
-            }
+            //{
+            //    MinerBaseType.Prospector,
+            //    new List<Algorithm>
+            //    {
+            //        new Algorithm(MinerBaseType.Prospector, AlgorithmType.Skunk, "sigt", false),
+            //        new Algorithm(MinerBaseType.Prospector, AlgorithmType.Sia, "sia", false)
+            //    }
+            //}
         }.ConcatDictList(All, Gpu);
 
         #endregion

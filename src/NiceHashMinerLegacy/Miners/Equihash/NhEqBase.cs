@@ -12,7 +12,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners
 {
-    public abstract class NhEqBase : Miner
+    public abstract class NhEqBase : MinerStandardBench
     {
         protected MiningSetup CpuSetup = new MiningSetup(null);
         protected MiningSetup NvidiaSetup = new MiningSetup(null);

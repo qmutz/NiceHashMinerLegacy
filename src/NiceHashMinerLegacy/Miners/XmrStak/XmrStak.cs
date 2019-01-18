@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace NiceHashMiner.Miners.XmrStak
 {
-    public class XmrStak : Miner
+    public class XmrStak : MinerStandardBench
     {
         private static readonly object _fileLock = new object();
 

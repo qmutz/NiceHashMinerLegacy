@@ -10,7 +10,7 @@ using NiceHashMinerLegacy.Common.Enums;
 
 namespace NiceHashMiner.Miners
 {
-    public class Ccminer : Miner
+    public class Ccminer : MinerStandardBench
     {
         public Ccminer() : base("ccminer_NVIDIA")
         { }

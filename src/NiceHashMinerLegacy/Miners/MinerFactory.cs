@@ -82,8 +82,8 @@ namespace NiceHashMiner.Miners
                     return CreateExperimental(deviceType, algorithm.NiceHashID);
                 case MinerBaseType.EWBF:
                     return CreateEwbf(algorithm.NiceHashID);
-                case MinerBaseType.Prospector:
-                    return new Prospector();
+                //case MinerBaseType.Prospector:
+                //    return new Prospector();
                 case MinerBaseType.Xmrig:
                     return new Xmrig();
                 case MinerBaseType.dtsm:

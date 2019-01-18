@@ -14,7 +14,7 @@ namespace NiceHashMiner.Miners
     /// <summary>
     /// For now used only for daggerhashimoto
     /// </summary>
-    public abstract class MinerEtherum : Miner
+    public abstract class MinerEtherum : MinerStandardBench
     {
         //ComputeDevice
         protected ComputeDevice DaggerHashimotoGenerateDevice;

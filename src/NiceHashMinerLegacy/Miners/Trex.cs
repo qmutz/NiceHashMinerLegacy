@@ -11,7 +11,7 @@ using NiceHashMinerLegacy.Extensions;
 
 namespace NiceHashMiner.Miners
 {
-    public class Trex : Miner
+    public class Trex : MinerStandardBench
     {
         private double _benchHashes;
         private int _benchIters;

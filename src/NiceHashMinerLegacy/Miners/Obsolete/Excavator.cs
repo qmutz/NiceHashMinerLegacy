@@ -13,7 +13,7 @@ using NiceHashMinerLegacy.Common.Enums;
 namespace NiceHashMiner.Miners
 {
     [Obsolete("Excavator is deprecated")]
-    public class Excavator : Miner
+    public class Excavator : MinerStandardBench
     {
 #pragma warning disable IDE1006
         private class DeviceStat

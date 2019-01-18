@@ -170,6 +170,8 @@
     <Compile Include="Miners\Equihash\Ewbf144.cs" />
     <Compile Include="Interfaces\IGlobalRatesUpdate.cs" />
     <Compile Include="Miners\Ethlargement.cs" />
+    <Compile Include="Miners\MinerLogBench.cs" />
+    <Compile Include="Miners\MinerStandardBench.cs" />
     <Compile Include="Miners\Phoenix.cs" />
     <Compile Include="Miners\Trex.cs" />
     <Compile Include="Miners\IdleChecking\IdleChecker.cs" />
@@ -184,7 +186,7 @@
     <Compile Include="Miners\ClaymoreDual.cs" />
     <Compile Include="Miners\Equihash\Dtsm.cs" />
     <Compile Include="Miners\Equihash\Ewbf.cs" />
-    <Compile Include="Miners\Prospector.cs" />
+    <Compile Include="Miners\Obsolete\Prospector.cs" />
     <Compile Include="Miners\XmrStak\XmrStak.cs" />
     <Compile Include="Miners\Xmrig.cs" />
     <Compile Include="Stats\Models\DeviceUpdateEventArgs.cs" />
