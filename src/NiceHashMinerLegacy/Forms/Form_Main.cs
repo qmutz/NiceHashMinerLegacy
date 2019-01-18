@@ -786,55 +786,8 @@ namespace NiceHashMiner
             }
 
 
-            // Check if there are unbenchmakred algorithms
-            var isBenchInit = true;
-            foreach (var cdev in ComputeDeviceManager.Available.Devices)
-            {
-                if (cdev.Enabled)
-                {
-                    if (cdev.GetAlgorithmSettings().Where(algo => algo.Enabled).Any(algo => algo.BenchmarkSpeed == 0))
-                    {
-                        isBenchInit = false;
-                    }
-                }
-            }
-            // Check if the user has run benchmark first
-            if (!isBenchInit)
-            {
-                var result = DialogResult.No;
-                if (showWarnings)
-                {
-                    result = MessageBox.Show(Translations.Tr("There are unbenchmarked algorithms for selected enabled devices. Click Yes to benchmark and start mining, No to skip benchmark and continue mining, Cancel to abort"),
-                        Translations.Tr("Warning!"),
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                }
-                if (result == DialogResult.Yes)
-                {
-                    _benchmarkForm = new Form_Benchmark(
-                        BenchmarkPerformanceType.Standard,
-                        true);
-                    SetChildFormCenter(_benchmarkForm);
-                    _benchmarkForm.ShowDialog();
-                    _benchmarkForm = null;
-                    InitMainConfigGuiData();
-                }
-                else if (result == DialogResult.No)
-                {
-                    // check devices without benchmarks
-                    foreach (var cdev in ComputeDeviceManager.Available.Devices)
-                    {
-                        if (cdev.Enabled)
-                        {
-                            var enabled = cdev.GetAlgorithmSettings().Any(algo => algo.BenchmarkSpeed > 0);
-                            cdev.Enabled = enabled;
-                        }
-                    }
-                }
-                else
-                {
-                    return StartMiningReturnType.IgnoreMsg;
-                }
-            }
+            // TODO we will not prompt any warning if there are no benchmarks available, we will just start mining and benchmarking whatever needs benchmarking 
+            //// Check if there are unbenchmakred algorithms
 
             // TODO Globals.GetWorkerName(), Globals.GetBitcoinUser()
             var btcAdress = _demoMode ? Globals.DemoUser : ConfigManager.GeneralConfig.BitcoinAddress;
