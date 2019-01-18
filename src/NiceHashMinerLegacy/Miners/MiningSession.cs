@@ -49,8 +49,6 @@ namespace NiceHashMiner.Miners
         private readonly bool _isMiningRegardlesOfProfit;
 
         // timers 
-        private readonly Timer _preventSleepTimer;
-
         // check internet connection 
         private readonly Timer _internetCheckTimer;
 
@@ -94,11 +92,6 @@ namespace NiceHashMiner.Miners
             SetUsedDevices(devices);
 
             // init timer stuff
-            _preventSleepTimer = new Timer();
-            _preventSleepTimer.Elapsed += PreventSleepTimer_Tick;
-            // sleep time is minimal 1 minute
-            _preventSleepTimer.Interval = 20 * 1000; // leave this interval, it works
-
             // set internet checking
             _internetCheckTimer = new Timer();
             _internetCheckTimer.Elapsed += InternetCheckTimer_Tick;
@@ -111,7 +104,6 @@ namespace NiceHashMiner.Miners
 
             if (IsMiningEnabled)
             {
-                _preventSleepTimer.Start();
                 _internetCheckTimer.Start();
             }
 
@@ -128,12 +120,6 @@ namespace NiceHashMiner.Miners
             {
                 _isConnectedToInternet = Helpers.IsConnectedToInternet();
             }
-        }
-
-        private void PreventSleepTimer_Tick(object sender, ElapsedEventArgs e)
-        {
-            // when mining keep system awake, prevent sleep
-            Helpers.PreventSleep();
         }
 
         #endregion
@@ -168,8 +154,6 @@ namespace NiceHashMiner.Miners
 
             ApplicationStateManager.ClearRatesAll();
 
-            // restroe/enable sleep
-            _preventSleepTimer.Stop();
             _internetCheckTimer.Stop();
             Helpers.AllowMonitorPowerdownAndSleep();
 

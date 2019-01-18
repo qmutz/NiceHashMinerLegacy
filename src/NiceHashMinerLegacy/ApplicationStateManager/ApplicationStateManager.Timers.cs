@@ -21,7 +21,8 @@ namespace NiceHashMiner
         private static void StartMinerStatsCheckTimer()
         {
             _minerStatsCheck = new SystemTimer();
-            _minerStatsCheck.Elapsed += async (object sender, ElapsedEventArgs e) => {
+            _minerStatsCheck.Elapsed += async (object sender, ElapsedEventArgs e) =>
+            {
                 await MinersManager.MinerStatsCheck();
             };
             _minerStatsCheck.Interval = ConfigManager.GeneralConfig.MinerAPIQueryInterval * 1000;
@@ -44,7 +45,8 @@ namespace NiceHashMiner
             if (!ConfigManager.GeneralConfig.RunScriptOnCUDA_GPU_Lost) return;
 
             _computeDevicesCheckTimer = new SystemTimer();
-            _computeDevicesCheckTimer.Elapsed += (object sender, ElapsedEventArgs e) => {
+            _computeDevicesCheckTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
+            {
                 if (ComputeDeviceManager.Query.CheckVideoControllersCountMismath())
                 {
                     // less GPUs than before, ACT!
@@ -70,6 +72,28 @@ namespace NiceHashMiner
         {
             _computeDevicesCheckTimer?.Stop();
             _computeDevicesCheckTimer = null;
+        }
+        #endregion
+
+        #region PreventSystemSleepTimer
+        private static SystemTimer _preventSleepTimer;
+
+        private static void StartPreventSleepTimer()
+        {
+            _preventSleepTimer = new SystemTimer();
+            _preventSleepTimer.Elapsed += (object sender, ElapsedEventArgs e) => {
+                PInvoke.PInvokeHelpers.PreventSleep();
+            };
+            // sleep time setting is minimal 1 minute
+            _preventSleepTimer.Interval = 20 * 1000; // leave this interval, it works
+            _preventSleepTimer.Start();
+        }
+
+        // restroe/enable sleep
+        private static void StopPreventSleepTimer()
+        {
+            _preventSleepTimer?.Stop();
+            _preventSleepTimer = null;
         }
         #endregion
     }
