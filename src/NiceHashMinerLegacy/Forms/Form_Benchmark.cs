@@ -102,28 +102,20 @@ namespace NiceHashMiner.Forms
 
         private void SetCurrentStatus(object sender, AlgoStatusEventArgs e)
         {
-            if (InvokeRequired)
-            {
-                Invoke((MethodInvoker) delegate{ SetCurrentStatus(sender, e); });
-            }
-            else
+            FormHelpers.SafeInvoke(this, () =>
             {
                 algorithmsListView1.SetSpeedStatus(e.Device, e.Algorithm, e.Status);
-            }
+            });
         }
 
         private void StepUpBenchmarkStepProgress(object sender, StepUpEventArgs e)
         {
-            if (InvokeRequired)
-            {
-                Invoke((MethodInvoker) delegate { StepUpBenchmarkStepProgress(sender, e); });
-            }
-            else
+            FormHelpers.SafeInvoke(this, () =>
             {
                 SetLabelBenchmarkSteps(e.CurrentIndex, e.AlgorithmCount);
                 if (e.CurrentIndex <= progressBarBenchmarkSteps.Maximum)
                     progressBarBenchmarkSteps.Value = e.CurrentIndex;
-            }
+            });
         }
 
         #region IListItemCheckColorSetter methods

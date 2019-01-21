@@ -355,16 +355,12 @@ namespace NiceHashMiner.Forms.Components
 
         public void ClearRatesAll()
         {
-            if (InvokeRequired)
-            {
-                Invoke((Action) ClearRatesAll);
-            }
-            else
+            FormHelpers.SafeInvoke(this, () =>
             {
                 _indexTotals.Clear();
                 listViewDevices.Groups.Clear();
                 UpdateListView();
-            }
+            });
         }
 
         private void addRateInfoGui(ApiData iApiData, double paying, bool isApiGetException)

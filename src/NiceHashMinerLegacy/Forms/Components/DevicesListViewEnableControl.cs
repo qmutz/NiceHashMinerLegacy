@@ -82,17 +82,10 @@ namespace NiceHashMiner.Forms.Components
 
         private void UpdateDevices(object sender, DeviceUpdateEventArgs e)
         {
-            if (InvokeRequired)
-            {
-                Invoke((Action) delegate
-                {
-                    SetComputeDevices(e.Devices);
-                });
-            }
-            else
+            FormHelpers.SafeInvoke(this, () =>
             {
                 SetComputeDevices(e.Devices);
-            }
+            });
         }
         
         public virtual void InitLocale()
