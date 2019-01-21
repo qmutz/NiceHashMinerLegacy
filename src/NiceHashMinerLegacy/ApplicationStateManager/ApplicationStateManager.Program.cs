@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NiceHashMiner.Benchmarking;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,6 +11,14 @@ namespace NiceHashMiner
 {
     static partial class ApplicationStateManager
     {
+        public static void BeforeExit()
+        {
+            // TODO close websocket
+            // TODO Stop all mining
+            StopMining(true);
+            BenchmarkManager.Stop();
+        }
+
         public static void RestartProgram()
         {
             var pHandle = new Process

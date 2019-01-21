@@ -312,12 +312,14 @@ namespace NiceHashMiner
         //    return false;
         //}
 
-        public static bool StopMining()
+        public static bool StopMining(bool headless)
         {
             if (!IsCurrentlyMining)
             {
                 return false;
             }
+            MinersManager.StopAllMiners(headless);
+
             PInvoke.PInvokeHelpers.AllowMonitorPowerdownAndSleep();
             IsCurrentlyMining = false;
             StopMinerStatsCheckTimer();
