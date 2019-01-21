@@ -8,6 +8,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
 {
     interface IMiningProfitableDisplayer : IDataVisualizer
     {
-        void DisplayMiningProfitable();
+        void DisplayMiningProfitable(object sender, EventArgs empty);
     }
 }

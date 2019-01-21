@@ -70,48 +70,24 @@ namespace NiceHashMiner
 
         public static void DisplayTotalRate(double totalMiningRate)
         {
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IGlobalMiningRateDisplayer sGlobalMiningRateDisplayer)
-                {
-                    sGlobalMiningRateDisplayer.DisplayGlobalMiningRate(totalMiningRate);
-                }
-            }
+            DisplayGlobalMiningRate?.Invoke(null, totalMiningRate);
         }
 
         public static void DisplayMiningNotProfitable()
         {
             //ShowNotProfitable(Translations.Tr("CURRENTLY MINING NOT PROFITABLE."));
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IMiningNotProfitableDisplayer sMiningNotProfitableDisplayer)
-                {
-                    sMiningNotProfitableDisplayer.DisplayMiningNotProfitable();
-                }
-            }
+            _DisplayMiningNotProfitable?.Invoke(null, null);
         }
 
         public static void DisplayMiningProfitable()
         {
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IMiningProfitableDisplayer sMiningProfitableDisplayer)
-                {
-                    sMiningProfitableDisplayer.DisplayMiningProfitable();
-                }
-            }
+            _DisplayMiningProfitable?.Invoke(null, null);
         }
 
         public static void DisplayNoInternetConnection()
         {
             //ShowNotProfitable(Translations.Tr("CURRENTLY NOT MINING. NO INTERNET CONNECTION.")); 
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is INoInternetConnectionDisplayer sNoInternetConnectionDisplayer)
-                {
-                    sNoInternetConnectionDisplayer.DisplayNoInternetConnection();
-                }
-            }
+            _DisplayNoInternetConnection?.Invoke(null, null);
         }
     }
 }

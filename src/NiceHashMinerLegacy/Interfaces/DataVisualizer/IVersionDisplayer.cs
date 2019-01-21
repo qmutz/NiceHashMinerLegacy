@@ -8,6 +8,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
 {
     interface IVersionDisplayer : IDataVisualizer
     {
-        void DisplayVersion(string version);
+        void DisplayVersion(object sender, string version);
     }
 }

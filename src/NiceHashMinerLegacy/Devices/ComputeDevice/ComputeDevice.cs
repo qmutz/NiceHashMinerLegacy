@@ -24,7 +24,9 @@ namespace NiceHashMiner.Devices
 
         // name count is the short name for displaying in moning groups
         public readonly string NameCount;
-        public bool Enabled;
+        public bool Enabled { get; protected set; }
+
+        public DeviceState State { get; set; } = DeviceState.Stopped;
 
         public readonly DeviceGroupType DeviceGroupType;
 
@@ -92,6 +94,12 @@ namespace NiceHashMiner.Devices
             DeviceType = type;
             NameCount = nameCount;
             GpuRam = gpuRam;
+        }
+
+        public void SetEnabled(bool isEnabled)
+        {
+            Enabled = isEnabled;
+            State = isEnabled ? DeviceState.Stopped : DeviceState.Disabled;
         }
 
         // Fake dev

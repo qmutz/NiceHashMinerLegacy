@@ -10,11 +10,17 @@ namespace NiceHashMiner.Forms
     static class FormHelpers
     {
         // TODO maybe not the best name
-        static public void SafeInvoke(Control c, MethodInvoker f)
+        static public void SafeInvoke(Control c, Action f, bool beginInvoke = false)
         {
             if (c.InvokeRequired)
             {
-                c.Invoke(f);
+                if (beginInvoke)
+                {
+                    c.BeginInvoke(f);
+                } else
+                {
+                    c.Invoke(f);
+                }
             }
             else
             {

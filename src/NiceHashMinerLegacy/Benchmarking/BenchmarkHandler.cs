@@ -52,8 +52,13 @@ namespace NiceHashMiner.Benchmarking
             thread.Start();
         }
 
-        public void OnBenchmarkComplete(bool success, string status)
+        void IBenchmarkComunicator.OnBenchmarkComplete(bool success, string status)
         {
+            if (success)
+            {
+                ConfigManager.CommitBenchmarksForDevice(Device);
+            }
+
             if (!BenchmarkManager.InBenchmark) return;
 
             var rebenchSame = false;

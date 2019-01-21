@@ -8,6 +8,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
 {
     interface IGroupDisplayer : IDataVisualizer
     {
-        void DisplayGroup(string group);
+        void DisplayGroup(object sender, string group);
     }
 }

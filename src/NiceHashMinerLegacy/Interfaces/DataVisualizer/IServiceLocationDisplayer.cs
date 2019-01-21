@@ -8,6 +8,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
 {
     interface IServiceLocationDisplayer : IDataVisualizer
     {
-        void DisplayServiceLocation(int serviceLocation);
+        void DisplayServiceLocation(object sender, int serviceLocation);
     }
 }

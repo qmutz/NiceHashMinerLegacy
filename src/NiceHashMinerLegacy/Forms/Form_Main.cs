@@ -66,7 +66,7 @@ namespace NiceHashMiner
 
             InitMainConfigGuiData();
         }
-
+        
         ~Form_Main()
         {
             ApplicationStateManager.UnsubscribeStateDisplayer(this);
@@ -788,13 +788,11 @@ namespace NiceHashMiner
 
             // TODO we will not prompt any warning if there are no benchmarks available, we will just start mining and benchmarking whatever needs benchmarking 
             //// Check if there are unbenchmakred algorithms
+            var username = _demoMode ? Globals.GetDemoUsername() : Globals.GetUsername(); // TODO we get username from here
+            //var isMining = MinersManager.StartInitialize(username);
+            var isMining = true;
+            ApplicationStateManager.StartAllAvailableDevices();
 
-            // TODO Globals.GetWorkerName(), Globals.GetBitcoinUser()
-            var btcAdress = _demoMode ? Globals.DemoUser : ConfigManager.GeneralConfig.BitcoinAddress;
-            var isMining = MinersManager.StartInitialize(StratumService.MiningLocations[comboBoxLocation.SelectedIndex],
-                textBoxWorkerName.Text.Trim(), btcAdress);
-
-            StartMiningGui();
             // TODO TEMP
             ApplicationStateManager.StartMining();
 
@@ -866,7 +864,7 @@ namespace NiceHashMiner
         }
 
         // StateDisplay interfaces
-        void IBTCDisplayer.DisplayBTC(string btc)
+        void IBTCDisplayer.DisplayBTC(object sender, string btc)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -874,7 +872,7 @@ namespace NiceHashMiner
             });
         }
 
-        void IWorkerNameDisplayer.DisplayWorkerName(string workerName)
+        void IWorkerNameDisplayer.DisplayWorkerName(object sender, string workerName)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -882,7 +880,7 @@ namespace NiceHashMiner
             });
         }
 
-        void IServiceLocationDisplayer.DisplayServiceLocation(int serviceLocation)
+        void IServiceLocationDisplayer.DisplayServiceLocation(object sender, int serviceLocation)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -890,7 +888,7 @@ namespace NiceHashMiner
             });
         }
 
-        void IVersionDisplayer.DisplayVersion(string version)
+        void IVersionDisplayer.DisplayVersion(object sender, string version)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -899,11 +897,11 @@ namespace NiceHashMiner
         }
 
         // TODO this might need some formatters?
-        void IBalanceBTCDisplayer.DisplayBTCBalance(double btcBalance)
+        void IBalanceBTCDisplayer.DisplayBTCBalance(object sender, double btcBalance)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
-                if (ConfigManager.GeneralConfig.AutoScaleBTCValues && btcBalance < 0.1)
+                if (ConfigManager.GeneralConfig.AutoScaleBTCValues && btcBalance< 0.1)
                 {
                     toolStripStatusLabelBalanceBTCCode.Text = "mBTC";
                     toolStripStatusLabelBalanceBTCValue.Text =
@@ -917,16 +915,16 @@ namespace NiceHashMiner
             });
         }
 
-        void IBalanceFiatDisplayer.DisplayFiatBalance(double fiatBalance, string fiatCurrencySymbol)
+        void IBalanceFiatDisplayer.DisplayFiatBalance(object sender, (double fiatBalance, string fiatCurrencySymbol) args)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
-                toolStripStatusLabelBalanceDollarText.Text = fiatBalance.ToString("F2", CultureInfo.InvariantCulture);
-                toolStripStatusLabelBalanceDollarValue.Text = $"({fiatCurrencySymbol})";
+                toolStripStatusLabelBalanceDollarText.Text = args.fiatBalance.ToString("F2", CultureInfo.InvariantCulture);
+                toolStripStatusLabelBalanceDollarValue.Text = $"({args.fiatCurrencySymbol})";
             });
         }
 
-        void IGlobalMiningRateDisplayer.DisplayGlobalMiningRate(double totalMiningRate)
+        void IGlobalMiningRateDisplayer.DisplayGlobalMiningRate(object sender, double totalMiningRate)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -934,7 +932,7 @@ namespace NiceHashMiner
             });
         }
 
-        void IStartMiningDisplayer.DisplayMiningStarted()
+        void IStartMiningDisplayer.DisplayMiningStarted(object sender, EventArgs _)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -942,7 +940,7 @@ namespace NiceHashMiner
             });
         }
 
-        void IStopMiningDisplayer.DisplayMiningStopped()
+        void IStopMiningDisplayer.DisplayMiningStopped(object sender, EventArgs _)
         {
             FormHelpers.SafeInvoke(this, () =>
             {

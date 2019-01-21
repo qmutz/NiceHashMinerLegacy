@@ -41,6 +41,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -112,7 +113,9 @@
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="Algorithms\DualAlgorithm.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.cs" />
+    <Compile Include="ApplicationStateManager\ApplicationStateManager.DataVizualizers.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.Init.cs" />
+    <Compile Include="ApplicationStateManager\ApplicationStateManager.Mining.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.Timers.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.Program.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.Refactoring.cs" />
@@ -120,6 +123,7 @@
     <Compile Include="Benchmarking\BenchDeviationInfo.cs" />
     <Compile Include="Benchmarking\BenchHelpers\CpuBenchHelper.cs" />
     <Compile Include="Benchmarking\BenchHelpers\PowerHelper.cs" />
+    <Compile Include="Benchmarking\BenchmarkChecker.cs" />
     <Compile Include="Benchmarking\BenchmarkHandler.cs" />
     <Compile Include="Benchmarking\BenchHelpers\ClaymoreZcashBenchHelper.cs" />
     <Compile Include="Benchmarking\BenchmarkManager.cs" />
@@ -200,6 +204,7 @@
     <Compile Include="Stats\Models\RpcException.cs" />
     <Compile Include="Stats\NiceHashSocket.cs" />
     <Compile Include="Stats\NiceHashStats.cs" />
+    <Compile Include="Stats\StatusCodes.cs" />
     <Compile Include="Stats\TimeFactor.cs" />
     <Compile Include="StratumService.cs" />
     <Compile Include="Switching\AlgorithmHistory.cs" />

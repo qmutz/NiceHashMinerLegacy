@@ -1,4 +1,5 @@
 ﻿using NiceHashMiner.Algorithms;
+using NiceHashMinerLegacy.Extensions;
 using NiceHashMiner.Devices;
 using NiceHashMiner.Interfaces;
 using NiceHashMiner.Miners;
@@ -174,7 +175,7 @@ namespace NiceHashMiner.Benchmarking
             return false;
         }
 
-        #endregion
+        #endregion 
 
         #region Start/Stop methods
 
@@ -200,6 +201,21 @@ namespace NiceHashMiner.Benchmarking
                 }
             }
 
+            InBenchmark = true;
+        }
+
+        // network benchmark starts benchmarking on a device
+        // assume device is enabled and it exists
+        public static void StartBenchmarForDevice(ComputeDevice device, BenchmarkPerformanceType perfType = BenchmarkPerformanceType.Standard)
+        {
+            var unbenchmarkedAlgorithms = device.GetAlgorithmSettings().Where(algo => algo.Enabled && algo.BenchmarkNeeded).ToQueue();
+            lock (_runningBenchmarkThreads)
+            lock (_statusCheckAlgos)
+            {
+                var handler = new BenchmarkHandler(device, unbenchmarkedAlgorithms, perfType);
+                _runningBenchmarkThreads.Add(handler);
+                handler.Start();
+            }
             InBenchmark = true;
         }
 

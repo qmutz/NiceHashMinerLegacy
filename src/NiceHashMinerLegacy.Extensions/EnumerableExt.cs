@@ -11,5 +11,15 @@ namespace NiceHashMinerLegacy.Extensions
         {
             return source.All(other.Contains);
         }
+
+        public static Queue<T> ToQueue<T>(this IEnumerable<T> source)
+        {
+            var queue = new Queue<T>();
+            foreach (var el in source)
+            {
+                queue.Enqueue(el);
+            }
+            return queue;
+        }
     }
 }

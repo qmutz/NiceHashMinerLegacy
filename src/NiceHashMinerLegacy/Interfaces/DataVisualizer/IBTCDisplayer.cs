@@ -8,6 +8,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
 {
     interface IBTCDisplayer : IDataVisualizer
     {
-        void DisplayBTC(string btc);
+        void DisplayBTC(object sender, string btc);
     }
 }

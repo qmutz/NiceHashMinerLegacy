@@ -15,46 +15,6 @@ namespace NiceHashMiner
 {
     static partial class ApplicationStateManager
     {
-        #region StateDisplayers boilerplate
-        static List<IDataVisualizer> _stateDisplayers = new List<IDataVisualizer>();
-
-        public static void SubscribeStateDisplayer(IDataVisualizer stateDisplayer)
-        {
-            _stateDisplayers.Add(stateDisplayer);
-            //// Init added state displayer
-            if (stateDisplayer is IBTCDisplayer sBtcDisplayer)
-            {
-                sBtcDisplayer.DisplayBTC(ConfigManager.GeneralConfig.BitcoinAddress);
-            }
-            if (stateDisplayer is IWorkerNameDisplayer sWorkerNameDisplayer)
-            {
-                sWorkerNameDisplayer.DisplayWorkerName(ConfigManager.GeneralConfig.WorkerName);
-            }
-            if (stateDisplayer is IServiceLocationDisplayer sServiceLocationDisplayer)
-            {
-                sServiceLocationDisplayer.DisplayServiceLocation(ConfigManager.GeneralConfig.ServiceLocation);
-            }
-            if (stateDisplayer is IBalanceBTCDisplayer sBalanceBTCDisplayer)
-            {
-                sBalanceBTCDisplayer.DisplayBTCBalance(0);
-            }
-            if (stateDisplayer is IBalanceFiatDisplayer sBalanceFiatDisplayer)
-            {
-                sBalanceFiatDisplayer.DisplayFiatBalance(0, ExchangeRateApi.ActiveDisplayCurrency);
-            }
-        }
-
-        public static void UnsubscribeStateDisplayer(IDataVisualizer stateDisplayer)
-        {
-            var success = _stateDisplayers.Remove(stateDisplayer);
-            if (!success)
-            {
-                // TODO maybe log but than again we don't care about this shouldn't cause any issues
-            }
-        }
-        #endregion
-
-
         public static string Title
         {
             get
@@ -91,13 +51,7 @@ namespace NiceHashMiner
                 var displayNewVer = string.Format(Translations.Tr("IMPORTANT! New version v{0} has\r\nbeen released. Click here to download it."), version);
                 // display new version
                 // notify all components
-                foreach (var s in _stateDisplayers)
-                {
-                    if (s is IVersionDisplayer sVersionDisplayer)
-                    {
-                        sVersionDisplayer.DisplayVersion(displayNewVer);
-                    }
-                }
+                DisplayVersion?.Invoke(null, displayNewVer);
             }
         }
 
@@ -113,29 +67,25 @@ namespace NiceHashMiner
         }
         #endregion
 
-        #region Balance
-        public static double Balance { get; private set; }
+        #region BtcBalance and fiat balance
+
+        public static double BtcBalance { get; private set; }
+
+        private static (double fiatBalance, string fiatSymbol) getFiatFromBtcBalance(double btcBalance)
+        {
+            var usdAmount = (BtcBalance * ExchangeRateApi.GetUsdExchangeRate());
+            var fiatBalance = ExchangeRateApi.ConvertToActiveCurrency(usdAmount);
+            var fiatSymbol = ExchangeRateApi.ActiveDisplayCurrency;
+            return (fiatBalance, fiatSymbol);
+        }
+
         public static void OnBalanceUpdate(double btcBalance)
         {
-            Balance = btcBalance;
-            var usdAmount = (Balance * ExchangeRateApi.GetUsdExchangeRate());
-            var fiatBalance = ExchangeRateApi.ConvertToActiveCurrency(usdAmount);
+            BtcBalance = btcBalance;
             // btc
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IBalanceBTCDisplayer sBalanceBTCDisplayer)
-                {
-                    sBalanceBTCDisplayer.DisplayBTCBalance(Balance);
-                }
-            }
+            DisplayBTCBalance?.Invoke(null, BtcBalance);
             // fiat
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IBalanceFiatDisplayer sBalanceFiatDisplayer)
-                {
-                    sBalanceFiatDisplayer.DisplayFiatBalance(fiatBalance, ExchangeRateApi.ActiveDisplayCurrency);
-                }
-            }
+            DisplayFiatBalance?.Invoke(null, getFiatFromBtcBalance(btcBalance));
         }
         #endregion
 
@@ -224,13 +174,7 @@ namespace NiceHashMiner
             ConfigManager.GeneralConfig.ServiceLocation = serviceLocation;
             ConfigManager.GeneralConfigFileCommit();
             // notify all components
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IServiceLocationDisplayer sServiceLocationDisplayer)
-                {
-                    sServiceLocationDisplayer.DisplayServiceLocation(serviceLocation);
-                }
-            }
+            DisplayServiceLocation?.Invoke(null, serviceLocation);
         }
         #endregion
 
@@ -262,17 +206,11 @@ namespace NiceHashMiner
             ConfigManager.GeneralConfigFileCommit();
             if (IsCurrentlyMining)
             {
-                MinersManager.UpdateBTC(btc);
+                MinersManager.RestartMiners();
             }
-            
+
             // notify all components
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IBTCDisplayer sBtcDisplayer)
-                {
-                    sBtcDisplayer.DisplayBTC(btc);
-                }
-            }
+            DisplayBTC?.Invoke(null, btc);
         }
         #endregion
 
@@ -307,16 +245,10 @@ namespace NiceHashMiner
             // if mining update the mining manager
             if (IsCurrentlyMining)
             {
-                MinersManager.UpdateWorker(workerName);
+                MinersManager.RestartMiners();
             }
             // notify all components
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IWorkerNameDisplayer sWorkerNameDisplayer)
-                {
-                    sWorkerNameDisplayer.DisplayWorkerName(workerName);
-                }
-            }
+            DisplayWorkerName?.Invoke(null, workerName);
         }
         #endregion
 
@@ -351,13 +283,7 @@ namespace NiceHashMiner
             ConfigManager.GeneralConfig.RigGroup = groupName;
             ConfigManager.GeneralConfigFileCommit();
             // notify all components
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IGroupDisplayer sGroupDisplayer)
-                {
-                    sGroupDisplayer.DisplayGroup(groupName);
-                }
-            }
+            DisplayGroup?.Invoke(null, groupName);
         }
         #endregion
 
@@ -375,13 +301,8 @@ namespace NiceHashMiner
             IsCurrentlyMining = true;
             StartMinerStatsCheckTimer();
             StartComputeDevicesCheckTimer();
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IStartMiningDisplayer sStartMiningDisplayer)
-                {
-                    sStartMiningDisplayer.DisplayMiningStarted();
-                }
-            }
+            StartPreventSleepTimer();
+            DisplayMiningStarted?.Invoke(null, null);
             return true;
         }
 
@@ -397,16 +318,12 @@ namespace NiceHashMiner
             {
                 return false;
             }
+            PInvoke.PInvokeHelpers.AllowMonitorPowerdownAndSleep();
             IsCurrentlyMining = false;
             StopMinerStatsCheckTimer();
             StopComputeDevicesCheckTimer();
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IStopMiningDisplayer sStopMiningDisplayer)
-                {
-                    sStopMiningDisplayer.DisplayMiningStopped();
-                }
-            }
+            StopPreventSleepTimer();
+            DisplayMiningStopped?.Invoke(null, null);
             return true;
         }
     }

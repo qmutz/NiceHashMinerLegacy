@@ -9,6 +9,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
     // TODO rename to total?
     interface IGlobalMiningRateDisplayer : IDataVisualizer
     {
-        void DisplayGlobalMiningRate(double totalMiningRate);
+        void DisplayGlobalMiningRate(object sender, double totalMiningRate);
     }
 }

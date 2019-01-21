@@ -1168,7 +1168,7 @@ namespace NiceHashMiner.Forms
             comboBox_IdleType.Enabled = checkBox_StartMiningWhenIdle.Checked;
         }
 
-        void IBTCDisplayer.DisplayBTC(string btc)
+        void IBTCDisplayer.DisplayBTC(object sender, string btc)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -1176,7 +1176,7 @@ namespace NiceHashMiner.Forms
             });
         }
 
-        void IWorkerNameDisplayer.DisplayWorkerName(string workerName)
+        void IWorkerNameDisplayer.DisplayWorkerName(object sender, string workerName)
         {
             FormHelpers.SafeInvoke(this, () =>
             {
@@ -1184,7 +1184,7 @@ namespace NiceHashMiner.Forms
             });
         }
 
-        void IServiceLocationDisplayer.DisplayServiceLocation(int serviceLocation)
+        void IServiceLocationDisplayer.DisplayServiceLocation(object sender, int serviceLocation)
         {
             FormHelpers.SafeInvoke(this, () =>
             {

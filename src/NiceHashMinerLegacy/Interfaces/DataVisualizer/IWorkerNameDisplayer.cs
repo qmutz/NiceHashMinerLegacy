@@ -8,6 +8,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
 {
     interface IWorkerNameDisplayer : IDataVisualizer
     {
-        void DisplayWorkerName(string workerName);
+        void DisplayWorkerName(object sender, string workerName);
     }
 }

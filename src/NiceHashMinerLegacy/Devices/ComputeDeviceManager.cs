@@ -976,6 +976,12 @@ namespace NiceHashMiner.Devices
                 return Devices.FirstOrDefault(dev => uuid == dev.Uuid);
             }
 
+            // TODO this might be stupid
+            public static ComputeDevice GetDeviceWithUuidOrB64Uuid(string uuidOrB64Uuid)
+            {
+                return Devices.FirstOrDefault(dev => dev.Uuid == uuidOrB64Uuid || dev.B64Uuid == uuidOrB64Uuid);
+            }
+
             public static List<ComputeDevice> GetSameDevicesTypeAsDeviceWithUuid(string uuid)
             {
                 var compareDev = GetDeviceWithUuid(uuid);
@@ -1003,7 +1009,7 @@ namespace NiceHashMiner.Devices
                 {
                     if (device.DeviceType == DeviceType.CPU)
                     {
-                        device.Enabled = false;
+                        device.SetEnabled(false);
                     }
                 }
             }

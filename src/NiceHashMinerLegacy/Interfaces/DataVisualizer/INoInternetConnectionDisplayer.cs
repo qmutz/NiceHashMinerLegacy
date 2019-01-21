@@ -8,6 +8,6 @@ namespace NiceHashMiner.Interfaces.DataVisualizer
 {
     interface INoInternetConnectionDisplayer : IDataVisualizer
     {
-        void DisplayNoInternetConnection();
+        void DisplayNoInternetConnection(object sender, EventArgs empty);
     }
 }

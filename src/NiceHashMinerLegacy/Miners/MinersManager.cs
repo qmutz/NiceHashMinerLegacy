@@ -41,14 +41,21 @@ namespace NiceHashMiner.Miners
         //}
 
         // TODO worker and btc are now username remove or replace
-        public static bool StartInitialize(string miningLocation, string worker, string btcAdress)
+        public static bool StartInitialize(string username)
         {
-            _curMiningSession = new MiningSession(ComputeDeviceManager.Available.Devices,
-                miningLocation, worker, btcAdress);
+            _curMiningSession = new MiningSession(ComputeDeviceManager.Available.Devices, username);
 
             NiceHashStats.StateChanged();
 
             return _curMiningSession.IsMiningEnabled;
+        }
+
+        public static void EnsureMiningSession(string username)
+        {
+            if (_curMiningSession == null)
+            {
+                _curMiningSession = new MiningSession(new List<ComputeDevice>(), username);
+            }
         }
 
         public static bool IsMiningEnabled()
@@ -61,14 +68,9 @@ namespace NiceHashMiner.Miners
             _curMiningSession?.UpdateUsedDevices(devices);
         }
 
-        public static void UpdateBTC(string btc)
+        public static void RestartMiners()
         {
-            _curMiningSession?.UpdateBTC(btc);
-        }
-
-        public static void UpdateWorker(string worker)
-        {
-            _curMiningSession?.UpdateWorker(worker);
+            _curMiningSession?.RestartMiners();
         }
 
 

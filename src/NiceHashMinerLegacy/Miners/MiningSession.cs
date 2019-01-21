@@ -26,10 +26,9 @@ namespace NiceHashMiner.Miners
         private const string DoubleFormat = "F12";
 
         // session varibles fixed
-        private readonly string _miningLocation;
 
-        private string _btcAdress;
-        private string _worker;
+        string _username;
+
         private List<MiningDevice> _miningDevices;
 
         private readonly AlgorithmSwitchingManager _switchingManager;
@@ -77,16 +76,11 @@ namespace NiceHashMiner.Miners
             }
         }
 
-        public MiningSession(List<ComputeDevice> devices, string miningLocation, string worker, string btcAdress)
+        public MiningSession(List<ComputeDevice> devices, string username)
         {
-            // init fixed
-            _miningLocation = miningLocation;
-
+            _username = username;
             _switchingManager = new AlgorithmSwitchingManager();
             _switchingManager.SmaCheck += SwichMostProfitableGroupUpMethod;
-
-            _btcAdress = btcAdress;
-            _worker = worker;
 
             // initial settup
             SetUsedDevices(devices);
@@ -155,7 +149,7 @@ namespace NiceHashMiner.Miners
             ApplicationStateManager.ClearRatesAll();
 
             _internetCheckTimer.Stop();
-            Helpers.AllowMonitorPowerdownAndSleep();
+            //Helpers.AllowMonitorPowerdownAndSleep();
 
             if (headless) return;
 
@@ -261,23 +255,14 @@ namespace NiceHashMiner.Miners
             foreach (var key in _runningGroupMiners.Keys)
             {
                 _runningGroupMiners[key].Stop();
-                var username = Globals.GetUsername();
-                _runningGroupMiners[key].Start(_miningLocation, username);
+                var miningLocation = StratumService.SelectedService;
+                _runningGroupMiners[key].Start(miningLocation, _username);
             }
         }
 
-        public void UpdateBTC(string btc)
+        public void RestartMiners()
         {
             _switchingManager.Stop();
-            _btcAdress = btc;
-            RestartRunningGroupMiners();
-            _switchingManager.Start();
-        }
-
-        public void UpdateWorker(string worker)
-        {
-            _switchingManager.Stop();
-            _worker = worker;
             RestartRunningGroupMiners();
             _switchingManager.Start();
         }
@@ -602,12 +587,11 @@ namespace NiceHashMiner.Miners
                     }
 
                     // start new miners
-                    var username = Globals.GetUsername();
+                    var miningLocation = StratumService.SelectedService;
                     foreach (var toStart in toRunNewGroupMiners.Values)
                     {
                         stringBuilderCurrentAlgo.Append($"{toStart.DevicesInfoString}: {toStart.AlgorithmType}, ");
-
-                        toStart.Start(_miningLocation, username);
+                        toStart.Start(miningLocation, _username);
                         _runningGroupMiners[toStart.Key] = toStart;
                     }
 

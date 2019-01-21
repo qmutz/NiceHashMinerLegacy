@@ -9,10 +9,10 @@ namespace NiceHashMiner
 {
     public static class StratumService
     {
-        
+
         // TODO consider using this instead of int index
         //// EU by default
-        //public static string SelectedService { get; private set; } = "eu";
+        public static string SelectedService { get; private set; } = "eu";
 
         // Constants
         public static IReadOnlyList<string> MiningLocations { get; } = 
@@ -40,7 +40,7 @@ namespace NiceHashMiner
             }
             // strip out the _UNUSED
             name = name.Replace("_UNUSED", "");
-            return name;
+            return name.ToLower();
         }
 
         // make this private when/if SelectedService gets implemented
