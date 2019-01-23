@@ -93,6 +93,10 @@ namespace NiceHashMiner.Switching
                     if (_currentPayingRates.ContainsKey(algo))
                     {
                         _currentPayingRates[algo] = newSma[algo];
+#if FILLSMA
+                        var paying = 1;
+                        _currentPayingRates[algo] = paying;
+#endif
                     }
                 }
 
@@ -126,6 +130,11 @@ namespace NiceHashMiner.Switching
                     throw new ArgumentException("Algo not setup in SMA");
                 _currentPayingRates[algo] = paying;
             }
+
+#if FILLSMA
+            paying = 1;
+            _currentPayingRates[algo] = paying;
+#endif
 
             HasData = true;
         }
