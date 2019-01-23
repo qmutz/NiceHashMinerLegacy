@@ -212,6 +212,20 @@ namespace NiceHashMiner
         }
         #endregion IWorkerNameDisplayer DisplayWorkerName string
 
+        #region IDevicesStateDisplayer RefreshDeviceListView EventArgs
+        static event EventHandler<EventArgs> RefreshDeviceListView;
+        private static void subscribeIDevicesStateDisplayer(IDataVisualizer s)
+        {
+            if (!(s is IDevicesStateDisplayer sIDevicesStateDisplayer)) return;
+            RefreshDeviceListView += sIDevicesStateDisplayer.RefreshDeviceListView;
+        }
+
+        private static void unsubscribeIDevicesStateDisplayer(IDataVisualizer s)
+        {
+            if (s is IDevicesStateDisplayer sIDevicesStateDisplayer) RefreshDeviceListView -= sIDevicesStateDisplayer.RefreshDeviceListView;
+        }
+        #endregion IDevicesStateDisplayer RefreshDeviceListView EventArgs
+
         #region Subscribe/Unsubscribe 
         public static void SubscribeStateDisplayer(IDataVisualizer s)
         {
@@ -243,6 +257,8 @@ namespace NiceHashMiner
                 subscribeIVersionDisplayer(s);
 
                 subscribeIWorkerNameDisplayer(s);
+
+                subscribeIDevicesStateDisplayer(s);
 
             }
         }
@@ -277,6 +293,8 @@ namespace NiceHashMiner
                 unsubscribeIVersionDisplayer(s);
 
                 unsubscribeIWorkerNameDisplayer(s);
+
+                unsubscribeIDevicesStateDisplayer(s);
 
             }
         }

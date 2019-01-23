@@ -24,6 +24,14 @@ namespace NiceHashMiner
             return Globals.GetUsername();
         }
 
+        private static void UpdateDevicesToMine()
+        {
+            var allDevs = ComputeDeviceManager.Available.Devices;
+            var devicesToMine = allDevs.Where(dev => dev.State == DeviceState.Mining).ToList();
+            MinersManager.EnsureMiningSession(GetUsername());
+            MinersManager.UpdateUsedDevices(devicesToMine);
+        }
+
         public static (bool started, string failReason) StartAllAvailableDevices()
         {
             var allDevs = ComputeDeviceManager.Available.Devices;
@@ -38,7 +46,7 @@ namespace NiceHashMiner
             var devicesToBenchmark = devicesToStart.Where(dev => BenchmarkChecker.IsDeviceWithAllEnabledAlgorithmsWithoutBenchmarks(dev));
             foreach (var dev in devicesToBenchmark) {
                 dev.State = DeviceState.Benchmarking;
-                BenchmarkManager.StartBenchmarForDevice(dev);
+                BenchmarkManager.StartBenchmarForDevice(dev, true);
             }
             
             // TODO check count
@@ -46,45 +54,85 @@ namespace NiceHashMiner
             foreach (var dev in devicesToMine) {
                 dev.State = DeviceState.Mining;
             }
-            MinersManager.EnsureMiningSession(GetUsername());
-            MinersManager.UpdateUsedDevices(devicesToMine);
+            UpdateDevicesToMine();
 
-            foreach (var dev in devicesToStart) {
-                var (ok, err) = StartDevice(dev);
-                if (!ok) {
-                    started = false;
-                    failReason = err;
-                }
-            }
-
+            StartMining();
             NiceHashStats.StateChanged();
+            RefreshDeviceListView?.Invoke(null, null);
 
             return (started, "");
         }
 
-        public static (bool started, string failReason) StartDevice(ComputeDevice device)
+        public static (bool started, string failReason) StartDevice(ComputeDevice device, bool skipBenhcmakrk = false)
         {
             // we can only start a device it is already stopped
-            if (device.State != DeviceState.Stopped)
+            if (device.State != DeviceState.Stopped && !skipBenhcmakrk)
             {
                 return (false, "TODO redundant or error");
             }
 
             // check if device has any benchmakrs
             var needsBenchmark = BenchmarkChecker.IsDeviceWithAllEnabledAlgorithmsWithoutBenchmarks(device);
-            if (needsBenchmark)
+            if (needsBenchmark && !skipBenhcmakrk)
             {
                 device.State = DeviceState.Benchmarking;
-                BenchmarkManager.StartBenchmarForDevice(device);
+                BenchmarkManager.StartBenchmarForDevice(device, true);
             }
             else
             {
                 device.State = DeviceState.Mining;
+                UpdateDevicesToMine();
             }
 
             NiceHashStats.StateChanged();
 
             return (true, "");
+        }
+
+        public static (bool stopped, string failReason) StopAllDevice() {
+            var allDevs = ComputeDeviceManager.Available.Devices;
+            // TODO when starting and stopping we are not taking Pending and Error states into account
+            var devicesToStop = allDevs.Where(dev => dev.State == DeviceState.Mining || dev.State == DeviceState.Benchmarking);
+            if (devicesToStop.Count() == 0) {
+                return (false, "No new devices to stop");
+            }
+
+            // TODO for now no partial success so if one fails send back that everything fails
+            var stopped = true;
+            var failReason = "";
+            // try to stop all
+            foreach (var dev in devicesToStop) {
+                var (success, msg) = StopDevice(dev, false);
+                if (!success) {
+                    stopped = false;
+                    failReason = msg;
+                }
+            }
+            NiceHashStats.StateChanged();
+            StopMining(true);
+            return (stopped, failReason);
+        }
+
+        public static (bool stopped, string failReason) StopDevice(ComputeDevice device, bool refreshStateChange = true)
+        {
+            // we can only start a device it is already stopped
+            switch (device.State)
+            {
+                case DeviceState.Stopped:
+                    return (false, $"Device {device.Uuid} already stopped");
+                case DeviceState.Benchmarking:
+                    BenchmarkManager.EndBenchmarkForDevice(device, false);
+                    device.State = DeviceState.Stopped;
+                    if (refreshStateChange) NiceHashStats.StateChanged();
+                    return (true, "");
+                case DeviceState.Mining:
+                    device.State = DeviceState.Stopped;
+                    UpdateDevicesToMine();
+                    if (refreshStateChange) NiceHashStats.StateChanged();
+                    return (true, "");
+                default:
+                    return (false, $"Cannot handle state {device.State.ToString()} for device {device.Uuid}");
+            }
         }
     }
 }

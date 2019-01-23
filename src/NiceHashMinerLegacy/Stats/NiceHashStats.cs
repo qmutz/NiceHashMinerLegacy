@@ -19,6 +19,8 @@ using NiceHashMinerLegacy.Common.Enums;
 using NiceHashMinerLegacy.Extensions;
 using WebSocketSharp;
 using NiceHashMiner.Configs;
+// static imports
+using static NiceHashMiner.Stats.StatusCodes;
 
 namespace NiceHashMiner.Stats
 {
@@ -356,92 +358,89 @@ namespace NiceHashMiner.Stats
 
         private static bool SetDevicesEnabled(string devs, bool enabled)
         {
-            var found = false;
-            if (!ComputeDeviceManager.Available.Devices.Any())
-                throw new RpcException("No devices to set", 1);
+            bool allDevices = devs == "*";
+            // get device with uuid if it exists, devs can be single device uuid
+            var deviceWithUUID = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(devs);
 
-            var anyStillRunning = false;
-
-            foreach (var dev in ComputeDeviceManager.Available.Devices)
-            {
-                if (devs == "*" || dev.B64Uuid == devs)
-                {
-                    found = true;
-                    dev.Enabled = enabled;
-                }
-
-                anyStillRunning = anyStillRunning || dev.Enabled;
+            // Check if RPC should execute
+            // check if redundant rpc
+            if (allDevices && enabled && ApplicationStateManager.IsEnableAllDevicesRedundantOperation()) {
+                throw new RpcException("All devices are already enabled.", ErrorCode.RedundantRpc);
+            }
+            // all disable
+            if (allDevices && !enabled && ApplicationStateManager.IsDisableAllDevicesRedundantOperation()) {
+                throw new RpcException("All devices are already disabled.", ErrorCode.RedundantRpc);
+            }
+            // if single and doesn't exist
+            if (!allDevices && deviceWithUUID == null) {
+                throw new RpcException("Device not found", ErrorCode.NonExistentDevice);
+            }
+            // if we have the device but it is redundant
+            if (!allDevices && deviceWithUUID.Enabled == enabled) {
+                var stateStr = enabled ? "enabled" : "disabled";
+                throw new RpcException($"Devices with uuid {devs} is already {stateStr}.", ErrorCode.RedundantRpc);
             }
 
-            if (!found)
-                throw new RpcException("Device not found", 1);
-
+            // if got here than we can execute the call
+            ApplicationStateManager.SetDeviceEnabledState(null, (devs, enabled));
+            // TODO invoke the event for controls that use it
             OnDeviceUpdate?.Invoke(null, new DeviceUpdateEventArgs(ComputeDeviceManager.Available.Devices));
-
-            return anyStillRunning;
+            // TODO this used to return 'anyStillRunning' but we are actually checking if there are any still enabled left
+            var anyStillEnabled = ComputeDeviceManager.Available.Devices.Any();
+            return anyStillEnabled;
         }
 
         private static void StartMining(string devs)
         {
-            if (BenchmarkManager.InBenchmark)
-                throw new RpcException("In benchmark", 43);
-            if (!ConfigManager.GeneralConfig.HasValidUserWorker())
-                throw new RpcException("No valid worker and/or address set", 41);
-
-            if (MinersManager.IsMiningEnabled())
+            // all devices case
+            bool allDevices = devs == "*";
+            if (allDevices)
             {
-                if (devs == "*")
-                    throw new RpcException("Mining already enabled", 40);
-
-                SetDevicesEnabled(devs, true);
-                MinersManager.UpdateUsedDevices(ComputeDeviceManager.Available.Devices);
-            }
-            else
-            {
-                if (devs != "*")
+                var (success, msg) = ApplicationStateManager.StartAllAvailableDevices();
+                if (!success)
                 {
-                    // Only mine with the one selected
-                    foreach (var dev in ComputeDeviceManager.Available.Devices)
-                    {
-                        dev.Enabled = false;
-                    }
-                    SetDevicesEnabled(devs, true);
+                    throw new RpcException(msg, ErrorCode.RedundantRpc);
                 }
-                // TODO this will all go out
-                var loc = "eu";//Globals.MiningLocation[ConfigManager.GeneralConfig.ServiceLocation];
-
-                if (!MinersManager.StartInitialize(loc, Globals.GetWorkerName(), Globals.GetBitcoinUser()))
-                    throw new RpcException("Mining could not start", 42);
-
-                //_mainForm?.StartMiningGui();
-                ApplicationStateManager.StartMining();
+                return;
+            }
+            // single device case
+            // get device with uuid if it exists, devs can be single device uuid
+            var deviceWithUUID = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(devs);
+            if (deviceWithUUID == null)
+            {
+                throw new RpcException("Device not found", ErrorCode.NonExistentDevice);
+            }
+            // C# doesn't get scope???
+            var (successSingle, msgSingle) = ApplicationStateManager.StartDevice(deviceWithUUID);
+            if (!successSingle)
+            {
+                // TODO this can also be an error
+                throw new RpcException(msgSingle, ErrorCode.RedundantRpc);
             }
         }
 
         private static void StopMining(string devs)
         {
-            if (!MinersManager.IsMiningEnabled())
-                throw new RpcException("Mining already stopped", 50);
-
-            if (devs != "*")
-            {
-                if (SetDevicesEnabled(devs, false))
-                {
-                    MinersManager.UpdateUsedDevices(ComputeDeviceManager.Available.Devices);
+            // all devices case
+            bool allDevices = devs == "*";
+            if (allDevices) {
+                var (success, msg) = ApplicationStateManager.StopAllDevice();
+                if (!success) {
+                    throw new RpcException(msg, ErrorCode.RedundantRpc);
                 }
-                else
-                {
-                    // No devices are left enabled, stop all mining
-                    MinersManager.StopAllMiners(true);
-                    //_mainForm?.StopMiningGui();
-                    ApplicationStateManager.StopMining(); // TODO temp
-                }
+                return;
             }
-            else
-            {
-                MinersManager.StopAllMiners(true);
-                //_mainForm?.StopMiningGui();
-                ApplicationStateManager.StopMining(); // TODO temp
+            // single device case
+            // get device with uuid if it exists, devs can be single device uuid
+            var deviceWithUUID = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(devs);
+            if (deviceWithUUID == null) {
+                throw new RpcException("Device not found", ErrorCode.NonExistentDevice);
+            }
+            // C# doesn't get scope???
+            var (successSingle, msgSingle) = ApplicationStateManager.StopDevice(deviceWithUUID);
+            if (!successSingle) {
+                // TODO this can also be an error
+                throw new RpcException(msgSingle, ErrorCode.RedundantRpc);
             }
         }
 
@@ -486,20 +485,13 @@ namespace NiceHashMiner.Stats
         private static void SendMinerStatus(bool sendDeviceNames)
         {
             var devices = ComputeDeviceManager.Available.Devices;
-
-            var stat = "STOPPED";
-            if (BenchmarkManager.InBenchmark) stat = "BENCHMARKING";
-            else if (MinersManager.IsMiningEnabled()) stat = "MINING";
-
+            var rigStatus = ApplicationStateManager.CalcRigStatusString();
             var paramList = new List<JToken>
             {
-                stat
+                rigStatus
             };
-            var activeIDs = MinersManager.GetActiveMinersIndexes();
-            var benchIDs = BenchmarkManager.GetBenchmarkingDevices().ToList();
 
             var deviceList = new JArray();
-
             foreach (var device in devices)
             {
                 try
@@ -509,17 +501,7 @@ namespace NiceHashMiner.Stats
                         sendDeviceNames ? device.Name : "",
                         device.B64Uuid  // TODO
                     };
-
-                    // Status (dev type and mining/benching/disabled
-                    var status = ((int) device.DeviceType + 1) << 3;
-
-                    if (activeIDs.Contains(device.Index))
-                        status += 2;
-                    else if (benchIDs.Contains(device.Index))
-                        status += 3;
-                    else //if (device.Enabled)
-                        status += 1;
-
+                    var status = DeviceReportStatus(device.DeviceType, device.State);
                     array.Add(status);
 
                     array.Add((int)Math.Round(device.Load));

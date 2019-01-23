@@ -25,7 +25,7 @@ namespace NiceHashMiner
 {
     using System.IO;
 
-    public partial class Form_Main : Form, Form_Loading.IAfterInitializationCaller, IDataVisualizer, IBTCDisplayer, IWorkerNameDisplayer, IServiceLocationDisplayer, IVersionDisplayer, IBalanceBTCDisplayer, IBalanceFiatDisplayer, IGlobalMiningRateDisplayer, IStartMiningDisplayer, IStopMiningDisplayer
+    public partial class Form_Main : Form, Form_Loading.IAfterInitializationCaller, IBTCDisplayer, IWorkerNameDisplayer, IServiceLocationDisplayer, IVersionDisplayer, IBalanceBTCDisplayer, IBalanceFiatDisplayer, IGlobalMiningRateDisplayer, IStartMiningDisplayer, IStopMiningDisplayer
     {
         private Timer _startupTimer;
 
@@ -42,7 +42,8 @@ namespace NiceHashMiner
         public Form_Main()
         {
             InitializeComponent();
-            ApplicationStateManager.SubscribeStateDisplayer(this);
+            FormHelpers.SubscribeAllControls(this);
+            //ApplicationStateManager.SubscribeStateDisplayer(this);
 
             Width = ConfigManager.GeneralConfig.MainFormSize.X;
             Height = ConfigManager.GeneralConfig.MainFormSize.Y;
@@ -157,7 +158,7 @@ namespace NiceHashMiner
             {
                 if (!e.IsIdle)
                 {
-                    ApplicationStateManager.StopMining(true);
+                    ApplicationStateManager.StopAllDevice();
                     Helpers.ConsolePrint("NICEHASH", "Resumed from idling");
                 }
             }
@@ -166,7 +167,7 @@ namespace NiceHashMiner
                 Helpers.ConsolePrint("NICEHASH", "Entering idling state");
                 if (StartMining(false) != StartMiningReturnType.StartMining)
                 {
-                    ApplicationStateManager.StopMining(true);
+                    ApplicationStateManager.StopAllDevice();
                 }
             }
         }
@@ -190,7 +191,7 @@ namespace NiceHashMiner
 
             /////////////////////////////////////////////
             /////// from here on we have our devices and Miners initialized
-            ConfigManager.AfterDeviceQueryInitialization();
+            ApplicationStateManager.AfterDeviceQueryInitialization();
             _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Saving config..."));
 
             // All devices settup should be initialized in AllDevices
@@ -309,7 +310,7 @@ namespace NiceHashMiner
                 Helpers.InstallVcRedist();
             }
 
-
+            ApplicationStateManager.InitFinished();
             if (ConfigManager.GeneralConfig.AutoStartMining)
             {
                 // well this is started manually as we want it to start at runtime
@@ -317,7 +318,7 @@ namespace NiceHashMiner
                 if (StartMining(false) != StartMiningReturnType.StartMining)
                 {
                     _isManuallyStarted = false;
-                    ApplicationStateManager.StopMining(true);
+                    ApplicationStateManager.StopAllDevice();
                 }
             }
         }
@@ -591,7 +592,7 @@ namespace NiceHashMiner
             if (StartMining(true) == StartMiningReturnType.ShowNoMining)
             {
                 _isManuallyStarted = false;
-                ApplicationStateManager.StopMining(false);
+                ApplicationStateManager.StopAllDevice();
                 MessageBox.Show(Tr("NiceHash Miner Legacy cannot start mining. Make sure you have at least one enabled device that has at least one enabled and benchmarked algorithm."),
                     Tr("Warning!"),
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -601,7 +602,7 @@ namespace NiceHashMiner
         private void ButtonStopMining_Click(object sender, EventArgs e)
         {
             _isManuallyStarted = false;
-            ApplicationStateManager.StopMining(false);
+            ApplicationStateManager.StopAllDevice();
         }
 
         private void ButtonLogo_Click(object sender, EventArgs e)
@@ -778,9 +779,6 @@ namespace NiceHashMiner
             //var isMining = MinersManager.StartInitialize(username);
             var isMining = true;
             ApplicationStateManager.StartAllAvailableDevices();
-
-            // TODO TEMP
-            ApplicationStateManager.StartMining();
 
             return isMining ? StartMiningReturnType.StartMining : StartMiningReturnType.ShowNoMining;
         }

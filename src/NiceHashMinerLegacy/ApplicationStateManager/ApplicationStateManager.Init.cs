@@ -1,10 +1,10 @@
 ﻿using NiceHashMiner.Miners;
+using NiceHashMiner.Stats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace NiceHashMiner
 {
@@ -21,6 +21,13 @@ namespace NiceHashMiner
         public static async void InitializeManagersAndMiners()
         {
             var initSteps = new List<ActionWithMessage>();
+        }
+
+        private static bool isInitFinished = false;
+        public static void InitFinished()
+        {
+            isInitFinished = true;
+            NiceHashStats.StateChanged();
         }
     }
 }

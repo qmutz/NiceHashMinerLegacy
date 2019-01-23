@@ -36,7 +36,7 @@ namespace NiceHashMiner
         }
         #endregion
 
-        #region ComputeDevicesCheck
+        #region ComputeDevicesCheck Lost GPU check
         private static SystemTimer _computeDevicesCheckTimer;
 
         private static void StartComputeDevicesCheckTimer()
@@ -94,6 +94,26 @@ namespace NiceHashMiner
         {
             _preventSleepTimer?.Stop();
             _preventSleepTimer = null;
+        }
+        #endregion
+
+        #region RefreshDeviceListView timer
+        private static SystemTimer _refreshDeviceListViewTimer;
+
+        public static void StartRefreshDeviceListViewTimer()
+        {
+            _refreshDeviceListViewTimer = new SystemTimer();
+            _refreshDeviceListViewTimer.Elapsed += (object sender, ElapsedEventArgs e) => {
+                RefreshDeviceListView?.Invoke(sender, EventArgs.Empty);
+            };
+            _refreshDeviceListViewTimer.Interval = 2000;
+            _refreshDeviceListViewTimer.Start();
+        }
+        
+        private static void StopRefreshDeviceListViewTimer()
+        {
+            _refreshDeviceListViewTimer?.Stop();
+            _refreshDeviceListViewTimer = null;
         }
         #endregion
     }

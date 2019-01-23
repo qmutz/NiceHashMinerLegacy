@@ -28,23 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.components = new System.ComponentModel.Container();
+            this.devicesMainBoard1 = new NiceHashMiner.Forms.Components.DevicesMainBoard();
             this.SuspendLayout();
             // 
-            // richTextBox1
+            // devicesMainBoard1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(13, 13);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(833, 580);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
+            this.devicesMainBoard1.Location = new System.Drawing.Point(12, 12);
+            this.devicesMainBoard1.Name = "devicesMainBoard1";
+            this.devicesMainBoard1.Size = new System.Drawing.Size(798, 232);
+            this.devicesMainBoard1.TabIndex = 0;
             // 
             // StateDumpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(858, 605);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.devicesMainBoard1);
             this.Name = "StateDumpForm";
             this.Text = "StateDumpForm";
             this.ResumeLayout(false);
@@ -52,7 +52,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private Components.DevicesMainBoard devicesMainBoard1;
     }
 }

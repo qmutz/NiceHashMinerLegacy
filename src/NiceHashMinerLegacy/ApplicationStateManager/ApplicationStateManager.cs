@@ -1,4 +1,5 @@
 ﻿using NiceHashMiner.Configs;
+using NiceHashMiner.Devices;
 using NiceHashMiner.Interfaces.DataVisualizer;
 using NiceHashMiner.Miners;
 using NiceHashMiner.Stats;
@@ -292,7 +293,7 @@ namespace NiceHashMiner
         // StartMining function should be called only if all mining requirements are met, btc or demo, valid workername, and sma data
         // don't call this function ever unless credentials are valid or if we will be using Demo mining
         // And if there are missing mining requirements
-        public static bool StartMining()
+        private static bool StartMining()
         {
             if (IsCurrentlyMining)
             {
@@ -312,7 +313,7 @@ namespace NiceHashMiner
         //    return false;
         //}
 
-        public static bool StopMining(bool headless)
+        private static bool StopMining(bool headless)
         {
             if (!IsCurrentlyMining)
             {
@@ -327,6 +328,59 @@ namespace NiceHashMiner
             StopPreventSleepTimer();
             DisplayMiningStopped?.Invoke(null, null);
             return true;
+        }
+
+
+        // TODO temporary here AfterDeviceQueryInitialization
+        public static void AfterDeviceQueryInitialization()
+        {
+            ConfigManager.AfterDeviceQueryInitialization();
+            RefreshDeviceListView?.Invoke(null, null);
+            StartRefreshDeviceListViewTimer();
+        }
+
+
+        public static RigStatus CalcRigStatus()
+        {
+            if (!isInitFinished)
+            {
+                return RigStatus.Pending;
+            }
+            // TODO check if we are connected to ws if not retrun offline state
+
+            // check devices
+            var allDevs = ComputeDeviceManager.Available.Devices;
+            // now assume we have all disabled
+            var rigState = RigStatus.Disabled;
+            // order matters, we are excluding pending state
+            var anyDisabled = allDevs.Any(dev => dev.State == DeviceState.Disabled);
+            if (anyDisabled) {
+                rigState = RigStatus.Disabled;
+            }
+            var anyStopped = allDevs.Any(dev => dev.State == DeviceState.Stopped);
+            if (anyStopped) {
+                rigState = RigStatus.Stopped;
+            }
+            var anyMining = allDevs.Any(dev => dev.State == DeviceState.Mining);
+            if (anyMining) {
+                rigState = RigStatus.Mining;
+            }
+            var anyBenchmarking = allDevs.Any(dev => dev.State == DeviceState.Benchmarking);
+            if (anyBenchmarking) {
+                rigState = RigStatus.Benchmarking;
+            }
+            var anyError = allDevs.Any(dev => dev.State == DeviceState.Error);
+            if (anyError) {
+                rigState = RigStatus.Error;
+            }           
+
+            return rigState;
+        }
+
+        public static string CalcRigStatusString()
+        {
+            var rigState = CalcRigStatus();
+            return rigState.ToString().ToUpper();
         }
     }
 }

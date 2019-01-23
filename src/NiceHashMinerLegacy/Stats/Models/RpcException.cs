@@ -15,5 +15,11 @@ namespace NiceHashMiner.Stats.Models
         {
             Code = code;
         }
+
+        public RpcException(string message, ErrorCode code)
+            : base(message)
+        {
+            Code = (int)code;
+        }
     }
 }

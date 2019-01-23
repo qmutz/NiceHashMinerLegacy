@@ -15,6 +15,7 @@ namespace NiceHashMiner.Forms
         public StateDumpForm()
         {
             InitializeComponent();
+            FormHelpers.SubscribeAllControls(this);
         }
     }
 }

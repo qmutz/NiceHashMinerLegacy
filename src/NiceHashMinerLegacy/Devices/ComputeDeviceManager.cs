@@ -982,6 +982,11 @@ namespace NiceHashMiner.Devices
                 return Devices.FirstOrDefault(dev => dev.Uuid == uuidOrB64Uuid || dev.B64Uuid == uuidOrB64Uuid);
             }
 
+            public static bool HasDeviceWithUuidOrB64Uuid(string uuidOrB64Uuid)
+            {
+                return GetDeviceWithUuidOrB64Uuid(uuidOrB64Uuid) != null;
+            }
+
             public static List<ComputeDevice> GetSameDevicesTypeAsDeviceWithUuid(string uuid)
             {
                 var compareDev = GetDeviceWithUuid(uuid);

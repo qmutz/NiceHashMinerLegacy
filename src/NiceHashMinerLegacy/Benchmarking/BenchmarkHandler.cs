@@ -13,6 +13,7 @@ namespace NiceHashMiner.Benchmarking
 {
     public class BenchmarkHandler : IBenchmarkComunicator
     {
+        private bool _startMiningAfterBenchmark;
         private readonly Queue<Algorithm> _benchmarkAlgorithmQueue;
         private readonly int _benchmarkAlgorithmsCount;
         private int _benchmarkCurrentIndex = -1;
@@ -32,8 +33,9 @@ namespace NiceHashMiner.Benchmarking
             AlgorithmType.CryptoNight
         };
 
-        public BenchmarkHandler(ComputeDevice device, Queue<Algorithm> algorithms, BenchmarkPerformanceType performance)
+        public BenchmarkHandler(ComputeDevice device, Queue<Algorithm> algorithms, BenchmarkPerformanceType performance, bool startMiningAfterBenchmark = false)
         {
+            _startMiningAfterBenchmark = startMiningAfterBenchmark;
             Device = device;
             _benchmarkAlgorithmQueue = algorithms;
             _performanceType = performance;
@@ -226,7 +228,7 @@ namespace NiceHashMiner.Benchmarking
         private void EndBenchmark()
         {
             _currentAlgorithm?.ClearBenchmarkPending();
-            BenchmarkManager.EndBenchmarkForDevice(Device, _benchmarkFailedAlgo.Count > 0);
+            BenchmarkManager.EndBenchmarkForDevice(Device, _benchmarkFailedAlgo.Count > 0, _startMiningAfterBenchmark);
         }
 
         public void InvokeQuit()

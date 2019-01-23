@@ -114,6 +114,7 @@
     <Compile Include="Algorithms\DualAlgorithm.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.DataVizualizers.cs" />
+    <Compile Include="ApplicationStateManager\ApplicationStateManager.Devices.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.Init.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.Mining.cs" />
     <Compile Include="ApplicationStateManager\ApplicationStateManager.Timers.cs" />
@@ -148,6 +149,12 @@
     <Compile Include="Forms\Components\DevicesListViewSpeedControl.Designer.cs">
       <DependentUpon>DevicesListViewSpeedControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Components\DevicesMainBoard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Components\DevicesMainBoard.Designer.cs">
+      <DependentUpon>DevicesMainBoard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormHelpers.cs" />
     <Compile Include="Forms\StateDumpForm.cs">
       <SubType>Form</SubType>
@@ -165,6 +172,7 @@
     </Compile>
     <Compile Include="Interfaces\DataVisualizer\IBalanceBTCDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IBalanceFiatDisplayer.cs" />
+    <Compile Include="Interfaces\DataVisualizer\IDevicesStateDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IGlobalMiningRateDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IGroupDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IMiningNotProfitableDisplayer.cs" />
@@ -178,6 +186,8 @@
     <Compile Include="Interfaces\DataVisualizer\IStateDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IVersionDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IWorkerNameDisplayer.cs" />
+    <Compile Include="Interfaces\StateSetters\IEnabledDeviceStateSetter.cs" />
+    <Compile Include="Interfaces\StateSetters\IStateSetter.cs" />
     <Compile Include="Miners\Equihash\Ewbf144.cs" />
     <Compile Include="Miners\Ethlargement.cs" />
     <Compile Include="Miners\Phoenix.cs" />
@@ -190,6 +200,7 @@
     <Compile Include="Miners\XmrStak\Configs\XmrStakConfigGpu.cs" />
     <Compile Include="Miners\ApiData.cs" />
     <Compile Include="Eula.cs" />
+    <Compile Include="Stats\ErrorCode.cs" />
     <Compile Include="Stats\ExchangeRateAPI.cs" />
     <Compile Include="Miners\ClaymoreDual.cs" />
     <Compile Include="Miners\Equihash\Dtsm.cs" />
@@ -398,6 +409,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Components\DevicesListViewSpeedControl.resx">
       <DependentUpon>DevicesListViewSpeedControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Components\DevicesMainBoard.resx">
+      <DependentUpon>DevicesMainBoard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Components\Field.resx">
       <DependentUpon>Field.cs</DependentUpon>

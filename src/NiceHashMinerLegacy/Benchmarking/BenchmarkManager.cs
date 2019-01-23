@@ -206,13 +206,13 @@ namespace NiceHashMiner.Benchmarking
 
         // network benchmark starts benchmarking on a device
         // assume device is enabled and it exists
-        public static void StartBenchmarForDevice(ComputeDevice device, BenchmarkPerformanceType perfType = BenchmarkPerformanceType.Standard)
+        public static void StartBenchmarForDevice(ComputeDevice device, bool startMiningAfterBenchmark = false, BenchmarkPerformanceType perfType = BenchmarkPerformanceType.Standard)
         {
             var unbenchmarkedAlgorithms = device.GetAlgorithmSettings().Where(algo => algo.Enabled && algo.BenchmarkNeeded).ToQueue();
             lock (_runningBenchmarkThreads)
             lock (_statusCheckAlgos)
             {
-                var handler = new BenchmarkHandler(device, unbenchmarkedAlgorithms, perfType);
+                var handler = new BenchmarkHandler(device, unbenchmarkedAlgorithms, perfType, startMiningAfterBenchmark);
                 _runningBenchmarkThreads.Add(handler);
                 handler.Start();
             }
@@ -282,7 +282,7 @@ namespace NiceHashMiner.Benchmarking
             }
         }
 
-        public static void EndBenchmarkForDevice(ComputeDevice device, bool failedAlgos)
+        public static void EndBenchmarkForDevice(ComputeDevice device, bool failedAlgos, bool startMiningAfterBenchmark = false)
         {
             _hasFailedAlgorithms = failedAlgos || _hasFailedAlgorithms;
             lock (_runningBenchmarkThreads)
@@ -291,6 +291,12 @@ namespace NiceHashMiner.Benchmarking
 
                 if (_runningBenchmarkThreads.Count <= 0)
                     End();
+
+                if (startMiningAfterBenchmark) {
+                    ApplicationStateManager.StartDevice(device, true);
+                } else {
+                    ApplicationStateManager.StopDevice(device);
+                }
             }
         }
 
