@@ -353,7 +353,7 @@ namespace NiceHashMiner
             // now assume we have all disabled
             var rigState = RigStatus.Disabled;
             // order matters, we are excluding pending state
-            var anyDisabled = allDevs.Any(dev => dev.State == DeviceState.Disabled);
+            var anyDisabled = allDevs.Any(dev => dev.IsDisabled);
             if (anyDisabled) {
                 rigState = RigStatus.Disabled;
             }

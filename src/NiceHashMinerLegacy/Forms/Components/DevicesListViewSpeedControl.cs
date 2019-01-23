@@ -77,7 +77,7 @@ namespace NiceHashMiner.Forms.Components
 
         protected override void ListViewDevicesItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (_ignoreChecks) return;
+            if (_ignoreChecks || ApplicationStateManager.IsCurrentlyMining) return;
             base.ListViewDevicesItemChecked(sender, e);
         }
 

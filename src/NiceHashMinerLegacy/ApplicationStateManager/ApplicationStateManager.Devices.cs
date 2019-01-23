@@ -33,7 +33,7 @@ namespace NiceHashMiner
             var isDisableAllDevices = "*" == uuid;
             if (isDisableAllDevices)
             {
-                devicesToDisable.AddRange(ComputeDeviceManager.Available.Devices.Where(dev => dev.State != DeviceState.Disabled));
+                devicesToDisable.AddRange(ComputeDeviceManager.Available.Devices.Where(dev => !dev.IsDisabled));
             }
             else
             {

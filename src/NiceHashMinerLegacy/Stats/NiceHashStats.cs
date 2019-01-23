@@ -390,59 +390,88 @@ namespace NiceHashMiner.Stats
             return anyStillEnabled;
         }
 
+        #region Start
+        private static void startMiningAllDevices() {
+            var allDisabled = ComputeDeviceManager.Available.Devices.All(dev => dev.IsDisabled);
+            if (allDisabled) {
+                throw new RpcException("All devices are disabled cannot start", ErrorCode.DisabledDevice);
+            }
+            var (success, msg) = ApplicationStateManager.StartAllAvailableDevices();
+            if (!success)
+            {
+                throw new RpcException(msg, ErrorCode.RedundantRpc);
+            }
+        }
+
+        private static void startMiningOnDeviceWithUuid(string uuid) {
+            string errMsgForUuid = $"Cannot start device with uuid {uuid}";
+            // get device with uuid if it exists, devs can be single device uuid
+            var deviceWithUUID = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(uuid);
+            if (deviceWithUUID == null) {
+                throw new RpcException($"{errMsgForUuid}. Device not found.", ErrorCode.NonExistentDevice);
+            }
+            if (deviceWithUUID.IsDisabled) {
+                throw new RpcException($"{errMsgForUuid}. Device is disabled.", ErrorCode.DisabledDevice);
+            }
+            var (success, msg) = ApplicationStateManager.StartDevice(deviceWithUUID);
+            if (!success) {
+                // TODO this can also be an error
+                throw new RpcException($"{errMsgForUuid}. {msg}.", ErrorCode.RedundantRpc);
+            }
+        }
+
         private static void StartMining(string devs)
         {
-            // all devices case
             bool allDevices = devs == "*";
-            if (allDevices)
-            {
-                var (success, msg) = ApplicationStateManager.StartAllAvailableDevices();
-                if (!success)
-                {
-                    throw new RpcException(msg, ErrorCode.RedundantRpc);
-                }
-                return;
+            if (allDevices) {
+                startMiningAllDevices();
+            } else {
+                startMiningOnDeviceWithUuid(devs);
             }
-            // single device case
+        }
+        #endregion Start
+
+        #region Stop
+        private static void stopMiningAllDevices()
+        {
+            var allDisabled = ComputeDeviceManager.Available.Devices.All(dev => dev.IsDisabled);
+            if (allDisabled) {
+                throw new RpcException("All devices are disabled cannot stop", ErrorCode.DisabledDevice);
+            }
+            var (success, msg) = ApplicationStateManager.StopAllDevice();
+            if (!success) {
+                throw new RpcException(msg, ErrorCode.RedundantRpc);
+            }
+        }
+
+        private static void stopMiningOnDeviceWithUuid(string uuid)
+        {
+            string errMsgForUuid = $"Cannot stop device with uuid {uuid}";
             // get device with uuid if it exists, devs can be single device uuid
-            var deviceWithUUID = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(devs);
-            if (deviceWithUUID == null)
-            {
-                throw new RpcException("Device not found", ErrorCode.NonExistentDevice);
+            var deviceWithUUID = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(uuid);
+            if (deviceWithUUID == null) {
+                throw new RpcException($"{errMsgForUuid}. Device not found.", ErrorCode.NonExistentDevice);
             }
-            // C# doesn't get scope???
-            var (successSingle, msgSingle) = ApplicationStateManager.StartDevice(deviceWithUUID);
-            if (!successSingle)
-            {
+            if (deviceWithUUID.IsDisabled) {
+                throw new RpcException($"{errMsgForUuid}. Device is disabled.", ErrorCode.DisabledDevice);
+            }
+            var (success, msg) = ApplicationStateManager.StopDevice(deviceWithUUID);
+            if (!success) {
                 // TODO this can also be an error
-                throw new RpcException(msgSingle, ErrorCode.RedundantRpc);
+                throw new RpcException($"{errMsgForUuid}. {msg}.", ErrorCode.RedundantRpc);
             }
         }
 
         private static void StopMining(string devs)
         {
-            // all devices case
             bool allDevices = devs == "*";
             if (allDevices) {
-                var (success, msg) = ApplicationStateManager.StopAllDevice();
-                if (!success) {
-                    throw new RpcException(msg, ErrorCode.RedundantRpc);
-                }
-                return;
-            }
-            // single device case
-            // get device with uuid if it exists, devs can be single device uuid
-            var deviceWithUUID = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(devs);
-            if (deviceWithUUID == null) {
-                throw new RpcException("Device not found", ErrorCode.NonExistentDevice);
-            }
-            // C# doesn't get scope???
-            var (successSingle, msgSingle) = ApplicationStateManager.StopDevice(deviceWithUUID);
-            if (!successSingle) {
-                // TODO this can also be an error
-                throw new RpcException(msgSingle, ErrorCode.RedundantRpc);
+                stopMiningAllDevices();
+            } else {
+                stopMiningOnDeviceWithUuid(devs);
             }
         }
+        #endregion Stop
 
         private static void SetPowerMode(string device, PowerLevel level)
         {

@@ -28,10 +28,18 @@ namespace NiceHashMiner
         {
             var allDevs = ComputeDeviceManager.Available.Devices;
             var devicesToMine = allDevs.Where(dev => dev.State == DeviceState.Mining).ToList();
-            MinersManager.EnsureMiningSession(GetUsername());
-            MinersManager.UpdateUsedDevices(devicesToMine);
+            if (devicesToMine.Count > 0) {
+                StartMining();
+                MinersManager.EnsureMiningSession(GetUsername());
+                MinersManager.UpdateUsedDevices(devicesToMine);
+            } else {
+                StopMining(false);
+                MinersManager.StopAllMiners(true);
+            }
+            
         }
 
+        // TODO add check for any enabled algorithms
         public static (bool started, string failReason) StartAllAvailableDevices()
         {
             var allDevs = ComputeDeviceManager.Available.Devices;
@@ -55,8 +63,6 @@ namespace NiceHashMiner
                 dev.State = DeviceState.Mining;
             }
             UpdateDevicesToMine();
-
-            StartMining();
             NiceHashStats.StateChanged();
             RefreshDeviceListView?.Invoke(null, null);
 
@@ -68,7 +74,7 @@ namespace NiceHashMiner
             // we can only start a device it is already stopped
             if (device.State != DeviceState.Stopped && !skipBenhcmakrk)
             {
-                return (false, "TODO redundant or error");
+                return (false, "Device already started");
             }
 
             // check if device has any benchmakrs

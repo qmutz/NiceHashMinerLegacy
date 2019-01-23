@@ -26,6 +26,9 @@ namespace NiceHashMiner.Devices
         public readonly string NameCount;
         public bool Enabled { get; protected set; }
 
+        // disabled state check
+        public bool IsDisabled => (!Enabled || State == DeviceState.Disabled);
+
         public DeviceState State { get; set; } = DeviceState.Stopped;
 
         public readonly DeviceGroupType DeviceGroupType;
