@@ -135,7 +135,7 @@ namespace NiceHashMiner.Stats
             executed = false;
 
             if (message == null)
-                throw new RpcException("No message found", 34);
+                throw new RpcException("No message found", ErrorCode.UnableToHandleRpc);
 
             id = (int?) message.id;
             switch (message.method.Value)
@@ -175,12 +175,12 @@ namespace NiceHashMiner.Stats
                     switch (userSetResult)
                     {
                         case ApplicationStateManager.SetResult.INVALID:
-                            throw new RpcException("Bitcoin address invalid", -4);
+                            throw new RpcException("Bitcoin address invalid", ErrorCode.InvalidUsername);
                         case ApplicationStateManager.SetResult.CHANGED:
                             // we return executed
                             break;
                         case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
-                            throw new RpcException($"Nothing to change btc \"{btc}\" already set", -5);
+                            throw new RpcException($"Nothing to change btc \"{btc}\" already set", ErrorCode.RedundantRpc);
                     }
                     return new ExecutedInfo { NewBtc = btc };
                 case "mining.set.worker":
@@ -190,12 +190,12 @@ namespace NiceHashMiner.Stats
                     switch (workerSetResult)
                     {
                         case ApplicationStateManager.SetResult.INVALID:
-                            throw new RpcException("Worker name invalid", -5);
+                            throw new RpcException("Worker name invalid", ErrorCode.InvalidWorker);
                         case ApplicationStateManager.SetResult.CHANGED:
                             // we return executed
                             break;
                         case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
-                            throw new RpcException($"Nothing to change worker name \"{worker}\" already set", -5);
+                            throw new RpcException($"Nothing to change worker name \"{worker}\" already set", ErrorCode.RedundantRpc);
                     }
                     return new ExecutedInfo { NewWorker = worker };
                 case "mining.set.group":
@@ -206,12 +206,12 @@ namespace NiceHashMiner.Stats
                     {
                         case ApplicationStateManager.SetResult.INVALID:
                             // TODO error code not correct
-                            throw new RpcException("Group name invalid", -1000);
+                            throw new RpcException("Group name invalid", ErrorCode.UnableToHandleRpc);
                         case ApplicationStateManager.SetResult.CHANGED:
                             // we return executed
                             break;
                         case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
-                            throw new RpcException($"Nothing to change group \"{group}\" already set", -5);
+                            throw new RpcException($"Nothing to change group \"{group}\" already set", ErrorCode.RedundantRpc);
                     }
                     return new ExecutedInfo {NewRig = group};
                 case "mining.enable":
@@ -236,7 +236,7 @@ namespace NiceHashMiner.Stats
                     return null;
             }
             
-            throw new RpcException("Operation not supported", 2);
+            throw new RpcException("Operation not supported", ErrorCode.UnableToHandleRpc);
         }
 
         private static void SocketOnOnConnectionEstablished(object sender, EventArgs e)
@@ -461,7 +461,7 @@ namespace NiceHashMiner.Stats
 
             if (!found)
             {
-                throw new RpcException("No devices settable devices found", 101);
+                throw new RpcException("No devices settable devices found", ErrorCode.UnableToHandleRpc);
             }
         }
 
