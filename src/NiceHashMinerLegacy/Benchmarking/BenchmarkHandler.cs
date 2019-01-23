@@ -13,6 +13,7 @@ namespace NiceHashMiner.Benchmarking
 {
     public class BenchmarkHandler : IBenchmarkComunicator
     {
+        private bool _invokedQuit = false;
         private bool _startMiningAfterBenchmark;
         private readonly Queue<Algorithm> _benchmarkAlgorithmQueue;
         private readonly int _benchmarkAlgorithmsCount;
@@ -161,7 +162,7 @@ namespace NiceHashMiner.Benchmarking
         {
             ++_benchmarkCurrentIndex;
             if (_benchmarkCurrentIndex > 0) BenchmarkManager.StepUpBenchmarkStepProgress();
-            if (_benchmarkCurrentIndex >= _benchmarkAlgorithmsCount)
+            if (_benchmarkCurrentIndex >= _benchmarkAlgorithmsCount || _invokedQuit)
             {
                 EndBenchmark();
                 return;
@@ -228,11 +229,13 @@ namespace NiceHashMiner.Benchmarking
         private void EndBenchmark()
         {
             _currentAlgorithm?.ClearBenchmarkPending();
-            BenchmarkManager.EndBenchmarkForDevice(Device, _benchmarkFailedAlgo.Count > 0, _startMiningAfterBenchmark);
+            var startMining = _startMiningAfterBenchmark && !_invokedQuit;
+            BenchmarkManager.EndBenchmarkForDevice(Device, _benchmarkFailedAlgo.Count > 0, startMining);
         }
 
         public void InvokeQuit()
         {
+            _invokedQuit = true;
             // clear benchmark pending status
             _currentAlgorithm?.ClearBenchmarkPending();
             if (_currentMiner != null)

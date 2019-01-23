@@ -121,8 +121,8 @@ namespace NiceHashMiner
                 case DeviceState.Stopped:
                     return (false, $"Device {device.Uuid} already stopped");
                 case DeviceState.Benchmarking:
-                    BenchmarkManager.EndBenchmarkForDevice(device, false);
                     device.State = DeviceState.Stopped;
+                    BenchmarkManager.StopBenchmarForDevice(device);
                     if (refreshStateChange) NiceHashStats.StateChanged();
                     return (true, "");
                 case DeviceState.Mining:
