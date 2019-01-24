@@ -91,6 +91,11 @@ namespace NiceHashMiner.Stats
             _deviceUpdateTimer = new System.Threading.Timer(MinerStatus_Tick, null, DeviceUpdateInterval, DeviceUpdateInterval);
         }
 
+        public static void EndConnection()
+        {
+            _socket?.EndConnection();
+        }
+
         #region Socket Callbacks
 
         private static void SocketOnOnConnectionLost(object sender, EventArgs eventArgs)
@@ -658,13 +663,10 @@ namespace NiceHashMiner.Stats
             var responseFromServer = "";
             try
             {
-                var activeMinersGroup = MinersManager.GetActiveMinersGroup();
-
                 var wr = (HttpWebRequest) WebRequest.Create(url);
                 wr.UserAgent = "NiceHashMiner/" + Application.ProductVersion;
                 if (worker.Length > 64) worker = worker.Substring(0, 64);
                 wr.Headers.Add("NiceHash-Worker-ID", worker);
-                wr.Headers.Add("NHM-Active-Miners-Group", activeMinersGroup);
                 wr.Timeout = 30 * 1000;
                 var response = wr.GetResponse();
                 var ss = response.GetResponseStream();

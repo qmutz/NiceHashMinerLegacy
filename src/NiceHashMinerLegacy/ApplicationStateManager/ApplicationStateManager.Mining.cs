@@ -34,7 +34,6 @@ namespace NiceHashMiner
                 MinersManager.UpdateUsedDevices(devicesToMine);
             } else {
                 StopMining(false);
-                MinersManager.StopAllMiners(true);
             }
             
         }

@@ -43,7 +43,6 @@ namespace NiceHashMiner
         {
             InitializeComponent();
             FormHelpers.SubscribeAllControls(this);
-            //ApplicationStateManager.SubscribeStateDisplayer(this);
 
             Width = ConfigManager.GeneralConfig.MainFormSize.X;
             Height = ConfigManager.GeneralConfig.MainFormSize.Y;
@@ -66,11 +65,6 @@ namespace NiceHashMiner
             Text += ApplicationStateManager.Title;
 
             InitMainConfigGuiData();
-        }
-        
-        ~Form_Main()
-        {
-            ApplicationStateManager.UnsubscribeStateDisplayer(this);
         }
 
         private void InitLocalization()
@@ -544,6 +538,7 @@ namespace NiceHashMiner
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            FormHelpers.UnsubscribeAllControls(this);
             ApplicationStateManager.BeforeExit();
             MessageBoxManager.Unregister();
         }

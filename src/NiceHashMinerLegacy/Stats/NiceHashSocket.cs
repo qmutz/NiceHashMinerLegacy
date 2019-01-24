@@ -30,6 +30,7 @@ namespace NiceHashMiner.Stats
         private WebSocket _webSocket;
         public bool IsAlive => _webSocket.ReadyState == WebSocketState.Open;
         private bool _attemptingReconnect;
+        private bool _endConnection = false;
         private bool _connectionAttempted;
         private bool _connectionEstablished;
         private readonly Random _random = new Random();
@@ -77,6 +78,14 @@ namespace NiceHashMiner.Stats
             {
                 Helpers.ConsolePrint("SOCKET", e.ToString());
             }
+        }
+
+        public void EndConnection()
+        {
+            _endConnection = true;
+            // TODO client away
+            //CloseStatusCode.Away
+            _webSocket.Close(CloseStatusCode.Normal, "Exiting NiceHashMiner Legacy");
         }
 
         private void ReceiveCallback(object sender, MessageEventArgs e)
@@ -156,7 +165,7 @@ namespace NiceHashMiner.Stats
 
         private bool AttemptReconnect()
         {
-            if (_attemptingReconnect)
+            if (_attemptingReconnect || _endConnection)
             {
                 return false;
             }
