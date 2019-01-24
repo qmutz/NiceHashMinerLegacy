@@ -10,6 +10,9 @@ using System.Windows.Forms;
 using NiceHashMiner.Interfaces.DataVisualizer;
 using NiceHashMiner.Interfaces.StateSetters;
 using NiceHashMiner.Devices;
+using NiceHashMinerLegacy.Common.Enums;
+
+using static NiceHashMiner.Translations;
 
 namespace NiceHashMiner.Forms.Components
 {
@@ -27,33 +30,44 @@ namespace NiceHashMiner.Forms.Components
             //PowerModeDropdown // disable for now
         }
 
-        //public class RowData
-        //{
-        //    public bool Enabled;
-        //    public string Name;
-        //    public string Status;
-        //    public string Temperature;
-        //    public string Load;
-        //    public string RPM;
-        //    public string StartStop;
-
-        //    public string TagID;
-        //}
-
         public event EventHandler<(string uuid, bool enabled)> SetDeviceEnabledState;
 
-        public static object[] GetRowData()
-        {
-            const string status = "Pending";
-            object[] row0 = { true, "Name", status, "Temperature", "Load", "RPM", "Start/Stop" };
-            return row0;
+        //public static object[] GetRowData()
+        //{
+        //    const string status = "Pending";
+        //    object[] row0 = { true, "Name", status, "Temperature", "Load", "RPM", "Start/Stop" };
+        //    return row0;
+        //}
+
+        private static string buttonLabel(DeviceState state) {
+            // assume disabled
+            var buttonLabel = "N/A";
+            if (state == DeviceState.Stopped)
+            {
+                buttonLabel = "Start";
+            }
+            else if (state == DeviceState.Mining || state == DeviceState.Benchmarking)
+            {
+                buttonLabel = "Stop";
+            }
+            return Tr(buttonLabel);
         }
 
-        //public static object[] GetRowData(RowData rd)
-        //{
-        //    object[] rowData = { rd.Enabled, rd.Name, rd.Status, rd.Temperature, rd.Load, "RPM", "Start/Stop" };
-        //    return rowData;
-        //}
+        private static string stateStr(DeviceState state) {
+            return Tr(state.ToString());
+        }
+
+        private static string numStr(int num) {
+            if (num < 0) {
+                return Tr("N/A");
+            }
+            return Tr(num.ToString());
+        }
+
+        public static object[] GetRowData(ComputeDevice d) {
+            object[] rowData = { d.Enabled, d.GetFullName(), stateStr(d.State), numStr((int)d.Temp), numStr((int)d.Load), numStr(d.FanSpeed), buttonLabel(d.State) };
+            return rowData;
+        }
 
         // TODO enable this when combobox is working
         //private enum PowerMode : int
@@ -90,7 +104,15 @@ namespace NiceHashMiner.Forms.Components
             switch (cellItem)
             {
                 case DataGridViewButtonCell button:
-                    button.Value = "CLICKED";
+                    var dev = ComputeDeviceManager.Available.GetDeviceWithUuidOrB64Uuid(deviceUUID);
+                    if (dev == null) return;
+                    if (dev.State == DeviceState.Stopped) {
+                        button.Value = Tr("Starting");
+                        ApplicationStateManager.StartDevice(dev);
+                    } else if (dev.State == DeviceState.Mining || dev.State == DeviceState.Benchmarking) {
+                        button.Value = Tr("Stopping");
+                        ApplicationStateManager.StopDevice(dev);
+                    }
                     Console.WriteLine("DataGridViewButtonCell button");
                     break;
                 case DataGridViewCheckBoxCell checkbox:
@@ -135,7 +157,7 @@ namespace NiceHashMiner.Forms.Components
                 foreach (var dev in devsToAdd)
                 {
                     // add dummy data
-                    devicesDataGridView.Rows.Add(GetRowData());
+                    devicesDataGridView.Rows.Add(GetRowData(dev));
                     // add tag
                     var newRow = devicesDataGridView.Rows[devicesDataGridView.Rows.Count - 1];
                     newRow.Tag = dev.Uuid;
@@ -147,11 +169,11 @@ namespace NiceHashMiner.Forms.Components
                     var dev = ComputeDeviceManager.Available.Devices.FirstOrDefault(d => d.Uuid == tagUUID);
                     SetRowColumnItemValue(row, Column.Enabled, dev.Enabled);
                     SetRowColumnItemValue(row, Column.Name, dev.GetFullName());
-                    SetRowColumnItemValue(row, Column.Status, dev.State.ToString());
-                    SetRowColumnItemValue(row, Column.Temperature, ((int)dev.Temp).ToString());
-                    SetRowColumnItemValue(row, Column.Load, ((int)dev.Load).ToString());
-                    SetRowColumnItemValue(row, Column.RPM, dev.FanSpeed.ToString());
-                    SetRowColumnItemValue(row, Column.StartStop, !dev.Enabled ? "Start" : "Stop");
+                    SetRowColumnItemValue(row, Column.Status, stateStr(dev.State));
+                    SetRowColumnItemValue(row, Column.Temperature, numStr((int)dev.Temp));
+                    SetRowColumnItemValue(row, Column.Load, numStr((int)dev.Load));
+                    SetRowColumnItemValue(row, Column.RPM, numStr(dev.FanSpeed));
+                    SetRowColumnItemValue(row, Column.StartStop, buttonLabel(dev.State));
                 }
             });
         }

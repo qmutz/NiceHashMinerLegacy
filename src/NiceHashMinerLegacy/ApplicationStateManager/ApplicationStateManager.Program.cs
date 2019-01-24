@@ -14,6 +14,7 @@ namespace NiceHashMiner
     {
         public static void BeforeExit()
         {
+            StopRefreshDeviceListViewTimer();
             // close websocket
             NiceHashStats.EndConnection();
             // stop all mining and benchmarking devices

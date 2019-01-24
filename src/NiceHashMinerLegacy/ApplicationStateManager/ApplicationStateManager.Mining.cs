@@ -91,6 +91,8 @@ namespace NiceHashMiner
                 UpdateDevicesToMine();
             }
 
+            DisplayMiningStarted?.Invoke(null, null);
+            RefreshDeviceListView?.Invoke(null, null);
             NiceHashStats.StateChanged();
 
             return (true, "");
