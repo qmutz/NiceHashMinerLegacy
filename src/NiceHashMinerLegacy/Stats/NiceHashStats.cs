@@ -449,9 +449,8 @@ namespace NiceHashMiner.Stats
             if (allDisabled) {
                 throw new RpcException("All devices are disabled cannot start", ErrorCode.DisabledDevice);
             }
-            var (success, msg) = ApplicationStateManager.StartAllAvailableDevices();
-            if (!success)
-            {
+            var (success, msg) = ApplicationStateManager.StartAllAvailableDevices(true);
+            if (!success) {
                 throw new RpcException(msg, ErrorCode.RedundantRpc);
             }
         }
@@ -629,6 +628,7 @@ namespace NiceHashMiner.Stats
 
         private static void MinerStatus_Tick(object state)
         {
+            Helpers.ConsolePrint("SOCKET", "SendMinerStatus Tick 'miner.status'");
             SendMinerStatus(false);
         }
 

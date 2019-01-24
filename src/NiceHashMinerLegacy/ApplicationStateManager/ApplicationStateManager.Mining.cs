@@ -40,7 +40,7 @@ namespace NiceHashMiner
         }
 
         // TODO add check for any enabled algorithms
-        public static (bool started, string failReason) StartAllAvailableDevices()
+        public static (bool started, string failReason) StartAllAvailableDevices(bool isRpcCall = false)
         {
             var allDevs = ComputeDeviceManager.Available.Devices;
             var devicesToStart = allDevs.Where(dev => dev.State == DeviceState.Stopped);
@@ -63,7 +63,9 @@ namespace NiceHashMiner
                 dev.State = DeviceState.Mining;
             }
             UpdateDevicesToMine();
-            NiceHashStats.StateChanged();
+            if (!isRpcCall) {
+                NiceHashStats.StateChanged();
+            } 
             RefreshDeviceListView?.Invoke(null, null);
 
             return (started, "");
@@ -102,18 +104,29 @@ namespace NiceHashMiner
             if (devicesToStop.Count() == 0) {
                 return (false, "No new devices to stop");
             }
+            var devicesToStopBenchmarking = devicesToStop.Where(dev => dev.State == DeviceState.Benchmarking);
+            if (devicesToStopBenchmarking.Count() > 0) {
+                BenchmarkManager.StopBenchmarForDevices(devicesToStopBenchmarking);
+            }
+            var devicesToStopMining = devicesToStop.Where(dev => dev.State == DeviceState.Mining);
+            if (devicesToStopMining.Count() > 0) {
+                foreach (var stopDevice in devicesToStopMining) {
+                    stopDevice.State = DeviceState.Stopped;
+                }
+                UpdateDevicesToMine();
+            }
 
             // TODO for now no partial success so if one fails send back that everything fails
             var stopped = true;
             var failReason = "";
-            // try to stop all
-            foreach (var dev in devicesToStop) {
-                var (success, msg) = StopDevice(dev, false);
-                if (!success) {
-                    stopped = false;
-                    failReason = msg;
-                }
-            }
+            //// try to stop all
+            //foreach (var dev in devicesToStop) {
+            //    var (success, msg) = StopDevice(dev, false);
+            //    if (!success) {
+            //        stopped = false;
+            //        failReason = msg;
+            //    }
+            //}
             NiceHashStats.StateChanged();
             StopMining(true);
             return (stopped, failReason);

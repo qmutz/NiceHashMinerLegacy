@@ -228,6 +228,17 @@ namespace NiceHashMiner.Benchmarking
             }
         }
 
+        public static void StopBenchmarForDevices(IEnumerable<ComputeDevice> devices)
+        {
+            lock (_runningBenchmarkThreads)
+            {
+                foreach (var device in devices) {
+                    var handler = _runningBenchmarkThreads.FirstOrDefault(t => t.Device.Uuid == device.Uuid);
+                    handler?.InvokeQuit();
+                }
+            }
+        }
+
         public static void Stop()
         {
             InBenchmark = false;
