@@ -44,7 +44,8 @@ namespace NiceHashMiner.Forms.Components
 
         public static object[] GetRowData()
         {
-            object[] row0 = { true, "Name", "Status", "Temperature", "Load", "RPM", "Start/Stop" };
+            const string status = "Pending";
+            object[] row0 = { true, "Name", status, "Temperature", "Load", "RPM", "Start/Stop" };
             return row0;
         }
 

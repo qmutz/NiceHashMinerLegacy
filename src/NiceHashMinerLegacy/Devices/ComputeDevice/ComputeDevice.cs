@@ -91,7 +91,7 @@ namespace NiceHashMiner.Devices
         {
             ID = id;
             Name = name;
-            Enabled = enabled;
+            SetEnabled(enabled);
             DeviceGroupType = group;
             IsEtherumCapale = ethereumCapable;
             DeviceType = type;
@@ -195,7 +195,7 @@ namespace NiceHashMiner.Devices
         {
             if (config != null && config.UUID == Uuid)
             {
-                Enabled = config.Enabled;
+                SetEnabled(config.Enabled);
                 MinimumProfit = config.MinimumProfit;
             }
         }

@@ -271,9 +271,9 @@ namespace NiceHashMiner.Configs.Data
         }
 
         //C#7
-        //public (string btc, string worker, string group) GetCredentials()
-        //{
-        //    return (BitcoinAddress.Trim(), WorkerName.Trim(), RigGroup.Trim());
-        //}
+        public (string btc, string worker, string group) GetCredentials()
+        {
+            return (BitcoinAddress.Trim(), WorkerName.Trim(), RigGroup.Trim());
+        }
     }
 }

@@ -552,7 +552,9 @@ namespace NiceHashMiner
         {
             _benchmarkForm = new Form_Benchmark();
             SetChildFormCenter(_benchmarkForm);
+            ApplicationStateManager.CurrentForm = ApplicationStateManager.CurrentFormState.Benchmark;
             _benchmarkForm.ShowDialog();
+            ApplicationStateManager.CurrentForm = ApplicationStateManager.CurrentFormState.Main;
             var startMining = _benchmarkForm.StartMiningOnFinish;
             _benchmarkForm = null;
 
@@ -568,7 +570,9 @@ namespace NiceHashMiner
         {
             var settings = new Form_Settings();
             SetChildFormCenter(settings);
+            ApplicationStateManager.CurrentForm = ApplicationStateManager.CurrentFormState.Settings;
             settings.ShowDialog();
+            ApplicationStateManager.CurrentForm = ApplicationStateManager.CurrentFormState.Main;
 
             if (settings.IsChange && settings.IsChangeSaved && settings.IsRestartNeeded)
             {

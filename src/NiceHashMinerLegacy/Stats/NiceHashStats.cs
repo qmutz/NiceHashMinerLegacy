@@ -166,78 +166,80 @@ namespace NiceHashMiner.Stats
                 case "essentials":
                     var ess = JsonConvert.DeserializeObject<EssentialsCall>(data);
                     ProcessEssentials(ess);
-
                     return null;
                 case "mining.set.username":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     var btc = (string)message.username;
-                    var userSetResult = ApplicationStateManager.SetBTCIfValidOrDifferent(btc, true);
-                    switch (userSetResult)
-                    {
-                        case ApplicationStateManager.SetResult.INVALID:
-                            throw new RpcException("Bitcoin address invalid", ErrorCode.InvalidUsername);
-                        case ApplicationStateManager.SetResult.CHANGED:
-                            // we return executed
-                            break;
-                        case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
-                            throw new RpcException($"Nothing to change btc \"{btc}\" already set", ErrorCode.RedundantRpc);
-                    }
-                    return new ExecutedInfo { NewBtc = btc };
+                    return miningSetUsername(btc);
                 case "mining.set.worker":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     var worker = (string)message.worker;
-                    var workerSetResult = ApplicationStateManager.SetWorkerIfValidOrDifferent(worker, true);
-                    switch (workerSetResult)
-                    {
-                        case ApplicationStateManager.SetResult.INVALID:
-                            throw new RpcException("Worker name invalid", ErrorCode.InvalidWorker);
-                        case ApplicationStateManager.SetResult.CHANGED:
-                            // we return executed
-                            break;
-                        case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
-                            throw new RpcException($"Nothing to change worker name \"{worker}\" already set", ErrorCode.RedundantRpc);
-                    }
-                    return new ExecutedInfo { NewWorker = worker };
+                    return miningSetWorker(worker);
                 case "mining.set.group":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     var group = (string) message.group;
-                    var groupSetResult = ApplicationStateManager.SetGroupIfValidOrDifferent(group, true);
-                    switch (groupSetResult)
-                    {
-                        case ApplicationStateManager.SetResult.INVALID:
-                            // TODO error code not correct
-                            throw new RpcException("Group name invalid", ErrorCode.UnableToHandleRpc);
-                        case ApplicationStateManager.SetResult.CHANGED:
-                            // we return executed
-                            break;
-                        case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
-                            throw new RpcException($"Nothing to change group \"{group}\" already set", ErrorCode.RedundantRpc);
-                    }
-                    return new ExecutedInfo {NewRig = group};
+                    return miningSetGroup(group);
                 case "mining.enable":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     SetDevicesEnabled((string) message.device, true);
                     return null;
                 case "mining.disable":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     SetDevicesEnabled((string) message.device, false);
                     return null;
                 case "mining.start":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     StartMining((string) message.device);
                     return null;
                 case "mining.stop":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     StopMining((string) message.device);
                     return null;
                 case "mining.set.power_mode":
                     executed = true;
+                    throwIfWeCannotHanldeRPC();
                     SetPowerMode((string) message.device, (PowerLevel) message.power_mode);
                     return null;
             }
             
             throw new RpcException("Operation not supported", ErrorCode.UnableToHandleRpc);
         }
+
+        private static bool isRpcMethod(string method) {
+            // well pretty much all RPCs start with mining.*
+            switch (method) {
+                case "mining.set.username":
+                case "mining.set.worker":
+                case "mining.set.group":
+                case "mining.enable":
+                case "mining.disable":
+                case "mining.start":
+                case "mining.stop":
+                case "mining.set.power_mode":
+                    return true;
+            }
+            return false;
+        }
+
+        private static void throwIfWeCannotHanldeRPC() {
+            if (ApplicationStateManager.CalcRigStatus() == RigStatus.Pending) {
+                throw new RpcException("Cannot handle RPC call Rig is in PENDING state", ErrorCode.UnableToHandleRpc);
+            }
+            if (ApplicationStateManager.IsInBenchmarkForm()) {
+                throw new RpcException("Cannot handle RPC call Rig is in benchmarks form", ErrorCode.UnableToHandleRpc);
+            }
+            if (ApplicationStateManager.IsInSettingsForm()) {
+                throw new RpcException("Cannot handle RPC call rig is in settings form", ErrorCode.UnableToHandleRpc);
+            }
+        }
+
 
         private static void SocketOnOnConnectionEstablished(object sender, EventArgs e)
         {
@@ -356,6 +358,57 @@ namespace NiceHashMiner.Stats
             }
         }
 
+        #region Credentials setters (btc/username, worker, group)
+        private static ExecutedInfo miningSetUsername(string btc)
+        {
+            var userSetResult = ApplicationStateManager.SetBTCIfValidOrDifferent(btc, true);
+            switch (userSetResult)
+            {
+                case ApplicationStateManager.SetResult.INVALID:
+                    throw new RpcException("Bitcoin address invalid", ErrorCode.InvalidUsername);
+                case ApplicationStateManager.SetResult.CHANGED:
+                    // we return executed
+                    break;
+                case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
+                    throw new RpcException($"Nothing to change btc \"{btc}\" already set", ErrorCode.RedundantRpc);
+            }
+            return new ExecutedInfo { NewBtc = btc };
+        }
+
+        private static ExecutedInfo miningSetWorker(string worker)
+        {
+            var workerSetResult = ApplicationStateManager.SetWorkerIfValidOrDifferent(worker, true);
+            switch (workerSetResult)
+            {
+                case ApplicationStateManager.SetResult.INVALID:
+                    throw new RpcException("Worker name invalid", ErrorCode.InvalidWorker);
+                case ApplicationStateManager.SetResult.CHANGED:
+                    // we return executed
+                    break;
+                case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
+                    throw new RpcException($"Nothing to change worker name \"{worker}\" already set", ErrorCode.RedundantRpc);
+            }
+            return new ExecutedInfo { NewWorker = worker };
+        }
+
+        private static ExecutedInfo miningSetGroup(string group)
+        {
+            var groupSetResult = ApplicationStateManager.SetGroupIfValidOrDifferent(group, true);
+            switch (groupSetResult)
+            {
+                case ApplicationStateManager.SetResult.INVALID:
+                    // TODO error code not correct
+                    throw new RpcException("Group name invalid", ErrorCode.UnableToHandleRpc);
+                case ApplicationStateManager.SetResult.CHANGED:
+                    // we return executed
+                    break;
+                case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
+                    throw new RpcException($"Nothing to change group \"{group}\" already set", ErrorCode.RedundantRpc);
+            }
+            return new ExecutedInfo { NewRig = group };
+        }
+        #endregion Credentials setters (btc/username, worker, group)
+
         private static bool SetDevicesEnabled(string devs, bool enabled)
         {
             bool allDevices = devs == "*";
@@ -376,7 +429,7 @@ namespace NiceHashMiner.Stats
                 throw new RpcException("Device not found", ErrorCode.NonExistentDevice);
             }
             // if we have the device but it is redundant
-            if (!allDevices && deviceWithUUID.Enabled == enabled) {
+            if (!allDevices && deviceWithUUID.IsDisabled == !enabled) {
                 var stateStr = enabled ? "enabled" : "disabled";
                 throw new RpcException($"Devices with uuid {devs} is already {stateStr}.", ErrorCode.RedundantRpc);
             }

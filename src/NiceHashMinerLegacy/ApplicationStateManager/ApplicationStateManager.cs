@@ -125,10 +125,7 @@ namespace NiceHashMiner
             if (state == CredentialsValidState.VALID)
             {
                 // Reset credentials
-                //var (btc, worker, group) = ConfigManager.GeneralConfig.GetCredentials();
-                var btc = ConfigManager.GeneralConfig.BitcoinAddress?.Trim();
-                var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
-                var group = ConfigManager.GeneralConfig.RigGroup?.Trim();
+                var (btc, worker, group) = ConfigManager.GeneralConfig.GetCredentials();
                 NiceHashStats.SetCredentials(btc, worker, group);
             }
             else
@@ -381,6 +378,20 @@ namespace NiceHashMiner
         {
             var rigState = CalcRigStatus();
             return rigState.ToString().ToUpper();
+        }
+
+
+        public enum CurrentFormState {
+            Main,
+            Benchmark,
+            Settings,
+        }
+        public static CurrentFormState CurrentForm { get; set; } = CurrentFormState.Main;
+        public static bool IsInBenchmarkForm() {
+            return CurrentForm == CurrentFormState.Benchmark;
+        }
+        public static bool IsInSettingsForm() {
+            return CurrentForm == CurrentFormState.Settings;
         }
     }
 }
