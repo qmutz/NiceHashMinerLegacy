@@ -70,7 +70,6 @@ namespace NiceHashMiner.Stats
         // Event handlers for socket
         public static event EventHandler OnSmaUpdate;
         public static event EventHandler OnConnectionLost;
-        public static event EventHandler<SocketEventArgs> OnVersionBurn;
         public static event EventHandler OnExchangeUpdate;
         public static event EventHandler<DeviceUpdateEventArgs> OnDeviceUpdate;
 
@@ -163,7 +162,7 @@ namespace NiceHashMiner.Stats
                     SetBalance(message.value.Value);
                     return null;
                 case "burn":
-                    OnVersionBurn?.Invoke(null, new SocketEventArgs(message.message.Value));
+                    ApplicationStateManager.Burn(message.message.Value);
                     return null;
                 case "exchange_rates":
                     SetExchangeRates(message.data.Value);

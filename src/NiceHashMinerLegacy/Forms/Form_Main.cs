@@ -199,7 +199,6 @@ namespace NiceHashMiner
             _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Getting NiceHash SMA information..."));
             // Init ws connection
             NiceHashStats.OnConnectionLost += ConnectionLostCallback;
-            NiceHashStats.OnVersionBurn += VersionBurnCallback;
             NiceHashStats.OnExchangeUpdate += UpdateExchange;
             NiceHashStats.StartConnection(Links.NhmSocketAddress);
 
@@ -460,18 +459,6 @@ namespace NiceHashMiner
                     "Current Bitcoin rate: " + br.ToString("F2", CultureInfo.InvariantCulture));
             });
         }
-
-        private void VersionBurnCallback(object sender, SocketEventArgs e)
-        {
-            BeginInvoke((Action) (() =>
-            {
-                ApplicationStateManager.BeforeExit();
-                _benchmarkForm?.StopBenchmark();
-                MessageBox.Show(e.Message, Tr("Error!"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
-            }));
-        }
-
 
         private void ConnectionLostCallback(object sender, EventArgs e)
         {
