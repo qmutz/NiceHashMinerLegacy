@@ -69,7 +69,7 @@ namespace NiceHashMinerLegacy.Tests.Stats
             // Start all false
             foreach (var dev in devs)
             {
-                dev.Enabled = false;
+                dev.SetEnabled(false);
             }
 
             var first = devs.First();

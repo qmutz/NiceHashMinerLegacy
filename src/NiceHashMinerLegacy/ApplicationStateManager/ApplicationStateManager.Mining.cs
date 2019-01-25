@@ -143,6 +143,11 @@ namespace NiceHashMiner
                 case DeviceState.Benchmarking:
                     device.State = DeviceState.Stopped;
                     BenchmarkManager.StopBenchmarForDevice(device);
+                    var allDevs = ComputeDeviceManager.Available.Devices;
+                    var devicesNotActive  = allDevs.All(dev => dev.State != DeviceState.Mining && dev.State != DeviceState.Benchmarking);
+                    if (devicesNotActive) {
+                        DisplayMiningStopped?.Invoke(null, null);
+                    }
                     if (refreshStateChange) NiceHashStats.StateChanged();
                     return (true, "");
                 case DeviceState.Mining:
