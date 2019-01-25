@@ -38,6 +38,8 @@ namespace NiceHashMiner.Benchmarking
         {
             _startMiningAfterBenchmark = startMiningAfterBenchmark;
             Device = device;
+            // dirty quick fix
+            Device.State = DeviceState.Benchmarking;
             _benchmarkAlgorithmQueue = algorithms;
             _performanceType = performance;
 
