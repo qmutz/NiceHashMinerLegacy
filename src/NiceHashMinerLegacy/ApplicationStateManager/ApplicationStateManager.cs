@@ -316,7 +316,7 @@ namespace NiceHashMiner
             {
                 return false;
             }
-            MinersManager.StopAllMiners(headless);
+            MinersManager.StopAllMiners(/*headless*/ true);
 
             PInvoke.PInvokeHelpers.AllowMonitorPowerdownAndSleep();
             IsCurrentlyMining = false;
