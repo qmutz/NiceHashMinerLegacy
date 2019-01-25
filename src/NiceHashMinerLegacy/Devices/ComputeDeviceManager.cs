@@ -528,6 +528,22 @@ namespace NiceHashMiner.Devices
             {
                 private static string _queryCudaDevicesString = "";
 
+                private static bool tryAddNvmlToEnvPathCalled = false;
+                private static void tryAddNvmlToEnvPath()
+                {
+                    if (tryAddNvmlToEnvPathCalled) return;
+                    tryAddNvmlToEnvPathCalled = true; // call this ONLY ONCE AND NEVER AGAIN
+                    var nvmlRootPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) +
+                                   "\\NVIDIA Corporation\\NVSMI";
+                    if (Directory.Exists(nvmlRootPath))
+                    {
+                        // Add to env so it can find nvml.dll
+                        var pathVar = Environment.GetEnvironmentVariable("PATH");
+                        pathVar += ";" + nvmlRootPath;
+                        Environment.SetEnvironmentVariable("PATH", pathVar);
+                    }
+                }
+
                 private static void QueryCudaDevicesOutputErrorDataReceived(object sender, DataReceivedEventArgs e)
                 {
                     if (e.Data != null)
@@ -592,6 +608,7 @@ namespace NiceHashMiner.Devices
                             }
                         }
 
+                        tryAddNvmlToEnvPath();
                         var nvmlInit = false;
                         try
                         {
