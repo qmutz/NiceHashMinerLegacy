@@ -285,6 +285,20 @@ namespace NiceHashMiner
         }
         #endregion
 
+        private static void toggleActiveInactiveDisplay()
+        {
+            var allDevs = ComputeDeviceManager.Available.Devices;
+            var devicesNotActive = allDevs.All(dev => dev.State != DeviceState.Mining && dev.State != DeviceState.Benchmarking);
+            if (devicesNotActive)
+            {
+                DisplayMiningStopped?.Invoke(null, null);
+            }
+            else
+            {
+                DisplayMiningStarted?.Invoke(null, null);
+            }
+        }
+
 
         public static bool IsCurrentlyMining { get; private set; }
         // StartMining function should be called only if all mining requirements are met, btc or demo, valid workername, and sma data
