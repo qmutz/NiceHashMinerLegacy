@@ -288,8 +288,10 @@ namespace NiceHashMiner.Forms
 
         public void EndBenchmark(bool hasFailedAlgos)
         {
-            Invoke((MethodInvoker) delegate
-            {
+            if (ApplicationStateManager.BurnCalled) {
+                return;
+            }
+            FormHelpers.SafeInvoke(this, () => {
                 _benchmarkingTimer.Stop();
                 Helpers.ConsolePrint("FormBenchmark", "EndBenchmark() benchmark routine finished");
 
@@ -334,6 +336,9 @@ namespace NiceHashMiner.Forms
 
         private void FormBenchmark_New_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (ApplicationStateManager.BurnCalled) {
+                return;
+            }
             if (BenchmarkManager.InBenchmark)
             {
                 e.Cancel = true;

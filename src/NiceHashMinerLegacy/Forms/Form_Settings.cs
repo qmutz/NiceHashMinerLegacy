@@ -1059,6 +1059,9 @@ namespace NiceHashMiner.Forms
 
         private void FormSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (ApplicationStateManager.BurnCalled) {
+                return;
+            }
             if (IsChange && !IsChangeSaved)
             {
                 var result = MessageBox.Show(Translations.Tr("Warning! You are choosing to close settings without saving. Are you sure you would like to continue?"),
