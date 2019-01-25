@@ -215,6 +215,14 @@ namespace NiceHashMiner.Devices.Algorithms
                     new Algorithm(MinerBaseType.trex, AlgorithmType.Lyra2z, "lyra2z"),
                     new Algorithm(MinerBaseType.trex, AlgorithmType.X16R, "x16r")
                 }
+            },
+            {
+                MinerBaseType.GMiner,
+                new List<Algorithm>
+                {
+                    new Algorithm(MinerBaseType.GMiner, AlgorithmType.Equihash1505),
+                    new Algorithm(MinerBaseType.GMiner, AlgorithmType.ZHash)
+                }
             }
         }.ConcatDictList(All, Gpu);
 

@@ -145,8 +145,6 @@
             this.tabPageDevicesAlgos = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBoxAlgorithmSettings = new System.Windows.Forms.GroupBox();
-            this.buttonAllProfit = new System.Windows.Forms.Button();
-            this.buttonSelectedProfit = new System.Windows.Forms.Button();
             this.buttonSaveClose = new System.Windows.Forms.Button();
             this.buttonDefaults = new System.Windows.Forms.Button();
             this.buttonCloseNoSave = new System.Windows.Forms.Button();
@@ -1616,8 +1614,6 @@
             // 
             this.tabPageDevicesAlgos.Controls.Add(this.groupBox1);
             this.tabPageDevicesAlgos.Controls.Add(this.groupBoxAlgorithmSettings);
-            this.tabPageDevicesAlgos.Controls.Add(this.buttonAllProfit);
-            this.tabPageDevicesAlgos.Controls.Add(this.buttonSelectedProfit);
             this.tabPageDevicesAlgos.Controls.Add(this.devicesListViewEnableControl1);
             this.tabPageDevicesAlgos.Controls.Add(this.algorithmSettingsControl1);
             this.tabPageDevicesAlgos.Location = new System.Drawing.Point(8, 39);
@@ -1656,30 +1652,6 @@
             this.groupBoxAlgorithmSettings.TabIndex = 395;
             this.groupBoxAlgorithmSettings.TabStop = false;
             this.groupBoxAlgorithmSettings.Text = "Algorithm settings for selected device:";
-            // 
-            // buttonAllProfit
-            // 
-            this.buttonAllProfit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAllProfit.Location = new System.Drawing.Point(728, 12);
-            this.buttonAllProfit.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.buttonAllProfit.Name = "buttonAllProfit";
-            this.buttonAllProfit.Size = new System.Drawing.Size(452, 44);
-            this.buttonAllProfit.TabIndex = 394;
-            this.buttonAllProfit.Text = "Check All Profitability";
-            this.buttonAllProfit.UseVisualStyleBackColor = true;
-            this.buttonAllProfit.Click += new System.EventHandler(this.ButtonAllProfit_Click);
-            // 
-            // buttonSelectedProfit
-            // 
-            this.buttonSelectedProfit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSelectedProfit.Location = new System.Drawing.Point(728, 67);
-            this.buttonSelectedProfit.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.buttonSelectedProfit.Name = "buttonSelectedProfit";
-            this.buttonSelectedProfit.Size = new System.Drawing.Size(452, 44);
-            this.buttonSelectedProfit.TabIndex = 393;
-            this.buttonSelectedProfit.Text = "Check Selected Profitability";
-            this.buttonSelectedProfit.UseVisualStyleBackColor = true;
-            this.buttonSelectedProfit.Click += new System.EventHandler(this.ButtonSelectedProfit_Click);
             // 
             // buttonSaveClose
             // 
@@ -1972,8 +1944,6 @@
         private Components.AlgorithmSettingsControl algorithmSettingsControl1;
         private System.Windows.Forms.GroupBox groupBoxAlgorithmSettings;
         private Components.AlgorithmsListView algorithmsListView1;
-        private System.Windows.Forms.Button buttonAllProfit;
-        private System.Windows.Forms.Button buttonSelectedProfit;
         private Components.BenchmarkLimitControl benchmarkLimitControlNVIDIA;
         private Components.BenchmarkLimitControl benchmarkLimitControlCPU;
         private Components.BenchmarkLimitControl benchmarkLimitControlAMD;
