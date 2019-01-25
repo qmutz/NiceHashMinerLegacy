@@ -680,6 +680,8 @@ namespace NiceHashMiner
             notifyIcon1.Text = Application.ProductName + " v" + Application.ProductVersion +
                                "\nDouble-click to restore..";
 
+            devicesMainBoard1.Size = devicesListViewEnableControl1.Size;
+
             if (ConfigManager.GeneralConfig.MinimizeToTray && FormWindowState.Minimized == WindowState)
             {
                 notifyIcon1.Visible = true;

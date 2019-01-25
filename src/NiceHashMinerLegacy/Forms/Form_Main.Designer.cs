@@ -340,7 +340,7 @@
             // 
             this.devicesMainBoard1.Location = new System.Drawing.Point(10, 109);
             this.devicesMainBoard1.Name = "devicesMainBoard1";
-            this.devicesMainBoard1.Size = new System.Drawing.Size(714, 181);
+            this.devicesMainBoard1.Size = new System.Drawing.Size(714, 191);
             this.devicesMainBoard1.TabIndex = 111;
             // 
             // devicesListViewEnableControl1
