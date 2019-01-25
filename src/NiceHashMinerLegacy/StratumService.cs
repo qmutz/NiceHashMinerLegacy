@@ -1,4 +1,5 @@
-﻿using NiceHashMinerLegacy.Common.Enums;
+﻿using NiceHashMiner.Configs;
+using NiceHashMinerLegacy.Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,15 @@ namespace NiceHashMiner
 
         // TODO consider using this instead of int index
         //// EU by default
-        public static string SelectedService { get; private set; } = "eu";
+        public static string SelectedService {
+            get {
+                if (ConfigManager.GeneralConfig.ServiceLocation > MiningLocations.Count || ConfigManager.GeneralConfig.ServiceLocation < 0)
+                {
+                    return "eu";
+                }
+                return MiningLocations[ConfigManager.GeneralConfig.ServiceLocation];
+            }
+        }
 
         // Constants
         public static IReadOnlyList<string> MiningLocations { get; } = 
