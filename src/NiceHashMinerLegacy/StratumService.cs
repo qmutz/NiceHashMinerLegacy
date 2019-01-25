@@ -75,6 +75,11 @@ namespace NiceHashMiner
                    + "-test." + miningLocation
                    + ".nicehash.com:"
                    + port;
+#elif TESTNETDEV
+            return prefix
+                   + "stratum-test." + miningLocation
+                   + ".nicehash.com:"
+                   + port;
 #else
             return prefix
                    + name
