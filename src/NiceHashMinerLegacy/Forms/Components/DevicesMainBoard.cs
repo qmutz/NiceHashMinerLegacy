@@ -27,6 +27,7 @@ namespace NiceHashMiner.Forms.Components
             Load,
             RPM,
             StartStop,
+            AlgorithmsOptions,
             //PowerModeDropdown // disable for now
         }
 
@@ -57,6 +58,13 @@ namespace NiceHashMiner.Forms.Components
             return Tr(state.ToString());
         }
 
+        private static string getAlgosStats(ComputeDevice d) {
+            var allAlgos = d.GetAlgorithmSettings();
+            var enabledAlgos = allAlgos.Count(a => a.Enabled);
+            var benchmarkedAlgos = allAlgos.Count(a => !a.BenchmarkNeeded);
+            return $"{allAlgos.Count} / {enabledAlgos} / {benchmarkedAlgos}";
+        }
+
         private static string numStr(int num) {
             if (num < 0) {
                 return Tr("N/A");
@@ -65,7 +73,8 @@ namespace NiceHashMiner.Forms.Components
         }
 
         public static object[] GetRowData(ComputeDevice d) {
-            object[] rowData = { d.Enabled, d.GetFullName(), stateStr(d.State), numStr((int)d.Temp), numStr((int)d.Load), numStr(d.FanSpeed), buttonLabel(d.State) };
+            
+            object[] rowData = { d.Enabled, d.GetFullName(), stateStr(d.State), numStr((int)d.Temp), numStr((int)d.Load), numStr(d.FanSpeed), buttonLabel(d.State), getAlgosStats(d) };
             return rowData;
         }
 
@@ -174,6 +183,7 @@ namespace NiceHashMiner.Forms.Components
                     SetRowColumnItemValue(row, Column.Load, numStr((int)dev.Load));
                     SetRowColumnItemValue(row, Column.RPM, numStr(dev.FanSpeed));
                     SetRowColumnItemValue(row, Column.StartStop, buttonLabel(dev.State));
+                    SetRowColumnItemValue(row, Column.AlgorithmsOptions, getAlgosStats(dev));
                 }
             });
         }

@@ -100,7 +100,7 @@ namespace NiceHashMiner
                                                    Tr(ConfigManager.GeneralConfig.TimeUnit.ToString()) + "     " +
                                                    Tr("Balance") + ":";
 
-            devicesListViewEnableControl1.InitLocale();
+            //devicesListViewEnableControl1.InitLocale();
 
             buttonBenchmark.Text = Tr("&Benchmark");
             buttonSettings.Text = Tr("S&ettings");
@@ -127,12 +127,12 @@ namespace NiceHashMiner
                                                    Tr("Balance") + ":";
             //BalanceCallback(null, null); // update currency changes
 
-            if (_isDeviceDetectionInitialized)
-            {
-                devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
-            }
+            //if (_isDeviceDetectionInitialized)
+            //{
+            //    devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
+            //}
 
-            devicesListViewEnableControl1.SetPayingColumns();
+            //devicesListViewEnableControl1.SetPayingColumns();
         }
 
         public void AfterLoadComplete()
@@ -172,8 +172,8 @@ namespace NiceHashMiner
             _startupTimer.Stop();
             _startupTimer = null;
 
-            // TODO temporary hooks
-            ApplicationStateManager._ratesComunication = devicesListViewEnableControl1;
+            //// TODO temporary hooks
+            //ApplicationStateManager._ratesComunication = devicesListViewEnableControl1;
 
             // Internals Init
             // TODO add loading step
@@ -188,10 +188,10 @@ namespace NiceHashMiner
             ApplicationStateManager.AfterDeviceQueryInitialization();
             _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Saving config..."));
 
-            // All devices settup should be initialized in AllDevices
-            devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
-            // set properties after
-            devicesListViewEnableControl1.SaveToGeneralConfig = true;
+            //// All devices settup should be initialized in AllDevices
+            //devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
+            //// set properties after
+            //devicesListViewEnableControl1.SaveToGeneralConfig = true;
 
             _loadingScreen.IncreaseLoadCounterAndMessage(
                 Tr("Checking for latest version..."));
@@ -854,7 +854,7 @@ namespace NiceHashMiner
                 buttonBenchmark.Enabled = false;
                 buttonStartMining.Enabled = false;
                 buttonSettings.Enabled = false;
-                devicesListViewEnableControl1.SetIsMining(true);
+                //devicesListViewEnableControl1.SetIsMining(true);
                 buttonStopMining.Enabled = true;
                 //// Disable profitable notification on start
                 //_isNotProfitable = false;
@@ -875,7 +875,7 @@ namespace NiceHashMiner
                 buttonBenchmark.Enabled = true;
                 buttonStartMining.Enabled = true;
                 buttonSettings.Enabled = true;
-                devicesListViewEnableControl1.SetIsMining(false);
+                //devicesListViewEnableControl1.SetIsMining(false);
                 buttonStopMining.Enabled = false;
                 labelDemoMode.Visible = false;
                 _demoMode = false; // TODO this is logic
