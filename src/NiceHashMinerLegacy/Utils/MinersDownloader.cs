@@ -3,8 +3,7 @@ using MyDownloader.Core.Extensions;
 using MyDownloader.Core.UI;
 using MyDownloader.Extension.Protocols;
 using NiceHashMiner.Interfaces;
-using SharpCompress.Archive;
-using SharpCompress.Common;
+using System.IO.Compression;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -175,25 +174,30 @@ namespace NiceHashMiner.Utils
                     Helpers.ConsolePrint(Tag, _downloadSetup.BinsZipLocation + " already downloaded");
                     Helpers.ConsolePrint(Tag, "unzipping");
 
-                    // if using other formats as zip are returning 0
-                    var fileArchive = new FileInfo(_downloadSetup.BinsZipLocation);
-                    var archive = ArchiveFactory.Open(_downloadSetup.BinsZipLocation);
                     _minerUpdateIndicator.SetMaxProgressValue(100);
-                    long sizeCount = 0;
-                    foreach (var entry in archive.Entries)
+                    using (var archive = ZipFile.OpenRead(_downloadSetup.BinsZipLocation))
                     {
-                        if (!entry.IsDirectory)
+                        float entriesCount = archive.Entries.Count;
+                        float extractedEntries = 0;
+                        foreach (var entry in archive.Entries)
                         {
-                            sizeCount += entry.CompressedSize;
-                            Helpers.ConsolePrint(Tag, entry.Key);
-                            entry.WriteToDirectory("", ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+                            extractedEntries += 1;
+                            var isDirectory = entry.Name == "";
+                            if (isDirectory) continue;
 
-                            var prog = sizeCount / (double) fileArchive.Length * 100;
-                            _minerUpdateIndicator.SetProgressValueAndMsg((int) prog,
-                                string.Format(Translations.Tr("Unzipping {0} %"), prog.ToString("F2")));
+                            Helpers.ConsolePrint(Tag, entry.FullName);
+                            var prog = ((extractedEntries / entriesCount) * 100.0f);
+                            var unzipStr = string.Format(Translations.Tr("Unzipping {0} %"), prog.ToString("F2"));
+                            _minerUpdateIndicator.SetProgressValueAndMsg((int)prog, unzipStr);
+
+                            var extractPath = Path.Combine(Environment.CurrentDirectory, entry.FullName);
+                            var dirPath = Path.GetDirectoryName(extractPath);
+                            if (!Directory.Exists(dirPath)) {
+                                Directory.CreateDirectory(Path.GetDirectoryName(extractPath));
+                            }
+                            entry.ExtractToFile(extractPath, true);
                         }
                     }
-                    archive.Dispose();
                     // after unzip stuff
                     _minerUpdateIndicator.FinishMsg(true);
                     // remove bins zip
