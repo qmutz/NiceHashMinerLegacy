@@ -28,12 +28,6 @@ namespace NiceHashMiner.Configs.Data
         //public int LessThreads;
         public CpuExtensionType ForceCPUExtension = CpuExtensionType.Automatic;
 
-        [Obsolete("Use SwitchSmaTimeChangeSeconds")]
-        public int SwitchMinSecondsFixed = 90;
-        [Obsolete("Use SwitchSmaTimeChangeSeconds")]
-        public int SwitchMinSecondsDynamic = 30;
-        [Obsolete("Use SwitchSmaTimeChangeSeconds")]
-        public int SwitchMinSecondsAMD = 60;
         public double SwitchProfitabilityThreshold = 0.05; // percent
         public int MinerAPIQueryInterval = 5;
         public int MinerRestartDelayMS = 500;
@@ -86,14 +80,6 @@ namespace NiceHashMiner.Configs.Data
         public string hwid = "";
 
         public int agreedWithTOS = 0;
-
-        // normalization stuff
-        [Obsolete]
-        public double IQROverFactor = 3.0;
-        [Obsolete]
-        public int NormalizedProfitHistory = 15;
-        [Obsolete]
-        public double IQRNormalizeFactor = 0.0;
 
         public bool CoolDownCheckEnabled = true;
 
@@ -155,9 +141,6 @@ namespace NiceHashMiner.Configs.Data
             NVIDIAP0State = false;
             MinerRestartDelayMS = 500;
             ethminerDefaultBlockHeight = 2000000;
-            SwitchMinSecondsFixed = 90;
-            SwitchMinSecondsDynamic = 30;
-            SwitchMinSecondsAMD = 90;
             SwitchProfitabilityThreshold = 0.05; // percent
             MinIdleSeconds = 60;
             DisplayCurrency = "USD";
@@ -172,9 +155,6 @@ namespace NiceHashMiner.Configs.Data
             DownloadInit3rdParty = false;
             AllowMultipleInstances = true;
             UseIFTTT = false;
-            IQROverFactor = 3.0;
-            NormalizedProfitHistory = 15;
-            IQRNormalizeFactor = 0.0;
             CoolDownCheckEnabled = true;
             RunScriptOnCUDA_GPU_Lost = false;
             ForceSkipAMDNeoscryptLyraCheck = false;
@@ -196,18 +176,6 @@ namespace NiceHashMiner.Configs.Data
                 || string.IsNullOrWhiteSpace(DisplayCurrency))
             {
                 DisplayCurrency = "USD";
-            }
-            if (SwitchMinSecondsFixed <= 0)
-            {
-                SwitchMinSecondsFixed = 90;
-            }
-            if (SwitchMinSecondsDynamic <= 0)
-            {
-                SwitchMinSecondsDynamic = 30;
-            }
-            if (SwitchMinSecondsAMD <= 0)
-            {
-                SwitchMinSecondsAMD = 60;
             }
             if (MinerAPIQueryInterval <= 0)
             {
@@ -241,18 +209,6 @@ namespace NiceHashMiner.Configs.Data
             if (LastDevicesSettup == null)
             {
                 LastDevicesSettup = new List<ComputeDeviceConfig>();
-            }
-            if (IQROverFactor < 0)
-            {
-                IQROverFactor = 3.0;
-            }
-            if (NormalizedProfitHistory < 0)
-            {
-                NormalizedProfitHistory = 15;
-            }
-            if (IQRNormalizeFactor < 0)
-            {
-                IQRNormalizeFactor = 0.0;
             }
             if (KwhPrice < 0)
             {
