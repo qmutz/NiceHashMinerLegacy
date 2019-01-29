@@ -25,6 +25,11 @@ namespace NiceHashMinerLegacy.Extensions.Tests
             "15:14:18 Total Speed: 27 Sol/s Shares Accepted: 0 Rejected: 0 Power: 199W 0.14 Sol/W"
                 .TryGetHashrateAfter("Total Speed:", out hash);
             Assert.AreEqual(27, hash);
+
+            // ccminer read exception
+            "[2019-01-29 12:16:21]\u001b[01;37m Total: 803.28 kH/s\u001b[0m"
+                .TryGetHashrateAfter("Total:", out hash);
+            Assert.AreEqual(803280, hash);
         }
 
         [TestMethod]

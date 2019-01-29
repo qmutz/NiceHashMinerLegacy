@@ -209,6 +209,7 @@ namespace NiceHashMiner
                 benchmarkPair
             }));
             BenchmarkAlgorithm = benchmarkPair.Algorithm;
+            BenchmarkAlgorithm.AvaragedSpeed = 0; // reset this to zero because we might have it from prev mining session
         }
 
         // TAG for identifying miner
@@ -487,7 +488,15 @@ namespace NiceHashMiner
                      BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds))
             {
                 _benchmarkTimeOutStopWatch.Stop();
-                BenchmarkSignalTimedout = true;
+                if (BenchmarkAlgorithm.AvaragedSpeed > 0)
+                {
+                    // fallback to this one
+                    BenchmarkAlgorithm.BenchmarkSpeed = BenchmarkAlgorithm.AvaragedSpeed;
+                    BenchmarkSignalFinnished = true;
+                } else
+                {
+                    BenchmarkSignalTimedout = true;
+                }
             }
 
             var outdata = e.Data;
@@ -547,46 +556,6 @@ namespace NiceHashMiner
         public void InvokeBenchmarkSignalQuit()
         {
             KillAllUsedMinerProcesses();
-        }
-
-        protected double BenchmarkParseLine_cpu_ccminer_extra(string outdata)
-        {
-            // parse line
-            if (outdata.Contains("Benchmark: ") && outdata.Contains("/s"))
-            {
-                var i = outdata.IndexOf("Benchmark:");
-                var k = outdata.IndexOf("/s");
-                var hashspeed = outdata.Substring(i + 11, k - i - 9);
-                Helpers.ConsolePrint("BENCHMARK", "Final Speed: " + hashspeed);
-
-                // save speed
-                var b = hashspeed.IndexOf(" ");
-                if (b < 0)
-                {
-                    for (var j = hashspeed.Length - 1; j >= 0; --j)
-                    {
-                        if (!int.TryParse(hashspeed[j].ToString(), out var _)) continue;
-                        b = j;
-                        break;
-                    }
-                }
-
-                if (b >= 0)
-                {
-                    var speedStr = hashspeed.Substring(0, b);
-                    var spd = Helpers.ParseDouble(speedStr);
-                    if (hashspeed.Contains("kH/s"))
-                        spd *= 1000;
-                    else if (hashspeed.Contains("MH/s"))
-                        spd *= 1000000;
-                    else if (hashspeed.Contains("GH/s"))
-                        spd *= 1000000000;
-
-                    return spd;
-                }
-            }
-
-            return 0.0d;
         }
 
         // killing proccesses can take time
