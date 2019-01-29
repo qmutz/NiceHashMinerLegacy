@@ -32,7 +32,7 @@ namespace NiceHashMiner
         }
 
         #region Version
-        private const string BetaAlphaPostfixString = " - Alpha (TestDev)";
+        private const string BetaAlphaPostfixString = " - Alpha";
         public static string LocalVersion { get; private set; }
         public static string OnlineVersion { get; private set; }
 
