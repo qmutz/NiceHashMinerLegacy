@@ -17,7 +17,6 @@ using System.Linq;
 using System.Management;
 using System.Threading;
 using System.Windows.Forms;
-using SystemTimer = System.Timers.Timer;
 using Timer = System.Windows.Forms.Timer;
 using static NiceHashMiner.Translations; // consider using static
 
@@ -35,7 +34,7 @@ namespace NiceHashMiner
         private Form_Loading _loadingScreen;
         private Form_Benchmark _benchmarkForm;        
 
-        private bool _isDeviceDetectionInitialized = false;
+        //private bool _isDeviceDetectionInitialized = false;
 
         private bool _isManuallyStarted = false;
 
@@ -100,7 +99,7 @@ namespace NiceHashMiner
                                                    Tr(ConfigManager.GeneralConfig.TimeUnit.ToString()) + "     " +
                                                    Tr("Balance") + ":";
 
-            devicesListViewEnableControl1.InitLocale();
+            //devicesListViewEnableControl1.InitLocale();
 
             buttonBenchmark.Text = Tr("&Benchmark");
             buttonSettings.Text = Tr("S&ettings");
@@ -127,12 +126,12 @@ namespace NiceHashMiner
                                                    Tr("Balance") + ":";
             //BalanceCallback(null, null); // update currency changes
 
-            if (_isDeviceDetectionInitialized)
-            {
-                devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
-            }
+            //if (_isDeviceDetectionInitialized)
+            //{
+            //    devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
+            //}
 
-            devicesListViewEnableControl1.SetPayingColumns();
+            //devicesListViewEnableControl1.SetPayingColumns();
         }
 
         public void AfterLoadComplete()
@@ -172,8 +171,8 @@ namespace NiceHashMiner
             _startupTimer.Stop();
             _startupTimer = null;
 
-            // TODO temporary hooks
-            ApplicationStateManager._ratesComunication = devicesListViewEnableControl1;
+            //// TODO temporary hooks
+            //ApplicationStateManager._ratesComunication = devicesListViewEnableControl1;
 
             // Internals Init
             // TODO add loading step
@@ -181,17 +180,17 @@ namespace NiceHashMiner
 
             // Query Available ComputeDevices
             ComputeDeviceManager.Query.QueryDevices(_loadingScreen);
-            _isDeviceDetectionInitialized = true;
+            //_isDeviceDetectionInitialized = true;
 
             /////////////////////////////////////////////
             /////// from here on we have our devices and Miners initialized
             ApplicationStateManager.AfterDeviceQueryInitialization();
             _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Saving config..."));
 
-            // All devices settup should be initialized in AllDevices
-            devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
-            // set properties after
-            devicesListViewEnableControl1.SaveToGeneralConfig = true;
+            //// All devices settup should be initialized in AllDevices
+            //devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
+            //// set properties after
+            //devicesListViewEnableControl1.SaveToGeneralConfig = true;
 
             _loadingScreen.IncreaseLoadCounterAndMessage(
                 Tr("Checking for latest version..."));
@@ -212,12 +211,9 @@ namespace NiceHashMiner
             }
 
             _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Getting Bitcoin exchange rate..."));
-            _loadingScreen.IncreaseLoadCounterAndMessage(
-                Tr("Setting environment variables..."));
+            _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Setting environment variables..."));
             Helpers.SetDefaultEnvironmentVariables();
-
-            _loadingScreen.IncreaseLoadCounterAndMessage(
-                Tr("Setting Windows error reporting..."));
+            _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Setting Windows error reporting..."));
 
             Helpers.DisableWindowsErrorReporting(ConfigManager.GeneralConfig.DisableWindowsErrorReporting);
 
@@ -680,7 +676,7 @@ namespace NiceHashMiner
             notifyIcon1.Text = Application.ProductName + " v" + Application.ProductVersion +
                                "\nDouble-click to restore..";
 
-            devicesMainBoard1.Size = devicesListViewEnableControl1.Size;
+            //devicesMainBoard1.Size = devicesListViewEnableControl1.Size;
 
             if (ConfigManager.GeneralConfig.MinimizeToTray && FormWindowState.Minimized == WindowState)
             {
@@ -766,6 +762,7 @@ namespace NiceHashMiner
             var username = _demoMode ? Globals.GetDemoUsername() : Globals.GetUsername(); // TODO we get username from here
             //var isMining = MinersManager.StartInitialize(username);
             var isMining = true;
+            ApplicationStateManager.IsDemoMining = _demoMode;
             ApplicationStateManager.StartAllAvailableDevices();
 
             return isMining ? StartMiningReturnType.StartMining : StartMiningReturnType.ShowNoMining;
@@ -856,7 +853,7 @@ namespace NiceHashMiner
                 buttonBenchmark.Enabled = false;
                 buttonStartMining.Enabled = false;
                 buttonSettings.Enabled = false;
-                devicesListViewEnableControl1.SetIsMining(true);
+                //devicesListViewEnableControl1.SetIsMining(true);
                 buttonStopMining.Enabled = true;
                 //// Disable profitable notification on start
                 //_isNotProfitable = false;
@@ -877,7 +874,7 @@ namespace NiceHashMiner
                 buttonBenchmark.Enabled = true;
                 buttonStartMining.Enabled = true;
                 buttonSettings.Enabled = true;
-                devicesListViewEnableControl1.SetIsMining(false);
+                //devicesListViewEnableControl1.SetIsMining(false);
                 buttonStopMining.Enabled = false;
                 labelDemoMode.Visible = false;
                 _demoMode = false; // TODO this is logic

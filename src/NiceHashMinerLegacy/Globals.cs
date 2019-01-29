@@ -11,7 +11,13 @@ namespace NiceHashMiner
 {
     public static class Globals
     {
+#if TESTNET
+        public static readonly string DemoUser = "2NCspmhNwR6363bDo9kgG3Z35GabFHxkxYk";
+#elif TESTNETDEV
+        public static readonly string DemoUser = "2N2e2ET1jMY9r5is9KaTKnU3bkCFaYHEEEx";
+#else
         public static readonly string DemoUser = "33hGFJZQAfbdzyHGqhJPvZwncDjUBdZqjW";
+#endif
 
         // change this if TOS changes
         public const int CurrentTosVer = 4;

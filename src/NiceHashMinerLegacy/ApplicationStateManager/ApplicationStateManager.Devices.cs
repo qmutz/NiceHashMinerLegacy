@@ -52,6 +52,7 @@ namespace NiceHashMiner
                 }
                 dev.SetEnabled(enabled);
             }
+            Configs.ConfigManager.GeneralConfigFileCommit();
 
             // finally refresh state
             RefreshDeviceListView?.Invoke(null, null);

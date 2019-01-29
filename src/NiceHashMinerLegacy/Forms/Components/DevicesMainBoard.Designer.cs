@@ -36,6 +36,7 @@
             this.ColumnLoad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnRMP = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Run = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.algorithmsEnabled = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.devicesDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,6 +44,11 @@
             // 
             this.devicesDataGridView.AllowUserToAddRows = false;
             this.devicesDataGridView.AllowUserToDeleteRows = false;
+            this.devicesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.devicesDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.devicesDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.devicesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.devicesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Enable,
@@ -51,14 +57,16 @@
             this.ColumnTemperature,
             this.ColumnLoad,
             this.ColumnRMP,
-            this.Run});
+            this.Run,
+            this.algorithmsEnabled});
             this.devicesDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.devicesDataGridView.Location = new System.Drawing.Point(0, 0);
+            this.devicesDataGridView.Margin = new System.Windows.Forms.Padding(10);
             this.devicesDataGridView.Name = "devicesDataGridView";
             this.devicesDataGridView.ReadOnly = true;
             this.devicesDataGridView.RowHeadersVisible = false;
             this.devicesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.devicesDataGridView.Size = new System.Drawing.Size(766, 181);
+            this.devicesDataGridView.Size = new System.Drawing.Size(813, 223);
             this.devicesDataGridView.TabIndex = 114;
             // 
             // Enable
@@ -69,43 +77,57 @@
             this.Enable.ReadOnly = true;
             this.Enable.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Enable.TrueValue = "Ye43s";
+            this.Enable.Width = 52;
             // 
             // deviceHeader
             // 
             this.deviceHeader.HeaderText = "Device";
             this.deviceHeader.Name = "deviceHeader";
             this.deviceHeader.ReadOnly = true;
+            this.deviceHeader.Width = 66;
             // 
             // StatusColumn
             // 
             this.StatusColumn.HeaderText = "Status";
             this.StatusColumn.Name = "StatusColumn";
             this.StatusColumn.ReadOnly = true;
+            this.StatusColumn.Width = 62;
             // 
             // ColumnTemperature
             // 
             this.ColumnTemperature.HeaderText = "Temp (°C)";
             this.ColumnTemperature.Name = "ColumnTemperature";
             this.ColumnTemperature.ReadOnly = true;
+            this.ColumnTemperature.Width = 79;
             // 
             // ColumnLoad
             // 
             this.ColumnLoad.HeaderText = "Load (%)";
             this.ColumnLoad.Name = "ColumnLoad";
             this.ColumnLoad.ReadOnly = true;
+            this.ColumnLoad.Width = 73;
             // 
             // ColumnRMP
             // 
             this.ColumnRMP.HeaderText = "RPM";
             this.ColumnRMP.Name = "ColumnRMP";
             this.ColumnRMP.ReadOnly = true;
+            this.ColumnRMP.Width = 56;
             // 
             // Run
             // 
-            this.Run.HeaderText = "Start";
+            this.Run.HeaderText = "Start / Stop";
             this.Run.Name = "Run";
             this.Run.ReadOnly = true;
             this.Run.Text = "Start";
+            this.Run.Width = 68;
+            // 
+            // algorithmsEnabled
+            // 
+            this.algorithmsEnabled.HeaderText = "Algorithms/Enabled/Benchmarked";
+            this.algorithmsEnabled.Name = "algorithmsEnabled";
+            this.algorithmsEnabled.ReadOnly = true;
+            this.algorithmsEnabled.Width = 195;
             // 
             // DevicesMainBoard
             // 
@@ -113,7 +135,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.devicesDataGridView);
             this.Name = "DevicesMainBoard";
-            this.Size = new System.Drawing.Size(766, 181);
+            this.Size = new System.Drawing.Size(813, 223);
             ((System.ComponentModel.ISupportInitialize)(this.devicesDataGridView)).EndInit();
             this.ResumeLayout(false);
 
@@ -129,5 +151,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnLoad;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnRMP;
         private System.Windows.Forms.DataGridViewButtonColumn Run;
+        private System.Windows.Forms.DataGridViewTextBoxColumn algorithmsEnabled;
     }
 }

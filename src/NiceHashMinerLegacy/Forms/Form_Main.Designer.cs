@@ -59,7 +59,6 @@
             this.linkLabelNewVersion = new System.Windows.Forms.LinkLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.devicesMainBoard1 = new NiceHashMiner.Forms.Components.DevicesMainBoard();
-            this.devicesListViewEnableControl1 = new NiceHashMiner.Forms.Components.DevicesListViewSpeedControl();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -338,24 +337,13 @@
             // 
             // devicesMainBoard1
             // 
-            this.devicesMainBoard1.Location = new System.Drawing.Point(10, 109);
-            this.devicesMainBoard1.Name = "devicesMainBoard1";
-            this.devicesMainBoard1.Size = new System.Drawing.Size(714, 191);
-            this.devicesMainBoard1.TabIndex = 111;
-            // 
-            // devicesListViewEnableControl1
-            // 
-            this.devicesListViewEnableControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.devicesMainBoard1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.devicesListViewEnableControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.devicesListViewEnableControl1.FirstColumnText = "Enabled";
-            this.devicesListViewEnableControl1.Location = new System.Drawing.Point(11, 109);
-            this.devicesListViewEnableControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.devicesListViewEnableControl1.Name = "devicesListViewEnableControl1";
-            this.devicesListViewEnableControl1.SaveToGeneralConfig = false;
-            this.devicesListViewEnableControl1.Size = new System.Drawing.Size(713, 303);
-            this.devicesListViewEnableControl1.TabIndex = 109;
+            this.devicesMainBoard1.Location = new System.Drawing.Point(10, 109);
+            this.devicesMainBoard1.Name = "devicesMainBoard1";
+            this.devicesMainBoard1.Size = new System.Drawing.Size(716, 269);
+            this.devicesMainBoard1.TabIndex = 111;
             // 
             // Form_Main
             // 
@@ -365,7 +353,6 @@
             this.Controls.Add(this.devicesMainBoard1);
             this.Controls.Add(this.linkLabelNewVersion);
             this.Controls.Add(this.buttonHelp);
-            this.Controls.Add(this.devicesListViewEnableControl1);
             this.Controls.Add(this.labelDemoMode);
             this.Controls.Add(this.linkLabelChooseBTCWallet);
             this.Controls.Add(this.buttonLogo);
@@ -425,7 +412,6 @@
         private System.Windows.Forms.TextBox textBoxWorkerName;
         private System.Windows.Forms.LinkLabel linkLabelChooseBTCWallet;
         private System.Windows.Forms.Label labelDemoMode;
-        private Forms.Components.DevicesListViewSpeedControl devicesListViewEnableControl1;
         private System.Windows.Forms.Button buttonHelp;
         private System.Windows.Forms.LinkLabel linkLabelNewVersion;
         private System.Windows.Forms.ToolTip toolTip1;
