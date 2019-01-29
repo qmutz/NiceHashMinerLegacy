@@ -281,3 +281,7 @@ _Pvt_Extensions
 
 #IntelliJ IDEA
 .idea
+
+# local builds
+_LOCAL_RELEASES
+_ONLINE

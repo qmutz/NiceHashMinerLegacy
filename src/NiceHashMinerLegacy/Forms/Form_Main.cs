@@ -17,7 +17,6 @@ using System.Linq;
 using System.Management;
 using System.Threading;
 using System.Windows.Forms;
-using SystemTimer = System.Timers.Timer;
 using Timer = System.Windows.Forms.Timer;
 using static NiceHashMiner.Translations; // consider using static
 
@@ -35,7 +34,7 @@ namespace NiceHashMiner
         private Form_Loading _loadingScreen;
         private Form_Benchmark _benchmarkForm;        
 
-        private bool _isDeviceDetectionInitialized = false;
+        //private bool _isDeviceDetectionInitialized = false;
 
         private bool _isManuallyStarted = false;
 
@@ -181,7 +180,7 @@ namespace NiceHashMiner
 
             // Query Available ComputeDevices
             ComputeDeviceManager.Query.QueryDevices(_loadingScreen);
-            _isDeviceDetectionInitialized = true;
+            //_isDeviceDetectionInitialized = true;
 
             /////////////////////////////////////////////
             /////// from here on we have our devices and Miners initialized
@@ -764,6 +763,7 @@ namespace NiceHashMiner
             var username = _demoMode ? Globals.GetDemoUsername() : Globals.GetUsername(); // TODO we get username from here
             //var isMining = MinersManager.StartInitialize(username);
             var isMining = true;
+            ApplicationStateManager.IsDemoMining = _demoMode;
             ApplicationStateManager.StartAllAvailableDevices();
 
             return isMining ? StartMiningReturnType.StartMining : StartMiningReturnType.ShowNoMining;

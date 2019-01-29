@@ -66,7 +66,7 @@
             this.devicesDataGridView.ReadOnly = true;
             this.devicesDataGridView.RowHeadersVisible = false;
             this.devicesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.devicesDataGridView.Size = new System.Drawing.Size(766, 181);
+            this.devicesDataGridView.Size = new System.Drawing.Size(813, 223);
             this.devicesDataGridView.TabIndex = 114;
             // 
             // Enable
@@ -135,7 +135,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.devicesDataGridView);
             this.Name = "DevicesMainBoard";
-            this.Size = new System.Drawing.Size(766, 181);
+            this.Size = new System.Drawing.Size(813, 223);
             ((System.ComponentModel.ISupportInitialize)(this.devicesDataGridView)).EndInit();
             this.ResumeLayout(false);
 
