@@ -16,11 +16,18 @@ namespace NiceHashMiner
 {
     static partial class ApplicationStateManager
     {
+#if TESTNET
+        private static readonly string BuildTag = " (TESTNET)";
+#elif TESTNETDEV
+        private static readonly string BuildTag = " (TESTNETDEV)";
+#else
+        private static readonly string BuildTag = "";
+#endif
         public static string Title
         {
             get
             {
-                return " v" + Application.ProductVersion + BetaAlphaPostfixString;
+                return " v" + Application.ProductVersion + BetaAlphaPostfixString + BuildTag;
             }
         }
 
