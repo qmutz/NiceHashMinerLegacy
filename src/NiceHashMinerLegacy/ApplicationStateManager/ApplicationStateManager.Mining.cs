@@ -65,7 +65,7 @@ namespace NiceHashMiner
             if (!isRpcCall) {
                 NiceHashStats.StateChanged();
             }
-            toggleActiveInactiveDisplay();
+            ToggleActiveInactiveDisplay();
             RefreshDeviceListView?.Invoke(null, null);
 
             return (started, "");
@@ -92,7 +92,7 @@ namespace NiceHashMiner
                 UpdateDevicesToMine();
             }
 
-            toggleActiveInactiveDisplay();
+            ToggleActiveInactiveDisplay();
             RefreshDeviceListView?.Invoke(null, null);
             NiceHashStats.StateChanged();
 
@@ -129,7 +129,7 @@ namespace NiceHashMiner
             //        failReason = msg;
             //    }
             //}
-            toggleActiveInactiveDisplay();
+            ToggleActiveInactiveDisplay();
             NiceHashStats.StateChanged();
             StopMining(true);
             return (stopped, failReason);
@@ -145,7 +145,7 @@ namespace NiceHashMiner
                 case DeviceState.Benchmarking:
                     device.State = DeviceState.Stopped;
                     BenchmarkManager.StopBenchmarForDevice(device);
-                    toggleActiveInactiveDisplay();
+                    ToggleActiveInactiveDisplay();
                     if (refreshStateChange) NiceHashStats.StateChanged();
                     return (true, "");
                 case DeviceState.Mining:

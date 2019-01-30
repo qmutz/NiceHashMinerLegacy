@@ -155,6 +155,12 @@
     <Compile Include="Forms\Components\DevicesMainBoard.Designer.cs">
       <DependentUpon>DevicesMainBoard.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Components\DevicesMainBoardDevicesListViewSpeedControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Components\DevicesMainBoardDevicesListViewSpeedControl.Designer.cs">
+      <DependentUpon>DevicesMainBoardDevicesListViewSpeedControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormHelpers.cs" />
     <Compile Include="Forms\StateDumpForm.cs">
       <SubType>Form</SubType>
@@ -411,6 +417,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Components\DevicesMainBoard.resx">
       <DependentUpon>DevicesMainBoard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Components\DevicesMainBoardDevicesListViewSpeedControl.resx">
+      <DependentUpon>DevicesMainBoardDevicesListViewSpeedControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Components\Field.resx">
       <DependentUpon>Field.cs</DependentUpon>

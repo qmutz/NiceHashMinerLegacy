@@ -58,14 +58,14 @@
             this.buttonHelp = new System.Windows.Forms.Button();
             this.linkLabelNewVersion = new System.Windows.Forms.LinkLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.devicesMainBoard1 = new NiceHashMiner.Forms.Components.DevicesMainBoard();
+            this.devicesMainBoard1 = new NiceHashMiner.Forms.Components.DevicesMainBoardDevicesListViewSpeedControl();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonStartMining
             // 
             this.buttonStartMining.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonStartMining.Location = new System.Drawing.Point(732, 162);
+            this.buttonStartMining.Location = new System.Drawing.Point(680, 162);
             this.buttonStartMining.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonStartMining.Name = "buttonStartMining";
             this.buttonStartMining.Size = new System.Drawing.Size(89, 23);
@@ -131,9 +131,9 @@
             this.toolStripStatusLabelBalanceDollarText,
             this.toolStripStatusLabelBalanceDollarValue,
             this.toolStripStatusLabel10});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 411);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 241);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(828, 25);
+            this.statusStrip1.Size = new System.Drawing.Size(776, 25);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -237,7 +237,7 @@
             // 
             this.buttonStopMining.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonStopMining.Enabled = false;
-            this.buttonStopMining.Location = new System.Drawing.Point(732, 188);
+            this.buttonStopMining.Location = new System.Drawing.Point(680, 188);
             this.buttonStopMining.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonStopMining.Name = "buttonStopMining";
             this.buttonStopMining.Size = new System.Drawing.Size(89, 23);
@@ -249,7 +249,7 @@
             // buttonBenchmark
             // 
             this.buttonBenchmark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBenchmark.Location = new System.Drawing.Point(732, 109);
+            this.buttonBenchmark.Location = new System.Drawing.Point(680, 109);
             this.buttonBenchmark.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
             this.buttonBenchmark.Name = "buttonBenchmark";
             this.buttonBenchmark.Size = new System.Drawing.Size(89, 23);
@@ -261,7 +261,7 @@
             // buttonSettings
             // 
             this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSettings.Location = new System.Drawing.Point(732, 135);
+            this.buttonSettings.Location = new System.Drawing.Point(680, 135);
             this.buttonSettings.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.Size = new System.Drawing.Size(89, 23);
@@ -277,7 +277,7 @@
             this.buttonLogo.FlatAppearance.BorderSize = 0;
             this.buttonLogo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonLogo.Image = global::NiceHashMiner.Properties.Resources.NHM_logo_xsmall_light;
-            this.buttonLogo.Location = new System.Drawing.Point(616, 8);
+            this.buttonLogo.Location = new System.Drawing.Point(564, 8);
             this.buttonLogo.Name = "buttonLogo";
             this.buttonLogo.Size = new System.Drawing.Size(205, 52);
             this.buttonLogo.TabIndex = 11;
@@ -317,7 +317,7 @@
             // buttonHelp
             // 
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonHelp.Location = new System.Drawing.Point(732, 214);
+            this.buttonHelp.Location = new System.Drawing.Point(680, 214);
             this.buttonHelp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonHelp.Name = "buttonHelp";
             this.buttonHelp.Size = new System.Drawing.Size(89, 23);
@@ -342,14 +342,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.devicesMainBoard1.Location = new System.Drawing.Point(10, 109);
             this.devicesMainBoard1.Name = "devicesMainBoard1";
-            this.devicesMainBoard1.Size = new System.Drawing.Size(716, 269);
+            this.devicesMainBoard1.Size = new System.Drawing.Size(664, 127);
             this.devicesMainBoard1.TabIndex = 111;
             // 
             // Form_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(828, 436);
+            this.ClientSize = new System.Drawing.Size(776, 266);
             this.Controls.Add(this.devicesMainBoard1);
             this.Controls.Add(this.linkLabelNewVersion);
             this.Controls.Add(this.buttonHelp);
@@ -415,7 +415,7 @@
         private System.Windows.Forms.Button buttonHelp;
         private System.Windows.Forms.LinkLabel linkLabelNewVersion;
         private System.Windows.Forms.ToolTip toolTip1;
-        private Forms.Components.DevicesMainBoard devicesMainBoard1;
+        private Forms.Components.DevicesMainBoardDevicesListViewSpeedControl devicesMainBoard1;
     }
 }
 

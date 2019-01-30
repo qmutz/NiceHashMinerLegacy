@@ -22,6 +22,7 @@ using static NiceHashMiner.Translations; // consider using static
 
 namespace NiceHashMiner
 {
+    using NiceHashMiner.Forms.Components;
     using System.IO;
 
     public partial class Form_Main : Form, Form_Loading.IAfterInitializationCaller, IBTCDisplayer, IWorkerNameDisplayer, IServiceLocationDisplayer, IVersionDisplayer, IBalanceBTCDisplayer, IBalanceFiatDisplayer, IGlobalMiningRateDisplayer, IStartMiningDisplayer, IStopMiningDisplayer
@@ -32,15 +33,19 @@ namespace NiceHashMiner
         private bool _demoMode;
 
         private Form_Loading _loadingScreen;
-        private Form_Benchmark _benchmarkForm;        
+        private Form_Benchmark _benchmarkForm;
 
         //private bool _isDeviceDetectionInitialized = false;
+
+        // this is TEMP remove it as soon as possible
+        private DevicesListViewSpeedControl devicesListViewEnableControl1;
 
         private bool _isManuallyStarted = false;
 
         public Form_Main()
         {
             InitializeComponent();
+            devicesListViewEnableControl1 = devicesMainBoard1.SpeedsControl;
             FormHelpers.SubscribeAllControls(this);
 
             Width = ConfigManager.GeneralConfig.MainFormSize.X;
@@ -99,7 +104,7 @@ namespace NiceHashMiner
                                                    Tr(ConfigManager.GeneralConfig.TimeUnit.ToString()) + "     " +
                                                    Tr("Balance") + ":";
 
-            //devicesListViewEnableControl1.InitLocale();
+            devicesListViewEnableControl1.InitLocale();
 
             buttonBenchmark.Text = Tr("&Benchmark");
             buttonSettings.Text = Tr("S&ettings");
@@ -131,7 +136,7 @@ namespace NiceHashMiner
             //    devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
             //}
 
-            //devicesListViewEnableControl1.SetPayingColumns();
+            devicesListViewEnableControl1.SetPayingColumns();
         }
 
         public void AfterLoadComplete()
@@ -172,7 +177,7 @@ namespace NiceHashMiner
             _startupTimer = null;
 
             //// TODO temporary hooks
-            //ApplicationStateManager._ratesComunication = devicesListViewEnableControl1;
+            ApplicationStateManager._ratesComunication = devicesListViewEnableControl1;
 
             // Internals Init
             // TODO add loading step
@@ -187,8 +192,8 @@ namespace NiceHashMiner
             ApplicationStateManager.AfterDeviceQueryInitialization();
             _loadingScreen.IncreaseLoadCounterAndMessage(Tr("Saving config..."));
 
-            //// All devices settup should be initialized in AllDevices
-            //devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
+            // All devices settup should be initialized in AllDevices
+            devicesListViewEnableControl1.ResetComputeDevices(ComputeDeviceManager.Available.Devices);
             //// set properties after
             //devicesListViewEnableControl1.SaveToGeneralConfig = true;
 
@@ -533,6 +538,7 @@ namespace NiceHashMiner
             ApplicationStateManager.CurrentForm = ApplicationStateManager.CurrentFormState.Benchmark;
             _benchmarkForm.ShowDialog();
             ApplicationStateManager.CurrentForm = ApplicationStateManager.CurrentFormState.Main;
+            ApplicationStateManager.ToggleActiveInactiveDisplay();
             var startMining = _benchmarkForm.StartMiningOnFinish;
             _benchmarkForm = null;
 
@@ -853,11 +859,15 @@ namespace NiceHashMiner
                 buttonBenchmark.Enabled = false;
                 buttonStartMining.Enabled = false;
                 buttonSettings.Enabled = false;
-                //devicesListViewEnableControl1.SetIsMining(true);
                 buttonStopMining.Enabled = true;
                 //// Disable profitable notification on start
                 //_isNotProfitable = false;
                 HideWarning();
+                // TODO put this in App State Manager
+                if (ApplicationStateManager.AnyInMiningState())
+                {
+                    devicesMainBoard1.ShowPanel2();
+                }
             });
         }
 
@@ -874,12 +884,12 @@ namespace NiceHashMiner
                 buttonBenchmark.Enabled = true;
                 buttonStartMining.Enabled = true;
                 buttonSettings.Enabled = true;
-                //devicesListViewEnableControl1.SetIsMining(false);
                 buttonStopMining.Enabled = false;
                 labelDemoMode.Visible = false;
                 _demoMode = false; // TODO this is logic
 
                 UpdateGlobalRate(0);
+                devicesMainBoard1.HidePanel2();
             });
         }
     }

@@ -14,7 +14,7 @@ namespace NiceHashMiner.Forms.Components
     /// <summary>
     /// Displays devices with hashrates/profits and optional power/diag columns. During mining groups devices by miner/algo combo.
     /// </summary>
-    internal partial class DevicesListViewSpeedControl : DevicesListViewEnableControl, IRatesComunication
+    public partial class DevicesListViewSpeedControl : DevicesListViewEnableControl, IRatesComunication
     {
         private const int Speed = 1;
         private const int SecSpeed = 2;

@@ -292,7 +292,7 @@ namespace NiceHashMiner
         }
         #endregion
 
-        private static void toggleActiveInactiveDisplay()
+        public static void ToggleActiveInactiveDisplay()
         {
             var allDevs = ComputeDeviceManager.Available.Devices;
             var devicesNotActive = allDevs.All(dev => dev.State != DeviceState.Mining && dev.State != DeviceState.Benchmarking);
@@ -305,6 +305,12 @@ namespace NiceHashMiner
                 DisplayMiningStarted?.Invoke(null, null);
             }
         }
+
+        public static bool AnyInMiningState()
+        {
+            var allDevs = ComputeDeviceManager.Available.Devices;
+            return allDevs.Any(dev => dev.State == DeviceState.Mining);
+        } 
 
 
         public static bool IsCurrentlyMining { get; private set; }
