@@ -103,8 +103,8 @@ namespace NiceHashMiner
 
             buttonBenchmark.Text = Tr("&Benchmark");
             buttonSettings.Text = Tr("S&ettings");
-            buttonStartMining.Text = Tr("&Start");
-            buttonStopMining.Text = Tr("St&op");
+            buttonStartMining.Text = Tr("&Start All");
+            buttonStopMining.Text = Tr("&Stop All");
             buttonHelp.Text = Tr("&Help");
         }
 

@@ -70,7 +70,7 @@
             this.buttonStartMining.Name = "buttonStartMining";
             this.buttonStartMining.Size = new System.Drawing.Size(89, 23);
             this.buttonStartMining.TabIndex = 6;
-            this.buttonStartMining.Text = "&Start";
+            this.buttonStartMining.Text = "&Start All";
             this.buttonStartMining.UseVisualStyleBackColor = true;
             this.buttonStartMining.Click += new System.EventHandler(this.ButtonStartMining_Click);
             // 
@@ -242,7 +242,7 @@
             this.buttonStopMining.Name = "buttonStopMining";
             this.buttonStopMining.Size = new System.Drawing.Size(89, 23);
             this.buttonStopMining.TabIndex = 7;
-            this.buttonStopMining.Text = "St&op";
+            this.buttonStopMining.Text = "&Stop All";
             this.buttonStopMining.UseVisualStyleBackColor = true;
             this.buttonStopMining.Click += new System.EventHandler(this.ButtonStopMining_Click);
             // 
