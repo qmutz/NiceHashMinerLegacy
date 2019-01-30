@@ -14,7 +14,9 @@ namespace NiceHashMiner.Miners
     public class Ccminer : Miner
     {
         public Ccminer() : base("ccminer_NVIDIA")
-        { }
+        {
+            TimeoutStandard = true;
+        }
 
         // cryptonight benchmark exception
         private int _cryptonightTotalCount = 0;
@@ -91,6 +93,7 @@ namespace NiceHashMiner.Miners
 
         protected override bool BenchmarkParseLine(string outdata)
         {
+            //return false;
             // cryptonight exception
             if (_benchmarkException && outdata.Contains("Total:"))
             {

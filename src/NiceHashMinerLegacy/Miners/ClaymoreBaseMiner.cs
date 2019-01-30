@@ -43,6 +43,7 @@ namespace NiceHashMiner.Miners
         protected ClaymoreBaseMiner(string minerDeviceName)
             : base(minerDeviceName)
         {
+            TimeoutStandard = true;
             ConectionType = NhmConectionType.STRATUM_SSL;
             IsKillAllUsedMinerProcs = true;
         }

@@ -12,6 +12,7 @@ namespace NiceHashMiner.Miners
         public CpuMiner()
             : base("cpuminer_CPU")
         {
+            TimeoutStandard = true;
         }
 
         protected override int GetMaxCooldownTimeInMilliseconds()
