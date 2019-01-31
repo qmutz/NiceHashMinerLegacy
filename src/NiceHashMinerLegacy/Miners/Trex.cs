@@ -53,9 +53,10 @@ namespace NiceHashMiner.Miners
 
         public override void Start(string url, string username)
         {
+            var workaroundUsername = Globals.GetUsernameNoRigID();
             var devices = string.Join(",", MiningSetup.MiningPairs.Select(p => p.Device.ID));
             LastCommandLine = $" -a {MiningSetup.MinerName} -d {devices} -o {url} " +
-                              $"-u {username} -p x " +
+                              $"-u {workaroundUsername} -p x " +
                               $"--api-bind-http 127.0.0.1:{ApiPort}";
             ProcessHandle = _Start();
         }

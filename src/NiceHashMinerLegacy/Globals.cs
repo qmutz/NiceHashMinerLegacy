@@ -76,6 +76,18 @@ namespace NiceHashMiner
             return $"{btc}:{RigID}"; 
         }
 
+        public static string GetUsernameNoRigID()
+        {
+            var btc = GetBitcoinUser();
+            var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
+            if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
+            {
+                return $"{btc}.{worker}";
+            }
+
+            return $"{btc}";
+        }
+
         public static string GetDemoUsername()
         {
             var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
