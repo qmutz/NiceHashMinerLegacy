@@ -217,32 +217,6 @@ namespace NiceHashMiner.Miners
             return string.Join(", ", group);
         }
 
-        public string GetActiveMinersGroup()
-        {
-            if (IsCurrentlyIdle)
-            {
-                return "IDLE";
-            }
-
-            var activeMinersGroup = "";
-
-            //get unique miner groups like CPU, NVIDIA, AMD,...
-            var uniqueMinerGroups = new HashSet<string>();
-            foreach (var miningDevice in _miningDevices)
-            {
-                //if (miningDevice.MostProfitableKey != AlgorithmType.NONE) {
-                uniqueMinerGroups.Add(GroupNames.GetNameGeneral(miningDevice.Device.DeviceType));
-                //}
-            }
-
-            if (uniqueMinerGroups.Count > 0 && _isProfitable)
-            {
-                activeMinersGroup = string.Join("/", uniqueMinerGroups);
-            }
-
-            return activeMinersGroup;
-        }
-
         public void UpdateUsedDevices(IEnumerable<ComputeDevice> devices)
         {
             _switchingManager.Stop();

@@ -15,17 +15,12 @@ namespace NiceHashMiner.Miners
         {
             _curMiningSession?.StopAllMiners(headless);
             Ethlargement.Stop();
-            _curMiningSession = null;
+            _curMiningSession = null; // TODO consider not nulling a mining session
         }
 
         public static void StopAllMinersNonProfitable()
         {
             _curMiningSession?.StopAllMinersNonProfitable();
-        }
-
-        public static List<int> GetActiveMinersIndexes()
-        {
-            return _curMiningSession != null ? _curMiningSession.ActiveDeviceIndexes : new List<int>();
         }
 
         public static void EnsureMiningSession(string username)
@@ -34,11 +29,6 @@ namespace NiceHashMiner.Miners
             {
                 _curMiningSession = new MiningSession(new List<ComputeDevice>(), username);
             }
-        }
-
-        public static bool IsMiningEnabled()
-        {
-            return _curMiningSession != null && _curMiningSession.IsMiningEnabled;
         }
 
         public static void UpdateUsedDevices(IEnumerable<ComputeDevice> devices)
