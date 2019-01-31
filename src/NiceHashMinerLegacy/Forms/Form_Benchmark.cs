@@ -309,15 +309,16 @@ namespace NiceHashMiner.Forms
                 else if (StartMiningOnFinish == false)
                 {
                     var result = MessageBox.Show(
-                        Translations.Tr("Not all benchmarks finished successfully. Retry to re-run the benchmark process against unbenchmarked algos or Cancel to disable unbenchmarked algorithms."),
+                        //Translations.Tr("Not all benchmarks finished successfully. Retry to re-run the benchmark process against unbenchmarked algos or Cancel to disable unbenchmarked algorithms."),
+                        Translations.Tr("Not all benchmarks finished successfully."),
                         Translations.Tr("Benchmark finished report"),
-                        MessageBoxButtons.RetryCancel);
+                        MessageBoxButtons.OK);
 
-                    if (result == DialogResult.Retry)
-                    {
-                        StartButonClick();
-                        return;
-                    }
+                    //if (result == DialogResult.Retry)
+                    //{
+                    //    StartButonClick();
+                    //    return;
+                    //}
 
                     // get unbenchmarked from criteria and disable
                     BenchmarkManager.DisableTodoAlgos();
