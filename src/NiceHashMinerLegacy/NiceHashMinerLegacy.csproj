@@ -137,6 +137,12 @@
     <Compile Include="Devices\Querying\AmdQuery.cs" />
     <Compile Include="Devices\Querying\OpenCLJsonData.cs" />
     <Compile Include="Devices\Querying\VideoControllerData.cs" />
+    <Compile Include="Forms\Components\AlgorithmsDataGridView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Components\AlgorithmsDataGridView.Designer.cs">
+      <DependentUpon>AlgorithmsDataGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Components\DevicesListViewBenchmarkControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -395,6 +401,9 @@
     <Compile Include="Utils\MinersDownloader.cs" />
     <Compile Include="Utils\MinersDownloadManager.cs" />
     <Compile Include="Utils\MinersExistanceChecker.cs" />
+    <EmbeddedResource Include="Forms\Components\AlgorithmsDataGridView.resx">
+      <DependentUpon>AlgorithmsDataGridView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Components\AlgorithmsListView.resx">
       <DependentUpon>AlgorithmsListView.cs</DependentUpon>
       <SubType>Designer</SubType>
