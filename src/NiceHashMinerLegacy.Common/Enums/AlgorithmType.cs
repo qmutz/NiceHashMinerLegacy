@@ -63,7 +63,10 @@
         Lyra2z = 32,
         X16R = 33,
         CryptoNightV8 = 34,
-        ZHash = 36
+        ZHash = 36,
+        Beam = 37,
+        // Tentative
+        Grin = 38
         #endregion // NiceHashAPI
     }
 }

@@ -128,6 +128,9 @@ namespace NiceHashMiner.Miners.Grouping
             public const string Trex = Bin3rdParty + @"\trex\t-rex.exe";
 
             public const string Phoenix = Bin3rdParty + @"\phoenix\PhoenixMiner.exe";
+
+            public const string GMiner = Bin3rdParty + @"\gminer\miner.exe";
+            public const string BMiner = Bin3rdParty + @"\bminer\bminer.exe";
         }
 
         // NEW START
@@ -204,6 +207,10 @@ namespace NiceHashMiner.Miners.Grouping
                     return Data.Trex;
                 case MinerBaseType.Phoenix:
                     return Data.Phoenix;
+                case MinerBaseType.GMiner:
+                    return Data.GMiner;
+                case MinerBaseType.BMiner:
+                    return Data.BMiner;
             }
             return Data.None;
         }
