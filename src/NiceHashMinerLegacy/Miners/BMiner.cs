@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace NiceHashMiner.Miners
 {
-    public class BMiner : Miner
+    public class BMiner : MinerStandardBench
     {
         #region JSON Models
 
@@ -280,14 +280,12 @@ namespace NiceHashMiner.Miners
             return _benchIters >= _targetBenchIters;
         }
 
-        protected override void BenchmarkThreadRoutineFinish()
+        protected override void FinishUpBenchmark()
         {
             if (_benchIters != 0 && BenchmarkAlgorithm != null)
             {
                 BenchmarkAlgorithm.BenchmarkSpeed = (_benchHashes / _benchIters) * (1 - DevFee * 0.01);
             }
-
-            base.BenchmarkThreadRoutineFinish();
         }
 
         public override async Task<ApiData> GetSummaryAsync()

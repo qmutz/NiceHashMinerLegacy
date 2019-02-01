@@ -87,12 +87,16 @@ namespace NiceHashMiner.Miners
                 BenchmarkThreadRoutineCatch(ex);
             }
 
+            FinishUpBenchmark();
+
             return await BenchmarkThreadRoutineFinish(_benchLines);
         }
 
         protected abstract bool BenchmarkParseLine(string outdata);
 
         protected abstract void BenchmarkOutputErrorDataReceivedImpl(string outdata);
+
+        protected virtual void FinishUpBenchmark() { }
 
         protected override void BenchmarkOutputErrorDataReceived(object sender, DataReceivedEventArgs e)
         {

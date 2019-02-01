@@ -25,7 +25,7 @@ namespace NiceHashMinerLegacy.Tests.Miners
 
             public void FinishBenchmark()
             {
-                BenchmarkThreadRoutineFinish();
+                FinishUpBenchmark();
             }
         }
 

@@ -15,7 +15,7 @@ namespace NiceHashMiner.Miners
 {
     // NOTE: GMiner will NOT run if the VS debugger is attached to NHML. 
     // Detach the debugger to use GMiner.
-    public class GMiner : Miner
+    public class GMiner : MinerStandardBench
     {
         private const double DevFee = 2.0;
 
@@ -124,14 +124,12 @@ namespace NiceHashMiner.Miners
             return _benchIters >= _targetBenchIters;
         }
 
-        protected override void BenchmarkThreadRoutineFinish()
+        protected override void FinishUpBenchmark()
         {
             if (_benchIters != 0 && BenchmarkAlgorithm != null)
             {
                 BenchmarkAlgorithm.BenchmarkSpeed = (_benchHashes / _benchIters) * (1 - DevFee * 0.01);
             }
-
-            base.BenchmarkThreadRoutineFinish();
         }
 
         public override async Task<ApiData> GetSummaryAsync()
