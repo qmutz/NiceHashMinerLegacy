@@ -177,27 +177,6 @@ namespace NiceHashMiner.Devices
 
             public static void QueryDevices(IMessageNotifier messageNotifier)
             {
-                // check NVIDIA nvml.dll and copy over scope
-                {
-                    var nvmlPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) +
-                                   "\\NVIDIA Corporation\\NVSMI\\nvml.dll";
-                    if (nvmlPath.Contains(" (x86)")) nvmlPath = nvmlPath.Replace(" (x86)", "");
-                    if (File.Exists(nvmlPath))
-                    {
-                        var copyToPath = Directory.GetCurrentDirectory() + "\\nvml.dll";
-                        try
-                        {
-                            File.Copy(nvmlPath, copyToPath, true);
-                            Helpers.ConsolePrint(Tag, $"Copy from {nvmlPath} to {copyToPath} done");
-                        }
-                        catch (Exception e)
-                        {
-                            Helpers.ConsolePrint(Tag, "Copy nvml.dll failed: " + e.Message);
-                        }
-                    }
-                }
-
-
                 MessageNotifier = messageNotifier;
                 // #0 get video controllers, used for cross checking
                 WindowsDisplayAdapters.QueryVideoControllers();
@@ -550,6 +529,22 @@ namespace NiceHashMiner.Devices
             {
                 private static string _queryCudaDevicesString = "";
 
+                private static bool tryAddNvmlToEnvPathCalled = false;
+                private static void tryAddNvmlToEnvPath()
+                {
+                    if (tryAddNvmlToEnvPathCalled) return;
+                    tryAddNvmlToEnvPathCalled = true; // call this ONLY ONCE AND NEVER AGAIN
+                    var nvmlRootPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) +
+                                   "\\NVIDIA Corporation\\NVSMI";
+                    if (Directory.Exists(nvmlRootPath))
+                    {
+                        // Add to env so it can find nvml.dll
+                        var pathVar = Environment.GetEnvironmentVariable("PATH");
+                        pathVar += ";" + nvmlRootPath;
+                        Environment.SetEnvironmentVariable("PATH", pathVar);
+                    }
+                }
+
                 private static void QueryCudaDevicesOutputErrorDataReceived(object sender, DataReceivedEventArgs e)
                 {
                     if (e.Data != null)
@@ -614,6 +609,7 @@ namespace NiceHashMiner.Devices
                             }
                         }
 
+                        tryAddNvmlToEnvPath();
                         var nvmlInit = false;
                         try
                         {
@@ -647,7 +643,7 @@ namespace NiceHashMiner.Devices
                             stringBuilder.AppendLine($"\t\tNAME: {cudaDev.GetName()}");
                             stringBuilder.AppendLine($"\t\tVENDOR: {cudaDev.VendorName}");
                             stringBuilder.AppendLine($"\t\tUUID: {cudaDev.UUID}");
-                            stringBuilder.AppendLine($"\t\tSM: {cudaDev.SMVersionString}");
+                            stringBuilder.AppendLine($"\t\tSM: {cudaDev.SM_major}.{cudaDev.SM_minor}");
                             stringBuilder.AppendLine($"\t\tMEMORY: {cudaDev.DeviceGlobalMemory}");
                             stringBuilder.AppendLine($"\t\tETHEREUM: {etherumCapableStr}");
 
@@ -738,9 +734,9 @@ namespace NiceHashMiner.Devices
                         {
                             try
                             {
-                                cudaDevices =
-                                    JsonConvert.DeserializeObject<List<CudaDevice>>(_queryCudaDevicesString,
+                                var cudaQueryResult = JsonConvert.DeserializeObject<CudaDeviceDetectionResult>(_queryCudaDevicesString,
                                         Globals.JsonSettings);
+                                cudaDevices = cudaQueryResult.CudaDevices;
                             }
                             catch { }
 

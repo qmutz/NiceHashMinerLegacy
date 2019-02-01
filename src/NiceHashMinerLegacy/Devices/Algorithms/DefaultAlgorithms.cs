@@ -144,7 +144,14 @@ namespace NiceHashMiner.Devices.Algorithms
             //        new Algorithm(MinerBaseType.Prospector, AlgorithmType.Skunk, "sigt", false),
             //        new Algorithm(MinerBaseType.Prospector, AlgorithmType.Sia, "sia", false)
             //    }
-            //}
+            //},
+            {
+                MinerBaseType.BMiner,
+                new List<Algorithm>
+                {
+                    new Algorithm(MinerBaseType.BMiner, AlgorithmType.Beam)
+                }
+            }
         }.ConcatDictList(All, Gpu);
 
         #endregion
@@ -214,6 +221,27 @@ namespace NiceHashMiner.Devices.Algorithms
                     new Algorithm(MinerBaseType.trex, AlgorithmType.Skunk, "skunk"),
                     new Algorithm(MinerBaseType.trex, AlgorithmType.Lyra2z, "lyra2z"),
                     new Algorithm(MinerBaseType.trex, AlgorithmType.X16R, "x16r")
+                }
+            },
+            {
+                MinerBaseType.GMiner,
+                new List<Algorithm>
+                {
+                    new Algorithm(MinerBaseType.GMiner, AlgorithmType.Beam),
+                    new Algorithm(MinerBaseType.GMiner, AlgorithmType.ZHash)
+                }
+            },
+            {
+                MinerBaseType.BMiner,
+                new List<Algorithm>
+                {
+                    new Algorithm(MinerBaseType.BMiner, AlgorithmType.ZHash),
+                    new Algorithm(MinerBaseType.BMiner, AlgorithmType.DaggerHashimoto),
+                    new Algorithm(MinerBaseType.BMiner, AlgorithmType.Beam),
+                    new Algorithm(MinerBaseType.BMiner, AlgorithmType.Equihash),
+                    // TODO Only getting CUDA errors when dual mining
+                    //new DualAlgorithm(MinerBaseType.BMiner, AlgorithmType.DaggerHashimoto, AlgorithmType.Blake2s)
+                    //new Algorithm(MinerBaseType.BMiner, AlgorithmType.Grin)
                 }
             }
         }.ConcatDictList(All, Gpu);

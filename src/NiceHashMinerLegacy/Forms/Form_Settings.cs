@@ -460,10 +460,6 @@ namespace NiceHashMiner.Forms
             groupBoxBenchmarkTimeLimits.Text =
                 Translations.Tr("Benchmark Time Limits:");
 
-            buttonAllProfit.Text = Translations.Tr("Check All Profitability");
-            buttonSelectedProfit.Text =
-                Translations.Tr("Check Single Profitability");
-
             checkBox_DisableDefaultOptimizations.Text =
                 Translations.Tr("Disable Default Optimizations");
             checkBox_IdleWhenNoInternetAccess.Text =
@@ -948,61 +944,6 @@ namespace NiceHashMiner.Forms
 
                 _selectedComputeDevice.MinimumProfit = min;
             }
-        }
-
-        private void ButtonSelectedProfit_Click(object sender, EventArgs e)
-        {
-            if (_selectedComputeDevice == null)
-            {
-                MessageBox.Show(Translations.Tr("Select device first"),
-                    Translations.Tr("Warning!"),
-                    MessageBoxButtons.OK);
-                return;
-            }
-
-            var url = Links.NhmProfitCheck + _selectedComputeDevice.Name;
-            foreach (var algorithm in _selectedComputeDevice.GetAlgorithmSettingsFastest())
-            {
-                var id = (int) algorithm.NiceHashID;
-                url += "&speed" + id + "=" + ProfitabilityCalculator
-                           .GetFormatedSpeed(algorithm.BenchmarkSpeed, algorithm.NiceHashID)
-                           .ToString("F2", CultureInfo.InvariantCulture);
-            }
-
-            url += "&nhmver=" + Application.ProductVersion; // Add version info
-            url += "&cost=1&power=1"; // Set default power and cost to 1
-            System.Diagnostics.Process.Start(url);
-        }
-
-        private void ButtonAllProfit_Click(object sender, EventArgs e)
-        {
-            var url = Links.NhmProfitCheck + "CUSTOM";
-            var total = new Dictionary<AlgorithmType, double>();
-            foreach (var curCDev in ComputeDeviceManager.Available.Devices)
-            {
-                foreach (var algorithm in curCDev.GetAlgorithmSettingsFastest())
-                {
-                    if (total.ContainsKey(algorithm.NiceHashID))
-                    {
-                        total[algorithm.NiceHashID] += algorithm.BenchmarkSpeed;
-                    }
-                    else
-                    {
-                        total[algorithm.NiceHashID] = algorithm.BenchmarkSpeed;
-                    }
-                }
-            }
-
-            foreach (var algorithm in total)
-            {
-                var id = (int) algorithm.Key;
-                url += "&speed" + id + "=" + ProfitabilityCalculator.GetFormatedSpeed(algorithm.Value, algorithm.Key)
-                           .ToString("F2", CultureInfo.InvariantCulture);
-            }
-
-            url += "&nhmver=" + Application.ProductVersion; // Add version info
-            url += "&cost=1&power=1"; // Set default power and cost to 1
-            System.Diagnostics.Process.Start(url);
         }
 
         #endregion //Tab Device

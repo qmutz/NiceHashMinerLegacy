@@ -128,6 +128,7 @@
     <Compile Include="Devices\ComputeDevice\CudaComputeDevice.cs" />
     <Compile Include="Devices\PowerOutOfRangeException.cs" />
     <Compile Include="Devices\CpuInfo.cs" />
+    <Compile Include="Devices\CudaDeviceDetectionResult.cs" />
     <Compile Include="Devices\Querying\AmdQuery.cs" />
     <Compile Include="Devices\Querying\OpenCLJsonData.cs" />
     <Compile Include="Devices\Querying\VideoControllerData.cs" />
@@ -167,11 +168,13 @@
     <Compile Include="Interfaces\DataVisualizer\IStateDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IVersionDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IWorkerNameDisplayer.cs" />
+    <Compile Include="Miners\BMiner.cs" />
     <Compile Include="Miners\Equihash\Ewbf144.cs" />
     <Compile Include="Interfaces\IGlobalRatesUpdate.cs" />
     <Compile Include="Miners\Ethlargement.cs" />
     <Compile Include="Miners\MinerLogBench.cs" />
     <Compile Include="Miners\MinerStandardBench.cs" />
+    <Compile Include="Miners\GMiner.cs" />
     <Compile Include="Miners\Phoenix.cs" />
     <Compile Include="Miners\Trex.cs" />
     <Compile Include="Miners\IdleChecking\IdleChecker.cs" />
