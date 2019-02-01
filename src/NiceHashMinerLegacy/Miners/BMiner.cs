@@ -1,5 +1,9 @@
-﻿using NiceHashMiner.Algorithms;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NiceHashMiner.Algorithms;
+using NiceHashMiner.Configs;
 using NiceHashMinerLegacy.Common.Enums;
+using NiceHashMinerLegacy.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,10 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NiceHashMiner.Configs;
-using NiceHashMinerLegacy.Extensions;
 
 namespace NiceHashMiner.Miners
 {
@@ -293,7 +293,7 @@ namespace NiceHashMiner.Miners
         public override async Task<ApiData> GetSummaryAsync()
         {
             CurrentMinerReadStatus = MinerApiReadStatus.NONE;
-            var api = new ApiData(MiningSetup.CurrentAlgorithmType);
+            var api = new ApiData(MiningSetup);
             try
             {
                 var data = await _httpClient.GetStringAsync($"http://127.0.0.1:{ApiPort}/api/v1/status/solver");

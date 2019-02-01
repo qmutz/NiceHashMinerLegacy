@@ -137,7 +137,7 @@ namespace NiceHashMiner.Miners
         public override async Task<ApiData> GetSummaryAsync()
         {
             CurrentMinerReadStatus = MinerApiReadStatus.NONE;
-            var api = new ApiData(MiningSetup.CurrentAlgorithmType);
+            var api = new ApiData(MiningSetup);
             try
             {
                 var result = await _httpClient.GetStringAsync($"http://127.0.0.1:{ApiPort}/stat");
