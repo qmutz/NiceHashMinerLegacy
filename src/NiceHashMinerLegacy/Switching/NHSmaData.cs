@@ -15,7 +15,7 @@ namespace NiceHashMiner.Switching
     public static class NHSmaData
     {
         private const string Tag = "NHSMAData";
-        private const string CachedFile = "internals\\cached_sma.json";
+        static readonly string _cachedFile = Configs.ConfigJsonFile.Folders.Internals + "cached_sma.json";
 
         public static bool Initialized { get; private set; }
         /// <summary>
@@ -39,7 +39,7 @@ namespace NiceHashMiner.Switching
             Dictionary<AlgorithmType, double> cacheDict = null;
             try
             {
-                var cache = File.ReadAllText(CachedFile);
+                var cache = File.ReadAllText(_cachedFile);
                 cacheDict = JsonConvert.DeserializeObject<Dictionary<AlgorithmType, double>>(cache);
             }
             catch (FileNotFoundException)
@@ -111,7 +111,7 @@ namespace NiceHashMiner.Switching
                     try
                     {
                         var cache = JsonConvert.SerializeObject(newSma);
-                        File.WriteAllText(CachedFile, cache);
+                        File.WriteAllText(_cachedFile, cache);
                     }
                     catch (Exception e)
                     {
