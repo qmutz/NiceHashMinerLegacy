@@ -77,13 +77,13 @@ namespace NiceHashMiner.Miners
         {
             var split = url.Split(':');
             // FOR AMD BEAM
-            var amdStart = ComputeDeviceManager.Available.AvailNVGpus;
+            var amdStart = AvailableDevices.NumDetectedNvDevs;
             var devs = string.Join(" ", MiningSetup.MiningPairs.Select(pair => {
                 var busID = pair.Device.DeviceType == DeviceType.NVIDIA ? pair.Device.IDByBus : amdStart + pair.Device.IDByBus;
                 return busID.ToString();
             }));
             var cmd = $"-a {AlgoName} -s {split[0]} -n {split[1]} " +
-                              $"-u {btcAddress}.{worker} -d {devs} --api {ApiPort} ";
+                              $"-u {btcAddress}.{worker} -d {devs} --api {ApiPort} -w 0"; // worker doesn't fix instant start/stop
 
             cmd += ExtraLaunchParametersParser.ParseForMiningSetup(MiningSetup, DeviceType.AMD);
 
@@ -97,7 +97,8 @@ namespace NiceHashMiner.Miners
 
         protected override void _Stop(MinerStopType willswitch)
         {
-            ShutdownMiner(true);
+            // TODO fixes instant start/stop
+            ShutdownMiner(false);
         }
 
         protected override string BenchmarkCreateCommandLine(Algorithm algorithm, int time)
@@ -110,7 +111,7 @@ namespace NiceHashMiner.Miners
             var btc = Globals.GetBitcoinUser();
             var worker = ConfigManager.GeneralConfig.WorkerName.Trim();
 
-            return CreateCommandLine(url, btc, worker) + " -w 0";
+            return CreateCommandLine(url, btc, worker);
         }
 
         protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)
