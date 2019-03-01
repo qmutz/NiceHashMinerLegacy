@@ -186,7 +186,7 @@ namespace NiceHashMiner.Utils
                         {
                             sizeCount += entry.CompressedSize;
                             Helpers.ConsolePrint(Tag, entry.Key);
-                            entry.WriteToDirectory("", ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+                            entry.WriteToDirectory(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\Local\nhml"), ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
 
                             var prog = sizeCount / (double) fileArchive.Length * 100;
                             _minerUpdateIndicator.SetProgressValueAndMsg((int) prog,

@@ -6,6 +6,7 @@ using System.Linq;
 using NiceHashMiner.Algorithms;
 using NiceHashMiner.Devices.Algorithms;
 using NiceHashMinerLegacy.Common.Enums;
+using System;
 
 namespace NiceHashMiner.Miners.Grouping
 {
@@ -66,74 +67,74 @@ namespace NiceHashMiner.Miners.Grouping
         public static class Data
         {
             // root binary folder
-            private const string Bin = @"bin";
+            static readonly string Bin = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\Local\nhml\bin");
 
             /// <summary>
             /// ccminers
             /// </summary>
-            public const string CcminerDecred = Bin + @"\ccminer_decred\ccminer.exe";
+            public static string CcminerDecred = Bin + @"\ccminer_decred\ccminer.exe";
 
-            public const string CcminerNanashi = Bin + @"\ccminer_nanashi\ccminer.exe";
-            public const string CcminerNeoscrypt = Bin + @"\ccminer_neoscrypt\ccminer.exe";
-            public const string CcminerSp = Bin + @"\ccminer_sp\ccminer.exe";
-            public const string CcminerTPruvot = Bin + @"\ccminer_tpruvot\ccminer.exe";
-            public const string CcminerCryptonight = Bin + @"\ccminer_cryptonight\ccminer.exe";
-            public const string CcminerX11Gost = Bin + @"\ccminer_x11gost\ccminer.exe";
-            public const string CcminerKlausT = Bin + @"\ccminer_klaust\ccminer.exe";
-            public const string CcminerX16R = Bin + @"\ccminer_x16r\ccminer.exe";
-            public const string CcminerZCoinOfficial = Bin + @"\ccminer_mtp\ccminer.exe";
+            public static string CcminerNanashi = Bin + @"\ccminer_nanashi\ccminer.exe";
+            public static string CcminerNeoscrypt = Bin + @"\ccminer_neoscrypt\ccminer.exe";
+            public static string CcminerSp = Bin + @"\ccminer_sp\ccminer.exe";
+            public static string CcminerTPruvot = Bin + @"\ccminer_tpruvot\ccminer.exe";
+            public static string CcminerCryptonight = Bin + @"\ccminer_cryptonight\ccminer.exe";
+            public static string CcminerX11Gost = Bin + @"\ccminer_x11gost\ccminer.exe";
+            public static string CcminerKlausT = Bin + @"\ccminer_klaust\ccminer.exe";
+            public static string CcminerX16R = Bin + @"\ccminer_x16r\ccminer.exe";
+            public static string CcminerZCoinOfficial = Bin + @"\ccminer_mtp\ccminer.exe";
 
             /// <summary>
             /// ethminers
             /// </summary>
-            public const string Ethminer = Bin + @"\ethminer\ethminer.exe";
+            public static string Ethminer = Bin + @"\ethminer\ethminer.exe";
 
             /// <summary>
             /// sgminers
             /// </summary>
-            public const string Sgminer560General = Bin + @"\sgminer-5-6-0-general\sgminer.exe";
+            public static string Sgminer560General = Bin + @"\sgminer-5-6-0-general\sgminer.exe";
 
-            public const string SgminerGm = Bin + @"\sgminer-gm\sgminer.exe";
+            public static string SgminerGm = Bin + @"\sgminer-gm\sgminer.exe";
 
-            public const string Avermore = Bin + @"\avermore\sgminer.exe";
-            public const string SgminerZcoinofficial = Bin + @"\sgminer_zcoinofficial\sgminer.exe";
+            public static string Avermore = Bin + @"\avermore\sgminer.exe";
+            public static string SgminerZcoinofficial = Bin + @"\sgminer_zcoinofficial\sgminer.exe";
 
-            public const string NhEqMiner = Bin + @"\nheqminer_v0.4b\NhEqMiner.exe";
-            public const string Excavator = Bin + @"\excavator\excavator.exe";
+            public static string NhEqMiner = Bin + @"\nheqminer_v0.4b\NhEqMiner.exe";
+            public static string Excavator = Bin + @"\excavator\excavator.exe";
 
-            public const string XmrStackCpuMiner = Bin + @"\xmr-stak-cpu\xmr-stak-cpu.exe";
-            public const string XmrStakAmd = Bin + @"\xmr-stak-amd\xmr-stak-amd.exe";
-            public const string XmrStak = Bin + @"\xmr-stak\xmr-stak.exe";
-            public const string Xmrig = Bin + @"\xmrig\xmrig.exe";
-            public const string XmrStakHeavy = Bin + @"\xmr-stak_heavy\xmr-stak.exe";
+            public static string XmrStackCpuMiner = Bin + @"\xmr-stak-cpu\xmr-stak-cpu.exe";
+            public static string XmrStakAmd = Bin + @"\xmr-stak-amd\xmr-stak-amd.exe";
+            public static string XmrStak = Bin + @"\xmr-stak\xmr-stak.exe";
+            public static string Xmrig = Bin + @"\xmrig\xmrig.exe";
+            public static string XmrStakHeavy = Bin + @"\xmr-stak_heavy\xmr-stak.exe";
 
-            public const string CpuMiner = Bin + @"\cpuminer_opt\cpuminer.exe";
-            public const string CpuMinerZCoin = Bin + @"\cpuminer_zcoinofficial\cpuminer.exe";
+            public static string CpuMiner = Bin + @"\cpuminer_opt\cpuminer.exe";
+            public static string CpuMinerZCoin = Bin + @"\cpuminer_zcoinofficial\cpuminer.exe";
 
             public const string None = "";
 
             // root binary folder
-            private const string Bin3rdParty = @"bin_3rdparty";
+            static readonly string Bin3rdParty = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\Local\nhml\bin_3rdparty");
 
-            public const string ClaymoreZcashMiner = Bin3rdParty + @"\claymore_zcash\ZecMiner64.exe";
-            public const string ClaymoreCryptoNightMiner = Bin3rdParty + @"\claymore_cryptonight\NsGpuCNMiner.exe";
+            public static string ClaymoreZcashMiner = Bin3rdParty + @"\claymore_zcash\ZecMiner64.exe";
+            public static string ClaymoreCryptoNightMiner = Bin3rdParty + @"\claymore_cryptonight\NsGpuCNMiner.exe";
 
-            public const string OptiminerZcashMiner = Bin3rdParty + @"\optiminer_zcash_win\Optiminer.exe";
-            public const string ClaymoreDual = Bin3rdParty + @"\claymore_dual\EthDcrMiner64.exe";
-            public const string Ewbf = Bin3rdParty + @"\ewbf\miner.exe";
-            public const string Prospector = Bin3rdParty + @"\prospector\prospector.exe";
-            public const string Dtsm = Bin3rdParty + @"\dtsm\zm.exe";
+            public static string OptiminerZcashMiner = Bin3rdParty + @"\optiminer_zcash_win\Optiminer.exe";
+            public static string ClaymoreDual = Bin3rdParty + @"\claymore_dual\EthDcrMiner64.exe";
+            public static string Ewbf = Bin3rdParty + @"\ewbf\miner.exe";
+            public static string Prospector = Bin3rdParty + @"\prospector\prospector.exe";
+            public static string Dtsm = Bin3rdParty + @"\dtsm\zm.exe";
 
-            public const string EthLargement = Bin3rdParty + @"\ethlargement\OhGodAnETHlargementPill-r2.exe";
+            public static string EthLargement = Bin3rdParty + @"\ethlargement\OhGodAnETHlargementPill-r2.exe";
 
-            public const string Ewbf144 = Bin3rdParty + @"\ewbf_144\miner.exe";
+            public static string Ewbf144 = Bin3rdParty + @"\ewbf_144\miner.exe";
 
-            public const string Trex = Bin3rdParty + @"\trex\t-rex.exe";
+            public static string Trex = Bin3rdParty + @"\trex\t-rex.exe";
 
-            public const string Phoenix = Bin3rdParty + @"\phoenix\PhoenixMiner.exe";
+            public static string Phoenix = Bin3rdParty + @"\phoenix\PhoenixMiner.exe";
 
-            public const string GMiner = Bin3rdParty + @"\gminer\miner.exe";
-            public const string BMiner = Bin3rdParty + @"\bminer\bminer.exe";
+            public static string GMiner = Bin3rdParty + @"\gminer\miner.exe";
+            public static string BMiner = Bin3rdParty + @"\bminer\bminer.exe";
         }
 
         // NEW START

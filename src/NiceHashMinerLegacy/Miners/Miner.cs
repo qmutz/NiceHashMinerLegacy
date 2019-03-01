@@ -150,7 +150,7 @@ namespace NiceHashMiner
 
             MinerDeviceName = minerDeviceName;
 
-            WorkingDirectory = "";
+            WorkingDirectory = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\Local\nhml");
 
             IsRunning = false;
             PreviousTotalMH = 0.0;

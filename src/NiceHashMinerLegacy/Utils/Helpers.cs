@@ -316,7 +316,7 @@ namespace NiceHashMiner
             {
                 StartInfo =
                 {
-                    FileName = @"bin\vc_redist.x64.exe",
+                    FileName = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\Local\nhml\bin\vc_redist.x64.exe"),
                     Arguments = "/q /norestart",
                     UseShellExecute = false,
                     RedirectStandardError = false,

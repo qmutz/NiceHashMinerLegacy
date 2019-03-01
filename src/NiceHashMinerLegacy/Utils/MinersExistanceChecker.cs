@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace NiceHashMiner.Utils
 {
@@ -8,7 +9,8 @@ namespace NiceHashMiner.Utils
         {
             foreach (var filePath in Bins_Data.ALL_FILES_BINS)
             {
-                if (!File.Exists($"bin{filePath}"))
+                
+                if (!File.Exists(Environment.ExpandEnvironmentVariables($"%USERPROFILE%\\AppData\\Local\\nhml\\bin{filePath}")))
                 {
                     Helpers.ConsolePrint("MinersExistanceChecker", $"bin{filePath} doesn't exist! Warning");
                     return false;
@@ -21,7 +23,8 @@ namespace NiceHashMiner.Utils
         {
             foreach (var filePath in Bins_Data_3rd.ALL_FILES_BINS)
             {
-                if (!File.Exists($"bin_3rdparty{filePath}"))
+                
+                if (!File.Exists(Environment.ExpandEnvironmentVariables($"%USERPROFILE%\\AppData\\Local\\nhml\\bin_3rdparty{filePath}")))
                 {
                     Helpers.ConsolePrint("MinersExistanceChecker", $"bin_3rdparty{filePath} doesn't exist! Warning");
                     return false;
