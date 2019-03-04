@@ -34,7 +34,7 @@ namespace MinerSmokeTest
             Environment.SetEnvironmentVariable("PATH", pathVar);
 
             Logger.ConfigureWithFile();
-            Application.Run(new Form1());
+            Application.Run(new PluginForm());
         }
     }
 }
