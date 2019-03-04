@@ -323,7 +323,7 @@ namespace NiceHashMiner.Forms
             toolTip1.SetToolTip(textBox_ElectricityCost, Tr("Set this to a positive value to factor in electricity costs when switching.\nValue is cost per kW-hour in your chosen display currency.\nSet to 0 to disable power switching functionality."));
             toolTip1.SetToolTip(pictureBox_ElectricityCost, Tr("Set this to a positive value to factor in electricity costs when switching.\nValue is cost per kW-hour in your chosen display currency.\nSet to 0 to disable power switching functionality."));
 
-            SetToolTip("Form_Settings_ToolTip_RunEthlargement", checkBox_RunEthlargement, pictureBox_RunEthlargement);
+            SetToolTip(Tr("Run Ethlargement for Dagger algorithms when supported GPUs are present.\nRequires running NHML as admin and enabling 3rd-party miners."), checkBox_RunEthlargement, pictureBox_RunEthlargement);
 
             Text = Tr("Settings");
 
