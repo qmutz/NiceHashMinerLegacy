@@ -37,9 +37,6 @@
             this.Algorithm = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Plugin = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tbx_pluginInfo = new System.Windows.Forms.TextBox();
-            this.gb_pluginOptionStop = new System.Windows.Forms.GroupBox();
-            this.rb_pluginStopMining = new System.Windows.Forms.RadioButton();
-            this.rb_pluginEndMining = new System.Windows.Forms.RadioButton();
             this.tbx_pluginStopDelayMS = new System.Windows.Forms.TextBox();
             this.tbx_pluginStopDelayS = new System.Windows.Forms.TextBox();
             this.tbx_pluginStopDelayM = new System.Windows.Forms.TextBox();
@@ -57,7 +54,6 @@
             this.lbl_pluginSteps = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pluginDevices)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pluginAlgo)).BeginInit();
-            this.gb_pluginOptionStop.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_pluginStart
@@ -144,39 +140,6 @@
             this.tbx_pluginInfo.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbx_pluginInfo.Size = new System.Drawing.Size(591, 256);
             this.tbx_pluginInfo.TabIndex = 15;
-            // 
-            // gb_pluginOptionStop
-            // 
-            this.gb_pluginOptionStop.Controls.Add(this.rb_pluginStopMining);
-            this.gb_pluginOptionStop.Controls.Add(this.rb_pluginEndMining);
-            this.gb_pluginOptionStop.Location = new System.Drawing.Point(691, 12);
-            this.gb_pluginOptionStop.Name = "gb_pluginOptionStop";
-            this.gb_pluginOptionStop.Size = new System.Drawing.Size(200, 100);
-            this.gb_pluginOptionStop.TabIndex = 32;
-            this.gb_pluginOptionStop.TabStop = false;
-            this.gb_pluginOptionStop.Text = "Stop by";
-            // 
-            // rb_pluginStopMining
-            // 
-            this.rb_pluginStopMining.AutoSize = true;
-            this.rb_pluginStopMining.Location = new System.Drawing.Point(6, 43);
-            this.rb_pluginStopMining.Name = "rb_pluginStopMining";
-            this.rb_pluginStopMining.Size = new System.Drawing.Size(47, 17);
-            this.rb_pluginStopMining.TabIndex = 29;
-            this.rb_pluginStopMining.TabStop = true;
-            this.rb_pluginStopMining.Text = "Stop";
-            this.rb_pluginStopMining.UseVisualStyleBackColor = true;
-            // 
-            // rb_pluginEndMining
-            // 
-            this.rb_pluginEndMining.AutoSize = true;
-            this.rb_pluginEndMining.Location = new System.Drawing.Point(6, 20);
-            this.rb_pluginEndMining.Name = "rb_pluginEndMining";
-            this.rb_pluginEndMining.Size = new System.Drawing.Size(44, 17);
-            this.rb_pluginEndMining.TabIndex = 28;
-            this.rb_pluginEndMining.TabStop = true;
-            this.rb_pluginEndMining.Text = "End";
-            this.rb_pluginEndMining.UseVisualStyleBackColor = true;
             // 
             // tbx_pluginStopDelayMS
             // 
@@ -332,7 +295,6 @@
             this.Controls.Add(this.lbl_pluginLabel4);
             this.Controls.Add(this.lbl_pluginLabel3);
             this.Controls.Add(this.lbl_pluginMiningTime);
-            this.Controls.Add(this.gb_pluginOptionStop);
             this.Controls.Add(this.tbx_pluginInfo);
             this.Controls.Add(this.dgv_pluginAlgo);
             this.Controls.Add(this.dgv_pluginDevices);
@@ -341,8 +303,6 @@
             this.Text = "PluginForm";
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pluginDevices)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_pluginAlgo)).EndInit();
-            this.gb_pluginOptionStop.ResumeLayout(false);
-            this.gb_pluginOptionStop.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -359,9 +319,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Algorithm;
         private System.Windows.Forms.DataGridViewTextBoxColumn Plugin;
         private System.Windows.Forms.TextBox tbx_pluginInfo;
-        private System.Windows.Forms.GroupBox gb_pluginOptionStop;
-        private System.Windows.Forms.RadioButton rb_pluginStopMining;
-        private System.Windows.Forms.RadioButton rb_pluginEndMining;
         private System.Windows.Forms.TextBox tbx_pluginStopDelayMS;
         private System.Windows.Forms.TextBox tbx_pluginStopDelayS;
         private System.Windows.Forms.TextBox tbx_pluginStopDelayM;

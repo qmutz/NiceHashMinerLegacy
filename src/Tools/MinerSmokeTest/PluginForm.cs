@@ -186,7 +186,7 @@ namespace MinerSmokeTest
                                 step++;
                                 miner.InitMiningPairs(new List<(BaseDevice, NiceHashMinerLegacy.Common.Algorithm.Algorithm)> { (dev.Key, algo) });
                                 
-                                lbl_pluginSteps.Text += $"{step} / {testSteps}";
+                                lbl_pluginSteps.Text = $"{step} / {testSteps}";
                                 tbx_pluginInfo.Text += $"Starting miner running for {miningTime.ToString()}" + Environment.NewLine;
                                 miner.StartMining();
                                 await Task.Delay(miningTime);
@@ -205,26 +205,6 @@ namespace MinerSmokeTest
                         tbx_pluginInfo.Text += $"Exception {ex}" + Environment.NewLine;
                     }
                 }
-
-                /*
-                foreach (var algorithm in enabledAlgorithms)
-                {
-                    step++;
-                    try
-                    {
-                        //var miner = plugin.CreateMiner();
-                        
-                        var miner = NiceHashMiner.Miners.MinerFactory.CreateMiner(device, algorithm);
-                        //miner.InitMiningLocationAndUsername("eu", Globals.DemoUser);
-                        //miner.InitMiningPairs(new List<(BaseDevice, NiceHashMinerLegacy.Common.Algorithm.Algorithm)> { (new BaseDevice(device.DeviceType, device.Uuid, device.Name, device.ID), algorithm) })
-
-                    }
-                    catch (Exception ex)
-                    {
-                        tbx_pluginInfo.Text += $"Exception {ex}" + Environment.NewLine;
-                    }
-                }
-                */
             }
         }
 

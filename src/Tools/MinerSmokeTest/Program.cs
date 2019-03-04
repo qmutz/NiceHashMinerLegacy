@@ -1,4 +1,5 @@
 ﻿using NiceHashMiner;
+using NiceHashMinerLegacy.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +25,7 @@ namespace MinerSmokeTest
             var path = Path.GetDirectoryName(Application.ExecutablePath);
             if (path != null)
             {
+                Paths.Root = path;
                 Environment.CurrentDirectory = path;
                 pathSet = true;
             }
