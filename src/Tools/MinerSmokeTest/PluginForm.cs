@@ -25,7 +25,7 @@ namespace MinerSmokeTest
             dgv_pluginDevices.CellContentClick += dgv_pluginDevices_CellContentClick;
 
             this.Shown += new EventHandler(this.PluginFormShown);
-            CUDADevice.INSTALLED_NVIDIA_DRIVERS = new Version(416, 34);
+            //CUDADevice.INSTALLED_NVIDIA_DRIVERS = new Version(416, 34);
         }
 
         public static object[] GetDeviceRowData(ComputeDevice d)
@@ -45,6 +45,7 @@ namespace MinerSmokeTest
             MinerPaths.InitializePackages();
             ConfigManager.GeneralConfig.Use3rdPartyMiners = Use3rdPartyMiners.YES;
             await ComputeDeviceManager.QueryDevicesAsync();
+            MinerPluginsManager.LoadMinerPlugins();
             var devices = AvailableDevices.Devices;
 
             foreach (var device in devices)
@@ -90,30 +91,15 @@ namespace MinerSmokeTest
                 device.Enabled = !deviceEnabled;
             }
 
-            MinerPluginsManager.LoadMinerPlugins();
-            foreach(var kvp in MinerPluginLoader.MinerPluginHost.MinerPlugin)
+            var algorithms = device.GetAlgorithmSettings().Where(algo => algo is PluginAlgorithm);
+            
+            foreach (var algo in algorithms)
             {
-                var uuid = kvp.Key;
-                var plugin = kvp.Value;
-                var supportedDevice = new List<BaseDevice>
-                {
-                    new CUDADevice(new BaseDevice(device.PluginDevice), device.BusID, device.GpuRam, 6,1)
-                };
-                var supported = plugin.GetSupportedAlgorithms(supportedDevice);
+                dgv_pluginAlgo.Rows.Add(GetAlgorithmRowData(algo));
 
-                foreach (var pairs in supported)
-                {
-                    foreach(var algorithm in pairs.Value)
-                    {
-                        dgv_pluginAlgo.Rows.Add(GetAlgorithmRowData(algorithm));
-
-                        var newRow = dgv_pluginAlgo.Rows[dgv_pluginAlgo.Rows.Count - 1];
-                        newRow.Tag = algorithm;
-                    }
-                }
+                var newRow = dgv_pluginAlgo.Rows[dgv_pluginAlgo.Rows.Count - 1];
+                newRow.Tag = algo;
             }
-
-
         }
 
         private void dgv_pluginAlgo_CellContentClick(object sender, DataGridViewCellEventArgs e)
