@@ -9,6 +9,7 @@ namespace NiceHashMiner.Configs.Data
     [Serializable]
     public class GeneralConfig
     {
+        public string RIG_UUID = "";
         public Version ConfigFileVersion;
         public LanguageType Language = LanguageType.En;
         public string DisplayCurrency = "USD";
