@@ -62,7 +62,7 @@ namespace NiceHashMiner
             var workername = BitcoinAddress.ValidateWorkerName(ConfigManager.GeneralConfig.WorkerName.Trim())
                 ? ConfigManager.GeneralConfig.WorkerName.Trim()
                 : "";
-            return $"{workername}:{RigID}";
+            return $"{workername}${RigID}";
         }
 
         public static string GetUsername()
@@ -71,10 +71,10 @@ namespace NiceHashMiner
             var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
             if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
             {
-                return $"{btc}.{worker}:{RigID}";
+                return $"{btc}.{worker}${RigID}";
             }
 
-            return $"{btc}:{RigID}"; 
+            return $"{btc}${RigID}"; 
         }
 
         public static string GetUsernameNoRigID()
@@ -94,10 +94,10 @@ namespace NiceHashMiner
             var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
             if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
             {
-                return $"{DemoUser}.{worker}:{RigID}";
+                return $"{DemoUser}.{worker}${RigID}";
             }
 
-            return $"{DemoUser}:{RigID}";
+            return $"{DemoUser}${RigID}";
         }
     }
 }
