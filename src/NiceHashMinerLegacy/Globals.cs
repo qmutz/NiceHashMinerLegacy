@@ -45,7 +45,8 @@ namespace NiceHashMiner
                 return;
             }
 
-            var uuid = UUID.V5(UUID.Nil().AsGuid(), $"NHML{guid}");
+            //var uuid = UUID.V5(UUID.Nil().AsGuid(), $"NHML{guid}");
+            var uuid = UUID.V5(UUID.Nil().AsGuid(), $"NHML{ConfigManager.GeneralConfig.RIG_UUID}");
             RigID = $"{0}-{uuid.AsGuid().ToByteArray().ToBase64String()}";
         }
 
