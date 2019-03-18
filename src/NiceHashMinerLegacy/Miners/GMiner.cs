@@ -97,10 +97,7 @@ namespace NiceHashMiner.Miners
             _targetBenchIters = Math.Max(1, (int) Math.Floor(time / 30d));
             
             var url = GetServiceUrl(algorithm.NiceHashID);
-            var btc = Globals.GetBitcoinUser();
-            var worker = ConfigManager.GeneralConfig.WorkerName.Trim();
-
-            return CreateCommandLine(url, Globals.GetDemoUsername()) + " -w 0";
+            return CreateCommandLine(url, Globals.DemoUser) + " -w 0";
         }
 
         protected override void BenchmarkOutputErrorDataReceivedImpl(string outdata)

@@ -45,24 +45,8 @@ namespace NiceHashMiner
                 return;
             }
 
-            //var uuid = UUID.V5(UUID.Nil().AsGuid(), $"NHML{guid}");
-            var uuid = UUID.V5(UUID.Nil().AsGuid(), $"NHML{ConfigManager.GeneralConfig.RIG_UUID}");
+            var uuid = UUID.V5(UUID.Nil().AsGuid(), $"NHML{guid}");
             RigID = $"{0}-{uuid.AsGuid().ToByteArray().ToBase64String()}";
-        }
-
-        public static string GetBitcoinUser()
-        {
-            return BitcoinAddress.ValidateBitcoinAddress(ConfigManager.GeneralConfig.BitcoinAddress.Trim())
-                ? ConfigManager.GeneralConfig.BitcoinAddress.Trim()
-                : DemoUser;
-        }
-
-        public static string GetWorkerName()
-        {
-            var workername = BitcoinAddress.ValidateWorkerName(ConfigManager.GeneralConfig.WorkerName.Trim())
-                ? ConfigManager.GeneralConfig.WorkerName.Trim()
-                : "";
-            return $"{workername}${RigID}";
         }
 
         public static string GetUsername()
@@ -75,29 +59,6 @@ namespace NiceHashMiner
             }
 
             return $"{btc}${RigID}"; 
-        }
-
-        public static string GetUsernameNoRigID()
-        {
-            var btc = GetBitcoinUser();
-            var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
-            if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
-            {
-                return $"{btc}.{worker}";
-            }
-
-            return $"{btc}";
-        }
-
-        public static string GetDemoUsername()
-        {
-            var worker = ConfigManager.GeneralConfig.WorkerName?.Trim();
-            if (worker.Length > 0 && BitcoinAddress.ValidateWorkerName(worker))
-            {
-                return $"{DemoUser}.{worker}${RigID}";
-            }
-
-            return $"{DemoUser}${RigID}";
         }
     }
 }

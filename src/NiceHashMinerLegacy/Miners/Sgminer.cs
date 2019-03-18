@@ -102,7 +102,7 @@ namespace NiceHashMiner.Miners
             var url = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
 
             // demo for benchmark
-            var username = Globals.DemoUser + "." + Globals.GetWorkerName();
+            var username = Globals.DemoUser;
 
             // cd to the cgminer for the process bins
             var commandLine = " /C \"cd /d " + WorkingDirectory + " && sgminer.exe " +

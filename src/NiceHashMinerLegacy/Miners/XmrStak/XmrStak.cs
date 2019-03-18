@@ -182,7 +182,7 @@ namespace NiceHashMiner.Miners.XmrStak
         private string GetBenchmarkCommandLine(AlgorithmType algorithm, int time, Dictionary<DeviceType, string> devConfigs)
         {
             var url = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm, ConectionType);
-            var user = Globals.GetDemoUsername();
+            var user = Globals.DemoUser;
 
             BenchmarkTimeInSeconds = Math.Min(60, Math.Max(time, 10));
             

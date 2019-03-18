@@ -116,7 +116,7 @@ namespace NiceHashMiner.Miners.Equihash
             CleanOldLogs();
 
             var server = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
-            var ret = $" --log 2 --logfile {GetLogFileName()} " + GetStartCommand(server, Globals.GetBitcoinUser());
+            var ret = $" --log 2 --logfile {GetLogFileName()} " + GetStartCommand(server, Globals.DemoUser);
             _benchmarkTimeWait = Math.Max(time * 3, 90); // EWBF takes a long time to get started
             return ret;
         }

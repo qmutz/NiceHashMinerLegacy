@@ -66,7 +66,7 @@ namespace NiceHashMiner.Miners
 
             _benchmarkTime = Math.Max(time, 60);
 
-            return GetStartCommand(url, Globals.GetDemoUsername()) +
+            return GetStartCommand(url, Globals.DemoUser) +
                    $" --logfile={GetLogFileName()}";
         }
 

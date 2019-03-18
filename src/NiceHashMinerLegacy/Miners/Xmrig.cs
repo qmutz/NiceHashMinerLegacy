@@ -54,7 +54,7 @@ namespace NiceHashMiner.Miners
         {
             var server = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
             _benchmarkTimeWait = time;
-            return GetStartCommand(server, Globals.GetBitcoinUser())
+            return GetStartCommand(server, Globals.DemoUser)
                 + $" -l {GetLogFileName()} --print-time=2";
         }
 

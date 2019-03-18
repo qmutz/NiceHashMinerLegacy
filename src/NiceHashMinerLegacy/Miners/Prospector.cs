@@ -345,7 +345,7 @@ namespace NiceHashMiner.Miners
             _benchmarkTimeWait = time + 60;
             // network stub
             var url = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
-            return GetStartupCommand(url, Globals.GetDemoUsername());
+            return GetStartupCommand(url, Globals.DemoUser);
         }
 
         protected override void BenchmarkThreadRoutine(object commandLine)

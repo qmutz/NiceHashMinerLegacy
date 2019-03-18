@@ -402,7 +402,6 @@ namespace NiceHashMiner
 
         public static string GetMachineGuid()
         {
-            if (string.IsNullOrEmpty(ConfigManager.GeneralConfig.RIG_UUID) == false) return ConfigManager.GeneralConfig.RIG_UUID;
             const string hklm = "HKEY_LOCAL_MACHINE";
             const string keyPath = hklm + @"\SOFTWARE\Microsoft\Cryptography";
             const string value = "MachineGuid";

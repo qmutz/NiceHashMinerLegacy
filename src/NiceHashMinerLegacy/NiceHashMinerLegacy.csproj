@@ -37,7 +37,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;TESTNETDEV FILLSMA</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;TESTNETDEV</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -48,7 +48,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Release\</OutputPath>
-    <DefineConstants>TRACE;TESTNETDEV FILLSMA</DefineConstants>
+    <DefineConstants>TRACE;TESTNETDEV</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
@@ -560,8 +560,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(ProjectDir)\langs\langs.json" "$(SolutionDir)$(Configuration)\langs\langs.json"
-copy /Y "$(ProjectDir)\langs\meta.json" "$(SolutionDir)$(Configuration)\langs\meta.json"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

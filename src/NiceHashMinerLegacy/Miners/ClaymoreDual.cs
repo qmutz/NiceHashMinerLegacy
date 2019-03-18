@@ -136,7 +136,7 @@ namespace NiceHashMiner.Miners
             // network stub
             var url = GetServiceUrl(algorithm.NiceHashID);
             // demo for benchmark
-            var ret = GetStartCommand(url, Globals.GetDemoUsername())
+            var ret = GetStartCommand(url, Globals.DemoUser)
                          + " -logfile " + GetLogFileName();
             // local benhcmark
             if (!IsDual())

@@ -18,7 +18,7 @@ namespace NiceHashMiner
         public static string GetUsername()
         {
             if (IsDemoMining) {
-                return Globals.GetDemoUsername();
+                return Globals.DemoUser;
             }
 
             return Globals.GetUsername();

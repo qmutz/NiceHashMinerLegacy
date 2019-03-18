@@ -765,7 +765,7 @@ namespace NiceHashMiner
 
             // TODO we will not prompt any warning if there are no benchmarks available, we will just start mining and benchmarking whatever needs benchmarking 
             //// Check if there are unbenchmakred algorithms
-            var username = _demoMode ? Globals.GetDemoUsername() : Globals.GetUsername(); // TODO we get username from here
+            var username = _demoMode ? Globals.DemoUser : Globals.GetUsername(); // TODO we get username from here
             //var isMining = MinersManager.StartInitialize(username);
             var isMining = true;
             ApplicationStateManager.IsDemoMining = _demoMode;

@@ -30,7 +30,7 @@ namespace NiceHashMiner.Miners
             // network workaround
             var url = ApplicationStateManager.GetSelectedServiceLocationLocationUrl(algorithm.NiceHashID, ConectionType);
             // demo for benchmark
-            var username = Globals.DemoUser + Globals.GetWorkerName();
+            var username = Globals.DemoUser;
 
             return $" {GetDevicesCommandString()} -mport -{ApiPort} -xpool {url} -xwal {username} -xpsw x -logfile {GetLogFileName()} -pow7 1";
         }
