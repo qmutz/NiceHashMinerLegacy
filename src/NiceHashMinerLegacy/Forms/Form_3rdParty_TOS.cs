@@ -10,12 +10,8 @@ namespace NiceHashMiner.Forms
         public Form_3rdParty_TOS()
         {
             InitializeComponent();
-
             // TODO update 3rd party TOS
-            Text = International.GetText("Form_Main_3rdParty_Title");
-            label_Tos.Text = International.GetText("Form_Main_3rdParty_Text");
-            button_Agree.Text = International.GetText("Form_Main_3rdParty_Button_Agree_Text");
-            button_Decline.Text = International.GetText("Form_Main_3rdParty_Button_Refuse_Text");
+            FormHelpers.TranslateFormControls(this);
         }
 
 

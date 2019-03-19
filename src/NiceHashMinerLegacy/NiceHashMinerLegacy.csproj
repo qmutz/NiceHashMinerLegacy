@@ -14,6 +14,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,8 +30,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -114,16 +114,50 @@
     <Compile Include="Benchmarking\BenchHelpers\CpuBenchHelper.cs" />
     <Compile Include="Benchmarking\BenchHelpers\PowerHelper.cs" />
     <Compile Include="Benchmarking\BenchmarkHandler.cs" />
-    <Compile Include="Benchmarking\BenchHelpers\ClaymoreZcashBenchHelper.cs" />
     <Compile Include="Devices\Algorithms\DefaultAlgorithms.cs" />
+    <Compile Include="Devices\AvailableDevices.cs" />
     <Compile Include="Devices\ComputeDevice\AmdComputeDevice.cs" />
     <Compile Include="Devices\ComputeDevice\CpuComputeDevice.cs" />
     <Compile Include="Devices\ComputeDevice\CudaComputeDevice.cs" />
     <Compile Include="Devices\PowerOutOfRangeException.cs" />
+    <Compile Include="Devices\CudaDeviceChecker.cs" />
     <Compile Include="Devices\CudaDeviceDetectionResult.cs" />
-    <Compile Include="Devices\Querying\AmdQuery.cs" />
-    <Compile Include="Devices\Querying\OpenCLJsonData.cs" />
+    <Compile Include="Devices\Querying\Amd\AmdQuery.cs" />
+    <Compile Include="Devices\Querying\Amd\OpenCL\OpenCLDeviceDetectionResult.cs" />
+    <Compile Include="Devices\Querying\Amd\OpenCL\OpenCLPlatform.cs" />
+    <Compile Include="Devices\Querying\Amd\AmdBusIDInfo.cs" />
+    <Compile Include="Devices\Querying\Amd\AmdDeviceCreation.cs" />
+    <Compile Include="Devices\Querying\Amd\AmdDeviceCreationFallback.cs" />
+    <Compile Include="Devices\Querying\Amd\AmdDeviceCreationPrimary.cs" />
+    <Compile Include="Devices\Querying\Nvidia\CudaQuery.cs" />
+    <Compile Include="Devices\Querying\Nvidia\NvidiaQuery.cs" />
+    <Compile Include="Devices\Querying\Amd\QueryAdl.cs" />
+    <Compile Include="Devices\Querying\Nvidia\NvidiaSmiDriver.cs" />
+    <Compile Include="Devices\Querying\QueryCpu.cs" />
+    <Compile Include="Devices\Querying\Amd\OpenCL\QueryOpenCL.cs" />
+    <Compile Include="Devices\Querying\QueryGpu.cs" />
+    <Compile Include="Devices\Querying\QueryResult.cs" />
+    <Compile Include="Devices\Querying\SystemSpecs.cs" />
     <Compile Include="Devices\Querying\VideoControllerData.cs" />
+    <Compile Include="Forms\EnterBTCDialogSwitch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EnterBTCDialogSwitch.Designer.cs">
+      <DependentUpon>EnterBTCDialogSwitch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormEula.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormEula.Designer.cs">
+      <DependentUpon>FormEula.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormHelpers.cs" />
+    <Compile Include="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Components\DevicesListViewBenchmarkControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -145,6 +179,7 @@
     <Compile Include="Forms\Form_DcriValues.Designer.cs">
       <DependentUpon>Form_DcriValues.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IApiResult.cs" />
     <Compile Include="Interfaces\DataVisualizer\IBalanceBTCDisplayer.cs" />
     <Compile Include="Interfaces\DataVisualizer\IBalanceFiatDisplayer.cs" />
     <Compile Include="Interfaces\IBenchmarkForm.cs" />
@@ -158,23 +193,25 @@
     <Compile Include="Interfaces\IGlobalRatesUpdate.cs" />
     <Compile Include="Miners\Ethlargement.cs" />
     <Compile Include="Miners\GMiner.cs" />
+    <Compile Include="Miners\NBMiner.cs" />
     <Compile Include="Miners\Phoenix.cs" />
+    <Compile Include="Miners\TeamRedMiner.cs" />
     <Compile Include="Miners\Trex.cs" />
+    <Compile Include="Miners\Ttminer.cs" />
+    <Compile Include="Miners\VanillaProcessMiner.cs" />
     <Compile Include="Miners\IdleChecking\IdleChecker.cs" />
     <Compile Include="Miners\IdleChecking\IdleChangedEventArgs.cs" />
     <Compile Include="Miners\IdleChecking\InputTimeoutChecker.cs" />
     <Compile Include="Miners\IdleChecking\SessionLockChecker.cs" />
     <Compile Include="Miners\XmrStak\Configs\XmrStakConfigCpu.cs" />
     <Compile Include="Miners\XmrStak\Configs\XmrStakConfigGpu.cs" />
+    <Compile Include="PInvoke\DeviceDetection.cs" />
     <Compile Include="Miners\ApiData.cs" />
-    <Compile Include="Eula.cs" />
     <Compile Include="Stats\ExchangeRateAPI.cs" />
     <Compile Include="Miners\ClaymoreDual.cs" />
-    <Compile Include="Miners\Equihash\Dtsm.cs" />
     <Compile Include="Miners\Equihash\Ewbf.cs" />
     <Compile Include="Miners\Prospector.cs" />
     <Compile Include="Miners\XmrStak\XmrStak.cs" />
-    <Compile Include="Miners\Xmrig.cs" />
     <Compile Include="Stats\NiceHashSocket.cs" />
     <Compile Include="Stats\NiceHashStats.cs" />
     <Compile Include="Stats\TimeFactor.cs" />
@@ -182,6 +219,7 @@
     <Compile Include="Switching\AlgorithmHistory.cs" />
     <Compile Include="Switching\AlgorithmSwitchingManager.cs" />
     <Compile Include="Switching\Interval.cs" />
+    <Compile Include="Translations.cs" />
     <Compile Include="Utils\AlgorithmNiceHashNames.cs" />
     <Compile Include="Configs\ConfigJsonFile\FOLDERS.cs" />
     <Compile Include="Configs\ConfigManager.cs" />
@@ -200,9 +238,8 @@
     <Compile Include="Devices\CPUUtils.cs" />
     <Compile Include="Devices\CudaDevice.cs" />
     <Compile Include="Devices\CUDA_Unsupported.cs" />
-    <Compile Include="Devices\Algorithms\GroupAlgorithms.cs" />
     <Compile Include="Devices\GroupNames.cs" />
-    <Compile Include="Devices\OpenCLDevice.cs" />
+    <Compile Include="Devices\Querying\Amd\OpenCL\OpenCLDevice.cs" />
     <Compile Include="Forms\Components\AlgorithmsListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -273,20 +310,15 @@
     <Compile Include="Interfaces\IBenchmarkCalculation.cs" />
     <Compile Include="Interfaces\IBenchmarkComunicator.cs" />
     <Compile Include="Interfaces\IListItemCheckColorSetter.cs" />
+    <Compile Include="Interfaces\IMainFormRatesComunication.cs" />
     <Compile Include="Interfaces\IRatesComunication.cs" />
     <Compile Include="Interfaces\IMessageNotifier.cs" />
     <Compile Include="Interfaces\IMinerUpdateIndicator.cs" />
-    <Compile Include="International.cs" />
     <Compile Include="Miners\IdleChecking\IdleCheckManager.cs" />
     <Compile Include="Utils\Links.cs" />
     <Compile Include="Utils\MemoryHelper.cs" />
     <Compile Include="Miners\ClaymoreBaseMiner.cs" />
-    <Compile Include="Miners\ClaymoreCryptoNightMiner.cs" />
     <Compile Include="Miners\Equihash\ClaymoreZcashMiner.cs" />
-    <Compile Include="Miners\Obsolete\eqm.cs" />
-    <Compile Include="Miners\Equihash\NhEqBase.cs" />
-    <Compile Include="Miners\Equihash\OptiminerZcashMiner.cs" />
-    <Compile Include="Miners\Obsolete\Excavator.cs" />
     <Compile Include="Miners\Grouping\GroupSetupUtils.cs" />
     <Compile Include="Miners\Grouping\MiningDevice.cs" />
     <Compile Include="Miners\MinerFactory.cs" />
@@ -304,7 +336,6 @@
     <Compile Include="Miners\Grouping\MinerPaths.cs" />
     <Compile Include="Miners\MinersApiPortsManager.cs" />
     <Compile Include="Miners\MinersManager.cs" />
-    <Compile Include="Miners\Equihash\NhEqMiner.cs" />
     <Compile Include="Miners\MiningSession.cs" />
     <Compile Include="Miners\Parsing\MinerOptionPackage.cs" />
     <Compile Include="PInvoke\NiceHashProcess.cs" />
@@ -319,7 +350,6 @@
     <Compile Include="Miners\ethminer\Ethereum.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="PInvoke\CPUID.cs" />
-    <Compile Include="Miners\CpuMiner.cs" />
     <Compile Include="Forms\Form_Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -342,7 +372,6 @@
     </Compile>
     <Compile Include="PInvoke\PInvokeHelpers.cs" />
     <Compile Include="Switching\NHSmaData.cs" />
-    <Compile Include="Utils\ProfitabilityCalculator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Miners\Sgminer.cs" />
@@ -379,6 +408,12 @@
     <EmbeddedResource Include="Forms\Components\GroupProfitControl.resx">
       <DependentUpon>GroupProfitControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EnterBTCDialogSwitch.resx">
+      <DependentUpon>EnterBTCDialogSwitch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormEula.resx">
+      <DependentUpon>FormEula.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form_Benchmark.resx">
       <DependentUpon>Form_Benchmark.cs</DependentUpon>
     </EmbeddedResource>
@@ -406,6 +441,9 @@
     <EmbeddedResource Include="Forms\MinerFileNotFoundDialog.resx">
       <DependentUpon>MinerFileNotFoundDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -419,35 +457,8 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="langs\bg.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\en.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\es.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\it.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\pl.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\pt.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\ro.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\ru.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="OnGPUsLost.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="langs\zh_cn.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -461,6 +472,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\Eula.rtf" />
+    <None Include="translations.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\info_black_18.png" />
@@ -525,6 +538,39 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>REM copy translations. Always copy and replace file
+copy /Y "$(ProjectDir)\translations.json" "$(SolutionDir)$(Configuration)\translations.json"
+
+
+
+REM copy device detection dll's. Copy only if files don't exist
+If NOT exist "$(SolutionDir)$(Configuration)\cpuid.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\device_detection_x64\cpuid.dll" "$(SolutionDir)$(Configuration)\cpuid.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\cuda_device_detection.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\device_detection_x64\cuda_device_detection.dll" "$(SolutionDir)$(Configuration)\cuda_device_detection.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\msvcp120.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\device_detection_x64\msvcp120.dll" "$(SolutionDir)$(Configuration)\msvcp120.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\msvcr120.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\device_detection_x64\msvcr120.dll" "$(SolutionDir)$(Configuration)\msvcr120.dll"
+REM OpenCL.dll can cause problems don't copy it over
+REM If NOT exist "$(SolutionDir)$(Configuration)\OpenCL.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\device_detection_x64\OpenCL.dll" "$(SolutionDir)$(Configuration)\OpenCL.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\opencl_device_detection.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\device_detection_x64\opencl_device_detection.dll" "$(SolutionDir)$(Configuration)\opencl_device_detection.dll"
+
+
+
+REM commons dll's for downloaded miners. Copy only if files don't exist. Remove this after plugin system fully replaces integrated miners
+REM create directory
+If NOT exist "$(SolutionDir)$(Configuration)\common\" mkdir "$(SolutionDir)$(Configuration)\common\"
+REM copy over dll's
+If NOT exist "$(SolutionDir)$(Configuration)\common\cudart32_80.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\cudart32_80.dll" "$(SolutionDir)$(Configuration)\common\cudart32_80.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\cudart64_80.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\cudart64_80.dll" "$(SolutionDir)$(Configuration)\common\cudart64_80.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\cudart64_91.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\cudart64_91.dll" "$(SolutionDir)$(Configuration)\common\cudart64_91.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\libcurl.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\libcurl.dll" "$(SolutionDir)$(Configuration)\common\libcurl.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\msvcp120.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\msvcp120.dll" "$(SolutionDir)$(Configuration)\common\msvcp120.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\msvcp140.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\msvcp140.dll" "$(SolutionDir)$(Configuration)\common\msvcp140.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\msvcr110.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\msvcr110.dll" "$(SolutionDir)$(Configuration)\common\msvcr110.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\msvcr120.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\msvcr120.dll" "$(SolutionDir)$(Configuration)\common\msvcr120.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\OpenCL.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\OpenCL.dll" "$(SolutionDir)$(Configuration)\common\OpenCL.dll"
+If NOT exist "$(SolutionDir)$(Configuration)\common\vcruntime140.dll" copy /Y "$(SolutionDir)\pre_compiled_libs\common\vcruntime140.dll" "$(SolutionDir)$(Configuration)\common\vcruntime140.dll"
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NiceHash")]
 [assembly: AssemblyProduct("NiceHashMinerLegacy")]
-[assembly: AssemblyCopyright("NiceHash ©  2017")]
+[assembly: AssemblyCopyright("NiceHash ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -248,7 +248,7 @@ namespace NiceHashMiner.Stats
 
         private static void DeviceStatus_Tick(object state)
         {
-            var devices = ComputeDeviceManager.Available.Devices;
+            var devices = AvailableDevices.Devices;
             var deviceList = new List<JArray>();
             var activeIDs = MinersManager.GetActiveMinersIndexes();
             foreach (var device in devices)
@@ -287,13 +287,10 @@ namespace NiceHashMiner.Stats
             var responseFromServer = "";
             try
             {
-                var activeMinersGroup = MinersManager.GetActiveMinersGroup();
-
                 var wr = (HttpWebRequest) WebRequest.Create(url);
                 wr.UserAgent = "NiceHashMiner/" + Application.ProductVersion;
                 if (worker.Length > 64) worker = worker.Substring(0, 64);
                 wr.Headers.Add("NiceHash-Worker-ID", worker);
-                wr.Headers.Add("NHM-Active-Miners-Group", activeMinersGroup);
                 wr.Timeout = 30 * 1000;
                 var response = wr.GetResponse();
                 var ss = response.GetResponseStream();

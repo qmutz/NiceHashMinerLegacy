@@ -21,10 +21,10 @@ namespace NiceHashMiner.Miners
         {
             switch (algorithm.NiceHashID)
             {
-                case AlgorithmType.Equihash:
-                    return new ClaymoreZcashMiner();
-                case AlgorithmType.CryptoNightV7:
-                    return new ClaymoreCryptoNightMiner();
+                //case AlgorithmType.Equihash:
+                //    return new ClaymoreZcashMiner();
+                //case AlgorithmType.CryptoNightV7:
+                //    return new ClaymoreCryptoNightMiner();
                 case AlgorithmType.DaggerHashimoto:
                     return new ClaymoreDual(algorithm.SecondaryNiceHashID);
             }
@@ -32,22 +32,12 @@ namespace NiceHashMiner.Miners
             return null;
         }
 
-        private static Miner CreateExperimental(DeviceType deviceType, AlgorithmType algorithmType)
-        {
-            if (AlgorithmType.NeoScrypt == algorithmType && DeviceType.NVIDIA == deviceType)
-            {
-                return new Ccminer();
-            }
-
-            return null;
-        }
-
         private static Miner CreateEwbf(AlgorithmType type)
         {
-            if (type == AlgorithmType.Equihash)
-            {
-                return new Ewbf();
-            }
+            //if (type == AlgorithmType.Equihash)
+            //{
+            //    return new Ewbf();
+            //}
             if (type == AlgorithmType.ZHash)
             {
                 return new Ewbf144();
@@ -60,36 +50,23 @@ namespace NiceHashMiner.Miners
         {
             switch (algorithm.MinerBaseType)
             {
+                case MinerBaseType.TTMiner:
+                    return new Ttminer();
                 case MinerBaseType.ccminer:
+                case MinerBaseType.ccminer_alexis:
                     return new Ccminer();
                 case MinerBaseType.sgminer:
                     return new Sgminer();
-                case MinerBaseType.nheqminer:
-                    return new NhEqMiner();
                 case MinerBaseType.ethminer:
                     return CreateEthminer(deviceType);
                 case MinerBaseType.Claymore:
                     return CreateClaymore(algorithm);
-                case MinerBaseType.OptiminerAMD:
-                    return new OptiminerZcashMiner();
-                //case MinerBaseType.excavator:
-                //    return new Excavator();
                 case MinerBaseType.XmrStak:
                     return new XmrStak.XmrStak();
-                case MinerBaseType.ccminer_alexis:
-                    return new Ccminer();
-                case MinerBaseType.experimental:
-                    return CreateExperimental(deviceType, algorithm.NiceHashID);
                 case MinerBaseType.EWBF:
                     return CreateEwbf(algorithm.NiceHashID);
                 case MinerBaseType.Prospector:
                     return new Prospector();
-                case MinerBaseType.Xmrig:
-                    return new Xmrig();
-                case MinerBaseType.dtsm:
-                    return new Dtsm();
-                case MinerBaseType.cpuminer:
-                    return new CpuMiner();
                 case MinerBaseType.trex:
                     return new Trex();
                 case MinerBaseType.Phoenix:
@@ -98,6 +75,10 @@ namespace NiceHashMiner.Miners
                     return new GMiner();
                 case MinerBaseType.BMiner:
                     return new BMiner(algorithm.NiceHashID);
+                case MinerBaseType.NBMiner:
+                    return new NBMiner();
+                case MinerBaseType.TeamRedMiner:
+                    return new TeamRedMiner();
             }
 
             return null;

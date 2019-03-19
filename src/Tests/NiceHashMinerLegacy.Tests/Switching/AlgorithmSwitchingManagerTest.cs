@@ -19,7 +19,7 @@ namespace NiceHashMinerLegacy.Tests.Switching
             AlgorithmType.DaggerHashimoto,
             AlgorithmType.Lbry,
             AlgorithmType.Sia,
-            AlgorithmType.Equihash
+            //AlgorithmType.Equihash
         };
 
         private static readonly Random R = new Random();

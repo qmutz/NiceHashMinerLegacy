@@ -6,14 +6,14 @@ namespace NiceHashMiner.Miners.Grouping
     {
         public static bool ShouldGroup(MiningPair a, MiningPair b)
         {
-            var canGroup = IsGroupableMinerBaseType(a) && IsGroupableMinerBaseType(b);
             // group if same bin path and same algo type
-            if (canGroup && IsSameBinPath(a, b) && IsSameAlgorithmType(a, b) &&
+            if (IsSameBinPath(a, b) && IsSameAlgorithmType(a, b) &&
                 ((IsNotCpuGroups(a, b) && IsSameDeviceType(a, b)) ||
                  (a.Algorithm.MinerBaseType == MinerBaseType.Prospector &&
                  b.Algorithm.MinerBaseType == MinerBaseType.Prospector) ||
-                 a.Algorithm.MinerBaseType == MinerBaseType.XmrStak)) 
+                 a.Algorithm.MinerBaseType == MinerBaseType.XmrStak || a.Algorithm.MinerBaseType == MinerBaseType.GMiner)) 
                 return true;
+
             return false;
         }
 
@@ -34,10 +34,6 @@ namespace NiceHashMiner.Miners.Grouping
         private static bool IsSameDeviceType(MiningPair a, MiningPair b)
         {
             return a.Device.DeviceType == b.Device.DeviceType;
-        }
-        private static bool IsGroupableMinerBaseType(MiningPair a) 
-        {
-            return a.Algorithm.MinerBaseType != MinerBaseType.cpuminer;
         }
     }
 }

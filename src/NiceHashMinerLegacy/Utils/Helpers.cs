@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using NiceHashMiner.PInvoke;
 using System.Management;
 using System.Security.Principal;
 using NiceHashMinerLegacy.Common.Enums;
@@ -59,6 +58,11 @@ namespace NiceHashMiner
                     Logger.Log.Info("[" + grp + "] " + text);
             }
             catch { }  // Not gonna recursively call here in case something is seriously wrong
+        }
+
+        public static void ConsolePrint(string grp, object obj)
+        {
+            ConsolePrint(grp, obj.ToString());
         }
 
         public static void ConsolePrint(string grp, string text, params object[] arg)
@@ -151,11 +155,24 @@ namespace NiceHashMiner
                 ret = FormatSpeedOutput(primarySpeed);
             }
 
-            var useSols = algo == AlgorithmType.Equihash ||
-                          algo == AlgorithmType.ZHash ||
-                          algo == AlgorithmType.Beam;
+            string unit;
 
-            var unit = useSols ? "Sol/s " : "H/s ";
+            switch (algo)
+            {
+                //case AlgorithmType.Equihash:
+                case AlgorithmType.ZHash:
+                case AlgorithmType.Beam:
+                    unit = "Sol/s";
+                    break;
+                case AlgorithmType.GrinCuckaroo29:
+                case AlgorithmType.GrinCuckatoo31:
+                    unit = "G/s";
+                    break;
+                default:
+                    unit = "H/s";
+                    break;
+            }
+
             return ret + unit;
         }
 
@@ -376,6 +393,7 @@ namespace NiceHashMiner
             }
         }
 
+#pragma warning disable 0618
         public static AlgorithmType DualAlgoFromAlgos(AlgorithmType primary, AlgorithmType secondary)
         {
             if (primary == AlgorithmType.DaggerHashimoto)
@@ -383,7 +401,7 @@ namespace NiceHashMiner
                 switch (secondary)
                 {
                     case AlgorithmType.Decred:
-                        return AlgorithmType.DaggerDecred;
+                       return AlgorithmType.DaggerDecred;
                     case AlgorithmType.Lbry:
                         return AlgorithmType.DaggerLbry;
                     case AlgorithmType.Pascal:
@@ -399,5 +417,7 @@ namespace NiceHashMiner
 
             return primary;
         }
+#pragma warning restore 0618
+
     }
 }

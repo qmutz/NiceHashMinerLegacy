@@ -9,13 +9,7 @@ namespace NiceHashMiner.Forms
         public DriverVersionConfirmationDialog()
         {
             InitializeComponent();
-
-            Text = International.GetText("DriverVersionConfirmationDialog_title");
-            labelWarning.Text = International.GetText("DriverVersionConfirmationDialog_labelWarning");
-            linkToDriverDownloadPage.Text =
-                International.GetText("DriverVersionConfirmationDialog_linkToDriverDownloadPage");
-            chkBoxDontShowAgain.Text = International.GetText("DriverVersionConfirmationDialog_chkBoxDontShowAgain");
-            buttonOK.Text = International.GetText("Global_OK");
+            FormHelpers.TranslateFormControls(this);
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)

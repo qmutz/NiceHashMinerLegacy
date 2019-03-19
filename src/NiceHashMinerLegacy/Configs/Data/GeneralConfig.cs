@@ -10,7 +10,7 @@ namespace NiceHashMiner.Configs.Data
     public class GeneralConfig
     {
         public Version ConfigFileVersion;
-        public LanguageType Language = LanguageType.En;
+        public string Language = ""; // no language by default
         public string DisplayCurrency = "USD";
 
         public bool DebugConsole = false;
@@ -28,12 +28,6 @@ namespace NiceHashMiner.Configs.Data
         //public int LessThreads;
         public CpuExtensionType ForceCPUExtension = CpuExtensionType.Automatic;
 
-        [Obsolete("Use SwitchSmaTimeChangeSeconds")]
-        public int SwitchMinSecondsFixed = 90;
-        [Obsolete("Use SwitchSmaTimeChangeSeconds")]
-        public int SwitchMinSecondsDynamic = 30;
-        [Obsolete("Use SwitchSmaTimeChangeSeconds")]
-        public int SwitchMinSecondsAMD = 60;
         public double SwitchProfitabilityThreshold = 0.05; // percent
         public int MinerAPIQueryInterval = 5;
         public int MinerRestartDelayMS = 500;
@@ -87,14 +81,6 @@ namespace NiceHashMiner.Configs.Data
 
         public int agreedWithTOS = 0;
 
-        // normalization stuff
-        [Obsolete]
-        public double IQROverFactor = 3.0;
-        [Obsolete]
-        public int NormalizedProfitHistory = 15;
-        [Obsolete]
-        public double IQRNormalizeFactor = 0.0;
-
         public bool CoolDownCheckEnabled = true;
 
         // Set to skip driver checks to enable Neoscrypt/Lyra2RE on AMD
@@ -128,7 +114,7 @@ namespace NiceHashMiner.Configs.Data
         public void SetDefaults()
         {
             ConfigFileVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            Language = LanguageType.En;
+            //Language = "en";
             ForceCPUExtension = CpuExtensionType.Automatic;
             BitcoinAddress = "";
             WorkerName = "worker1";
@@ -153,9 +139,6 @@ namespace NiceHashMiner.Configs.Data
             NVIDIAP0State = false;
             MinerRestartDelayMS = 500;
             ethminerDefaultBlockHeight = 2000000;
-            SwitchMinSecondsFixed = 90;
-            SwitchMinSecondsDynamic = 30;
-            SwitchMinSecondsAMD = 90;
             SwitchProfitabilityThreshold = 0.05; // percent
             MinIdleSeconds = 60;
             DisplayCurrency = "USD";
@@ -170,9 +153,6 @@ namespace NiceHashMiner.Configs.Data
             DownloadInit3rdParty = false;
             AllowMultipleInstances = true;
             UseIFTTT = false;
-            IQROverFactor = 3.0;
-            NormalizedProfitHistory = 15;
-            IQRNormalizeFactor = 0.0;
             CoolDownCheckEnabled = true;
             RunScriptOnCUDA_GPU_Lost = false;
             ForceSkipAMDNeoscryptLyraCheck = false;
@@ -193,18 +173,6 @@ namespace NiceHashMiner.Configs.Data
                 || string.IsNullOrWhiteSpace(DisplayCurrency))
             {
                 DisplayCurrency = "USD";
-            }
-            if (SwitchMinSecondsFixed <= 0)
-            {
-                SwitchMinSecondsFixed = 90;
-            }
-            if (SwitchMinSecondsDynamic <= 0)
-            {
-                SwitchMinSecondsDynamic = 30;
-            }
-            if (SwitchMinSecondsAMD <= 0)
-            {
-                SwitchMinSecondsAMD = 60;
             }
             if (MinerAPIQueryInterval <= 0)
             {
@@ -239,21 +207,29 @@ namespace NiceHashMiner.Configs.Data
             {
                 LastDevicesSettup = new List<ComputeDeviceConfig>();
             }
-            if (IQROverFactor < 0)
-            {
-                IQROverFactor = 3.0;
-            }
-            if (NormalizedProfitHistory < 0)
-            {
-                NormalizedProfitHistory = 15;
-            }
-            if (IQRNormalizeFactor < 0)
-            {
-                IQRNormalizeFactor = 0.0;
-            }
             if (KwhPrice < 0)
             {
                 KwhPrice = 0;
+            }
+            // for backward compatibility fix the new setting to language codes
+            var langCodes = new Dictionary<string, string> {
+                { "0", "en" },
+                { "1", "ru" },
+                { "2", "es" },
+                { "3", "pt" },
+                { "4", "bg" },
+                { "5", "it" },
+                { "6", "pl" },
+                { "7", "zh_cn" },
+                { "8", "ro" },
+            };
+            if (Language == null)
+            {
+                Language = "en";
+            }
+            else if (langCodes.ContainsKey(Language))
+            {
+                Language = langCodes[Language];
             }
 
             SwitchSmaTimeChangeSeconds.FixRange();

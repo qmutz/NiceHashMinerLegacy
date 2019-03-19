@@ -7,8 +7,26 @@ using System.Windows.Forms;
 
 namespace NiceHashMiner.Forms
 {
-    static class FormHelpers
+    public static class FormHelpers
     {
+
+        public static void TranslateFormControls(Control c)
+        {
+            try
+            {
+                c.Text = Translations.Tr(c.Text);
+            }
+            catch(Exception)
+            {
+            }
+            
+            // call on all controls
+            foreach (Control childC in c.Controls)
+            {
+                TranslateFormControls(childC);
+            }
+        }
+
         // TODO maybe not the best name
         static public void SafeInvoke(Control c, MethodInvoker f)
         {
@@ -21,5 +39,6 @@ namespace NiceHashMiner.Forms
                 f();
             }
         }
+
     }
 }

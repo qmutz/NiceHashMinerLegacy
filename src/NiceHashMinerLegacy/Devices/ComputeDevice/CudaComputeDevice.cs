@@ -14,8 +14,8 @@ namespace NiceHashMiner.Devices
         private readonly nvmlDevice _nvmlDevice; // For NVML
         private const int GpuCorePState = 0; // memcontroller = 1, videng = 2
         
-        protected int SMMajor;
-        protected int SMMinor;
+        public int SMMajor { get; protected set; }
+        public int SMMinor { get; protected set; }
 
         public readonly bool ShouldRunEthlargement;
 
@@ -117,23 +117,23 @@ namespace NiceHashMiner.Devices
             }
         }
 
+        //TODO fix constructor to not include 3rd party handles + refactor inside interface device info (lookup fans speed/temps/...)
         public CudaComputeDevice(CudaDevice cudaDevice, DeviceGroupType group, int gpuCount,
             NvPhysicalGpuHandle nvHandle, nvmlDevice nvmlHandle)
             : base((int) cudaDevice.DeviceID,
                 cudaDevice.GetName(),
                 true,
                 group,
-                cudaDevice.IsEtherumCapable(),
                 DeviceType.NVIDIA,
-                string.Format(International.GetText("ComputeDevice_Short_Name_NVIDIA_GPU"), gpuCount),
+                string.Format(Translations.Tr("GPU#{0}"), gpuCount),
                 cudaDevice.DeviceGlobalMemory)
         {
             BusID = cudaDevice.pciBusID;
             SMMajor = cudaDevice.SM_major;
             SMMinor = cudaDevice.SM_minor;
             Uuid = cudaDevice.UUID;
-            AlgorithmSettings = GroupAlgorithms.CreateForDeviceList(this);
-            Index = ID + ComputeDeviceManager.Available.AvailCpus; // increment by CPU count
+            AlgorithmSettings = DefaultAlgorithms.GetAlgorithmsForDevice(this);
+            Index = ID + AvailableDevices.AvailCpus; // increment by CPU count
 
             _nvHandle = nvHandle;
             _nvmlDevice = nvmlHandle;

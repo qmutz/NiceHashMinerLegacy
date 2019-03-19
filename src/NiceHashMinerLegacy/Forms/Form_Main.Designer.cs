@@ -59,6 +59,7 @@
             this.buttonHelp = new System.Windows.Forms.Button();
             this.linkLabelNewVersion = new System.Windows.Forms.LinkLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.devicesListViewEnableControl1 = new NiceHashMiner.Forms.Components.DevicesListViewEnableControl();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,7 +81,8 @@
             this.textBoxBTCAddress.Name = "textBoxBTCAddress";
             this.textBoxBTCAddress.Size = new System.Drawing.Size(237, 20);
             this.textBoxBTCAddress.TabIndex = 1;
-            this.textBoxBTCAddress.Leave += new System.EventHandler(this.textBoxBTCAddress_Leave);
+            this.textBoxBTCAddress.Enter += new System.EventHandler(this.TextBoxBTCAddress_Enter);
+            this.textBoxBTCAddress.Leave += new System.EventHandler(this.TextBoxCheckBoxMain_Leave);
             // 
             // labelServiceLocation
             // 
@@ -107,9 +109,9 @@
             this.labelBitcoinAddress.AutoSize = true;
             this.labelBitcoinAddress.Location = new System.Drawing.Point(8, 42);
             this.labelBitcoinAddress.Name = "labelBitcoinAddress";
-            this.labelBitcoinAddress.Size = new System.Drawing.Size(82, 13);
+            this.labelBitcoinAddress.Size = new System.Drawing.Size(83, 13);
             this.labelBitcoinAddress.TabIndex = 99;
-            this.labelBitcoinAddress.Text = "Bitcoin address:";
+            this.labelBitcoinAddress.Text = "Bitcoin Address:";
             // 
             // statusStrip1
             // 
@@ -215,9 +217,9 @@
             this.labelWorkerName.AutoSize = true;
             this.labelWorkerName.Location = new System.Drawing.Point(8, 68);
             this.labelWorkerName.Name = "labelWorkerName";
-            this.labelWorkerName.Size = new System.Drawing.Size(74, 13);
+            this.labelWorkerName.Size = new System.Drawing.Size(76, 13);
             this.labelWorkerName.TabIndex = 99;
-            this.labelWorkerName.Text = "Worker name:";
+            this.labelWorkerName.Text = "Worker Name:";
             // 
             // textBoxWorkerName
             // 
@@ -342,6 +344,19 @@
             this.linkLabelNewVersion.Size = new System.Drawing.Size(0, 13);
             this.linkLabelNewVersion.TabIndex = 110;
             this.linkLabelNewVersion.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelNewVersion_LinkClicked);
+            // 
+            // devicesListViewEnableControl1
+            // 
+            this.devicesListViewEnableControl1.BenchmarkCalculation = null;
+            this.devicesListViewEnableControl1.FirstColumnText = "Enabled";
+            this.devicesListViewEnableControl1.IsInBenchmark = false;
+            this.devicesListViewEnableControl1.IsMining = false;
+            this.devicesListViewEnableControl1.Location = new System.Drawing.Point(11, 109);
+            this.devicesListViewEnableControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.devicesListViewEnableControl1.Name = "devicesListViewEnableControl1";
+            this.devicesListViewEnableControl1.SaveToGeneralConfig = false;
+            this.devicesListViewEnableControl1.Size = new System.Drawing.Size(435, 129);
+            this.devicesListViewEnableControl1.TabIndex = 109;
             // 
             // Form_Main
             // 

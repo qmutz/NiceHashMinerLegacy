@@ -43,8 +43,6 @@ namespace NiceHashMiner.Devices
 
         // GPU extras
         public readonly ulong GpuRam;
-        public readonly bool IsEtherumCapale;
-        public static readonly ulong Memory3Gb = 3221225472;
 
         // sgminer extra quickfix
         //public readonly bool IsOptimizedVersion;
@@ -68,14 +66,13 @@ namespace NiceHashMiner.Devices
         public virtual double PowerUsage => -1;
 
         // Ambiguous constructor
-        protected ComputeDevice(int id, string name, bool enabled, DeviceGroupType group, bool ethereumCapable,
+        protected ComputeDevice(int id, string name, bool enabled, DeviceGroupType group,
             DeviceType type, string nameCount, ulong gpuRam)
         {
             ID = id;
             Name = name;
             Enabled = enabled;
             DeviceGroupType = group;
-            IsEtherumCapale = ethereumCapable;
             DeviceType = type;
             NameCount = nameCount;
             GpuRam = gpuRam;
@@ -90,7 +87,6 @@ namespace NiceHashMiner.Devices
             Enabled = true;
             DeviceType = DeviceType.CPU;
             DeviceGroupType = DeviceGroupType.NONE;
-            IsEtherumCapale = false;
             //IsOptimizedVersion = false;
             Codename = "fake";
             Uuid = GetUuid(ID, GroupNames.GetGroupName(DeviceGroupType, ID), Name, DeviceGroupType);
@@ -100,7 +96,7 @@ namespace NiceHashMiner.Devices
         // combines long and short name
         public string GetFullName()
         {
-            return string.Format(International.GetText("ComputeDevice_Full_Device_Name"), NameCount, Name);
+            return string.Format(Translations.Tr("{0} {1}"), NameCount, Name);
         }
 
         public Algorithm GetAlgorithm(Algorithm modelAlgo)
@@ -180,7 +176,7 @@ namespace NiceHashMiner.Devices
         {
             if (config != null && config.DeviceUUID == Uuid && config.AlgorithmSettings != null)
             {
-                AlgorithmSettings = GroupAlgorithms.CreateForDeviceList(this);
+                AlgorithmSettings = DefaultAlgorithms.GetAlgorithmsForDevice(this);
                 foreach (var conf in config.AlgorithmSettings)
                 {
                     var setAlgo = GetAlgorithm(conf.MinerBaseType, conf.NiceHashID, conf.SecondaryNiceHashID);
@@ -286,17 +282,6 @@ namespace NiceHashMiner.Devices
             var algos = GetAlgorithmSettingsThirdParty(ConfigManager.GeneralConfig.Use3rdPartyMiners);
 
             var retAlgos = MinerPaths.GetAndInitAlgorithmsMinerPaths(algos, this);
-            ;
-
-            // NVIDIA
-            if (DeviceGroupType == DeviceGroupType.NVIDIA_5_x || DeviceGroupType == DeviceGroupType.NVIDIA_6_x)
-            {
-                retAlgos = retAlgos.FindAll(a => a.MinerBaseType != MinerBaseType.nheqminer);
-            }
-            else if (DeviceType == DeviceType.NVIDIA)
-            {
-                retAlgos = retAlgos.FindAll(a => a.MinerBaseType != MinerBaseType.eqm);
-            }
 
             // sort by algo
             retAlgos.Sort((a_1, a_2) => (a_1.NiceHashID - a_2.NiceHashID) != 0
@@ -342,14 +327,14 @@ namespace NiceHashMiner.Devices
             var thirdPartyMiners = new List<MinerBaseType>
             {
                 MinerBaseType.Claymore,
-                MinerBaseType.OptiminerAMD,
                 MinerBaseType.EWBF,
                 MinerBaseType.Prospector,
-                MinerBaseType.dtsm,
                 MinerBaseType.trex,
                 MinerBaseType.Phoenix,
                 MinerBaseType.GMiner,
-                MinerBaseType.BMiner
+                MinerBaseType.BMiner,
+                MinerBaseType.TTMiner,
+                MinerBaseType.NBMiner
             };
 
             return AlgorithmSettings.FindAll(a => thirdPartyMiners.IndexOf(a.MinerBaseType) == -1);

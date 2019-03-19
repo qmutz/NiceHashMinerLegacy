@@ -14,7 +14,7 @@ namespace NiceHashMinerLegacy.Tests.Switching
         {
             var testPaying = new Dictionary<AlgorithmType, double>
             {
-                {AlgorithmType.CryptoNight, 0.11},
+                //{AlgorithmType.CryptoNight, 0.11},
                 {AlgorithmType.DaggerHashimoto, 0.9},
                 {AlgorithmType.Blake2s, 0}
             };

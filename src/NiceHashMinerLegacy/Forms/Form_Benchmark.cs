@@ -56,7 +56,7 @@ namespace NiceHashMiner.Forms
             StartMining = false;
 
             // clear prev pending statuses
-            foreach (var dev in ComputeDeviceManager.Available.Devices)
+            foreach (var dev in AvailableDevices.Devices)
             foreach (var algo in dev.GetAlgorithmSettings())
                 algo.ClearBenchmarkPendingFirst();
 
@@ -64,7 +64,7 @@ namespace NiceHashMiner.Forms
 
             // benchmark only unique devices
             devicesListViewEnableControl1.SetIListItemCheckColorSetter(this);
-            devicesListViewEnableControl1.SetComputeDevices(ComputeDeviceManager.Available.Devices);
+            devicesListViewEnableControl1.SetComputeDevices(AvailableDevices.Devices);
 
             InitLocale();
 
@@ -75,7 +75,7 @@ namespace NiceHashMiner.Forms
             //// name, UUID
             //Dictionary<string, string> benchNamesUUIDs = new Dictionary<string, string>();
             //// initialize benchmark settings for same cards to only copy settings
-            //foreach (var cDev in ComputeDeviceManager.Available.Devices) {
+            //foreach (var cDev in AvailableDevices.Devices) {
             //    var plainDevName = cDev.Name;
             //    if (benchNamesUUIDs.ContainsKey(plainDevName)) {
             //        cDev.Enabled = false;
@@ -103,9 +103,9 @@ namespace NiceHashMiner.Forms
             algorithmsListView1.BenchmarkCalculation = this;
 
             // set first device selected {
-            if (ComputeDeviceManager.Available.Devices.Count > 0)
+            if (AvailableDevices.Devices.Count > 0)
             {
-                var firstComputedevice = ComputeDeviceManager.Available.Devices[0];
+                var firstComputedevice = AvailableDevices.Devices[0];
                 algorithmsListView1.SetAlgorithms(firstComputedevice, firstComputedevice.Enabled);
             }
 
@@ -114,6 +114,8 @@ namespace NiceHashMiner.Forms
                 ExitWhenFinished = true;
                 StartStopBtn_Click(null, null);
             }
+
+            FormHelpers.TranslateFormControls(this);
         }
 
         #region IBenchmarkCalculation methods
@@ -123,7 +125,7 @@ namespace NiceHashMiner.Forms
             _benchmarkAlgorithmsCount = 0;
             _benchmarkDevicesAlgorithmStatus = new Dictionary<string, BenchmarkSettingsStatus>();
             _benchmarkDevicesAlgorithmQueue = new List<Tuple<ComputeDevice, Queue<Algorithm>>>();
-            foreach (var cDev in ComputeDeviceManager.Available.Devices)
+            foreach (var cDev in AvailableDevices.Devices)
             {
                 var algorithmQueue = new Queue<Algorithm>();
                 foreach (var algo in cDev.GetAlgorithmSettings())
@@ -187,13 +189,17 @@ namespace NiceHashMiner.Forms
         public void EndBenchmarkForDevice(ComputeDevice device, bool failedAlgos)
         {
             _hasFailedAlgorithms = failedAlgos || _hasFailedAlgorithms;
+            var endBench = false;
             lock (_runningBenchmarkThreads)
             {
                 _runningBenchmarkThreads.RemoveAll(x => x.Device == device);
 
-                if (_runningBenchmarkThreads.Count <= 0) 
-                    EndBenchmark();
+                if (_runningBenchmarkThreads.Count <= 0)
+                    endBench = true;
             }
+
+            if (endBench)
+                EndBenchmark();
         }
 
 
@@ -254,11 +260,11 @@ namespace NiceHashMiner.Forms
         private void CopyBenchmarks()
         {
             Helpers.ConsolePrint("CopyBenchmarks", "Checking for benchmarks to copy");
-            foreach (var cDev in ComputeDeviceManager.Available.Devices)
+            foreach (var cDev in AvailableDevices.Devices)
                 // check if copy
                 if (!cDev.Enabled && cDev.BenchmarkCopyUuid != null)
                 {
-                    var copyCdevSettings = ComputeDeviceManager.Available.GetDeviceWithUuid(cDev.BenchmarkCopyUuid);
+                    var copyCdevSettings = AvailableDevices.GetDeviceWithUuid(cDev.BenchmarkCopyUuid);
                     if (copyCdevSettings != null)
                     {
                         Helpers.ConsolePrint("CopyBenchmarks", $"Copy from {cDev.Uuid} to {cDev.BenchmarkCopyUuid}");
@@ -283,22 +289,9 @@ namespace NiceHashMiner.Forms
 
         private void InitLocale()
         {
-            Text = International.GetText("Form_Benchmark_title"); //International.GetText("SubmitResultDialog_title");
-            //labelInstruction.Text = International.GetText("SubmitResultDialog_labelInstruction");
-            StartStopBtn.Text = International.GetText("SubmitResultDialog_StartBtn");
-            CloseBtn.Text = International.GetText("SubmitResultDialog_CloseBtn");
-
             // TODO fix locale for benchmark enabled label
             devicesListViewEnableControl1.InitLocale();
-            benchmarkOptions1.InitLocale();
             algorithmsListView1.InitLocale();
-            groupBoxBenchmarkProgress.Text = International.GetText("FormBenchmark_Benchmark_GroupBoxStatus");
-            radioButton_SelectedUnbenchmarked.Text =
-                International.GetText("FormBenchmark_Benchmark_All_Selected_Unbenchmarked");
-            radioButton_RE_SelectedUnbenchmarked.Text =
-                International.GetText("FormBenchmark_Benchmark_All_Selected_ReUnbenchmarked");
-            checkBox_StartMiningAfterBenchmark.Text =
-                International.GetText("Form_Benchmark_checkbox_StartMiningAfterBenchmark");
         }
 
         #region Start/Stop methods
@@ -312,7 +305,7 @@ namespace NiceHashMiner.Forms
             }
             else if (StartButonClick())
             {
-                StartStopBtn.Text = International.GetText("Form_Benchmark_buttonStopBenchmark");
+                StartStopBtn.Text = Translations.Tr("St&op benchmark");
             }
         }
 
@@ -327,7 +320,7 @@ namespace NiceHashMiner.Forms
 
         private void BenchmarkStoppedGuiSettings()
         {
-            StartStopBtn.Text = International.GetText("Form_Benchmark_buttonStartBenchmark");
+            StartStopBtn.Text = Translations.Tr("Start &benchmark");
             foreach (var deviceAlgosTuple in _benchmarkDevicesAlgorithmQueue)
             {
                 foreach (var algo in deviceAlgosTuple.Item2) algo.ClearBenchmarkPending();
@@ -365,11 +358,11 @@ namespace NiceHashMiner.Forms
             CalcBenchmarkDevicesAlgorithmQueue();
             // device selection check scope
             {
-                var noneSelected = ComputeDeviceManager.Available.Devices.All(cDev => !cDev.Enabled);
+                var noneSelected = AvailableDevices.Devices.All(cDev => !cDev.Enabled);
                 if (noneSelected)
                 {
-                    MessageBox.Show(International.GetText("FormBenchmark_No_Devices_Selected_Msg"),
-                        International.GetText("FormBenchmark_No_Devices_Selected_Title"),
+                    MessageBox.Show(Translations.Tr("No device has been selected there is nothing to benchmark"),
+                        Translations.Tr("No device selected"),
                         MessageBoxButtons.OK);
                     return false;
                 }
@@ -380,8 +373,8 @@ namespace NiceHashMiner.Forms
                     _benchmarkDevicesAlgorithmStatus.All(statusKpv => statusKpv.Value != BenchmarkSettingsStatus.TODO);
                 if (nothingToBench)
                 {
-                    MessageBox.Show(International.GetText("FormBenchmark_Nothing_to_Benchmark_Msg"),
-                        International.GetText("FormBenchmark_Nothing_to_Benchmark_Title"),
+                    MessageBox.Show(Translations.Tr("Current benchmark settings are already executed. There is nothing to do."),
+                        Translations.Tr("Nothing to benchmark"),
                         MessageBoxButtons.OK);
                     return false;
                 }
@@ -467,28 +460,25 @@ namespace NiceHashMiner.Forms
                 if (!_hasFailedAlgorithms && StartMining == false)
                 {
                     MessageBox.Show(
-                        International.GetText("FormBenchmark_Benchmark_Finish_Succes_MsgBox_Msg"),
-                        International.GetText("FormBenchmark_Benchmark_Finish_MsgBox_Title"),
+                        Translations.Tr("All benchmarks have been successful"),
+                        Translations.Tr("Benchmark finished report"),
                         MessageBoxButtons.OK);
                 }
                 else if (StartMining == false)
                 {
                     var result = MessageBox.Show(
-                        International.GetText("FormBenchmark_Benchmark_Finish_Fail_MsgBox_Msg"),
-                        International.GetText("FormBenchmark_Benchmark_Finish_MsgBox_Title"),
+                        Translations.Tr("Not all benchmarks finished successfully. Retry to re-run the benchmark process against unbenchmarked algos or Cancel to disable unbenchmarked algorithms."),
+                        Translations.Tr("Benchmark finished report"),
                         MessageBoxButtons.RetryCancel);
 
                     if (result == DialogResult.Retry)
                     {
-                        StartButonClick();
+                        StartStopBtn_Click(this, EventArgs.Empty);
                         return;
                     }
 
                     // get unbenchmarked from criteria and disable
                     CalcBenchmarkDevicesAlgorithmQueue();
-                    foreach (var deviceAlgoQueue in _benchmarkDevicesAlgorithmQueue)
-                    foreach (var algorithm in deviceAlgoQueue.Item2)
-                        algorithm.Enabled = false;
                 }
 
                 if (ExitWhenFinished || StartMining) Close();
@@ -511,19 +501,12 @@ namespace NiceHashMiner.Forms
             }
 
             // disable all pending benchmark
-            foreach (var cDev in ComputeDeviceManager.Available.Devices)
+            foreach (var cDev in AvailableDevices.Devices)
             foreach (var algorithm in cDev.GetAlgorithmSettings())
                 algorithm.ClearBenchmarkPending();
 
             // save already benchmarked algorithms
             ConfigManager.CommitBenchmarks();
-            // check devices without benchmarks
-            foreach (var cdev in ComputeDeviceManager.Available.Devices)
-                if (cdev.Enabled)
-                {
-                    var enabled = cdev.GetAlgorithmSettings().Any(algo => algo.BenchmarkSpeed > 0);
-                    cdev.Enabled = enabled;
-                }
         }
 
         private void DevicesListView1_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -531,7 +514,7 @@ namespace NiceHashMiner.Forms
             //algorithmSettingsControl1.Deselect();
             // show algorithms
             var selectedComputeDevice =
-                ComputeDeviceManager.Available.GetCurrentlySelectedComputeDevice(e.ItemIndex, true);
+                AvailableDevices.GetCurrentlySelectedComputeDevice(e.ItemIndex, true);
             algorithmsListView1.SetAlgorithms(selectedComputeDevice, selectedComputeDevice.Enabled);
         }
 
@@ -570,7 +553,7 @@ namespace NiceHashMiner.Forms
         private void SetLabelBenchmarkSteps(int current, int max)
         {
             labelBenchmarkSteps.Text =
-                string.Format(International.GetText("FormBenchmark_Benchmark_Step"), current, max);
+                string.Format(Translations.Tr("Benchmark step ( {0} / {1} )"), current, max);
         }
 
         private void ResetBenchmarkProgressStatus()

@@ -2,7 +2,6 @@
 using NiceHashMiner.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NiceHashMiner.Switching;
 
 namespace NiceHashMiner.Miners
 {
@@ -22,12 +21,6 @@ namespace NiceHashMiner.Miners
             _curMiningSession?.StopAllMinersNonProfitable();
         }
 
-        public static string GetActiveMinersGroup()
-        {
-            // if no session it is idle
-            return _curMiningSession != null ? _curMiningSession.GetActiveMinersGroup() : "IDLE";
-        }
-
         public static List<int> GetActiveMinersIndexes()
         {
             return _curMiningSession != null ? _curMiningSession.ActiveDeviceIndexes : new List<int>();
@@ -41,7 +34,7 @@ namespace NiceHashMiner.Miners
         public static bool StartInitialize(IRatesComunication ratesComunication,
             string miningLocation, string worker, string btcAdress)
         {
-            _curMiningSession = new MiningSession(ComputeDeviceManager.Available.Devices,
+            _curMiningSession = new MiningSession(AvailableDevices.Devices,
                 ratesComunication, miningLocation, worker, btcAdress);
 
             return _curMiningSession.IsMiningEnabled;

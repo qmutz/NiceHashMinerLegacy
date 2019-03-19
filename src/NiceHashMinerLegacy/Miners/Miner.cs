@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -121,6 +122,8 @@ namespace NiceHashMiner
 
         protected bool IsMultiType;
 
+        private readonly Lazy<HttpClient> _httpClient = new Lazy<HttpClient>();
+
         protected IEnumerable<ComputeDevice> Devices => MiningSetup.MiningPairs.Select(p => p.Device);
 
         protected Miner(string minerDeviceName)
@@ -208,6 +211,7 @@ namespace NiceHashMiner
                 benchmarkPair
             }));
             BenchmarkAlgorithm = benchmarkPair.Algorithm;
+            BenchmarkAlgorithm.AvaragedSpeed = 0; // reset this to zero because we might have it from prev mining session
         }
 
         // TAG for identifying miner
@@ -362,10 +366,10 @@ namespace NiceHashMiner
                 return 5 * 60 + 120; // 5 minutes plus two minutes
             }
 
-            if (BenchmarkAlgorithm.NiceHashID == AlgorithmType.CryptoNight)
-            {
-                return 5 * 60 + 120; // 5 minutes plus two minutes
-            }
+            //if (BenchmarkAlgorithm.NiceHashID == AlgorithmType.CryptoNight)
+            //{
+            //    return 5 * 60 + 120; // 5 minutes plus two minutes
+            //}
 
             return timeInSeconds + 120; // wait time plus two minutes
         }
@@ -483,7 +487,16 @@ namespace NiceHashMiner
                      BenchmarkTimeoutInSeconds(BenchmarkTimeInSeconds))
             {
                 _benchmarkTimeOutStopWatch.Stop();
-                BenchmarkSignalTimedout = true;
+                if (BenchmarkAlgorithm.AvaragedSpeed > 0)
+                {
+                    // fallback to this one
+                    BenchmarkAlgorithm.BenchmarkSpeed = BenchmarkAlgorithm.AvaragedSpeed;
+                    BenchmarkSignalFinnished = true;
+                }
+                else
+                {
+                    BenchmarkSignalTimedout = true;
+                }
             }
 
             var outdata = e.Data;
@@ -524,6 +537,8 @@ namespace NiceHashMiner
                 BenchmarkException = new Exception("Unknown error");
             if (outdata.Contains("No servers could be used! Exiting."))
                 BenchmarkException = new Exception("No pools or work can be used for benchmarking");
+            if (outdata.Contains("Error CL_INVALID_KERNEL"))
+                BenchmarkException = new Exception("Error CL_INVALID_KERNEL");
             //if (outdata.Contains("error") || outdata.Contains("Error"))
             //    BenchmarkException = new Exception("Unknown error #2");
             // Ethminer
@@ -540,7 +555,7 @@ namespace NiceHashMiner
             }
         }
 
-        public void InvokeBenchmarkSignalQuit()
+        public virtual void InvokeBenchmarkSignalQuit()
         {
             KillAllUsedMinerProcesses();
         }
@@ -633,8 +648,8 @@ namespace NiceHashMiner
         protected virtual string GetFinalBenchmarkString()
         {
             return BenchmarkSignalTimedout && !TimeoutStandard
-                ? International.GetText("Benchmark_Timedout")
-                : International.GetText("Benchmark_Terminated");
+                ? Translations.Tr("Timed out")
+                : Translations.Tr("Terminated");
         }
 
         protected virtual void BenchmarkThreadRoutineFinish()
@@ -1130,6 +1145,28 @@ namespace NiceHashMiner
         }
 
         public abstract Task<ApiData> GetSummaryAsync();
+
+        protected async Task<ApiData> GetHttpSummaryAsync<TJsonModel>(string endpoint)
+            where TJsonModel : IApiResult
+        {
+            CurrentMinerReadStatus = MinerApiReadStatus.NONE;
+            var api = new ApiData(MiningSetup.CurrentAlgorithmType);
+            try
+            {
+                var result = await _httpClient.Value.GetStringAsync($"http://127.0.0.1:{ApiPort}/{endpoint}");
+                var summary = JsonConvert.DeserializeObject<TJsonModel>(result);
+                api.Speed = summary.TotalHashrate ?? 0;
+                CurrentMinerReadStatus =
+                    api.Speed <= 0 ? MinerApiReadStatus.READ_SPEED_ZERO : MinerApiReadStatus.GOT_READ;
+            }
+            catch (Exception e)
+            {
+                CurrentMinerReadStatus = MinerApiReadStatus.NETWORK_EXCEPTION;
+                Helpers.ConsolePrint(MinerTag(), e.Message);
+            }
+
+            return api;
+        }
 
         protected async Task<ApiData> GetSummaryCpuAsync(string method = "", bool overrideLoop = false)
         {

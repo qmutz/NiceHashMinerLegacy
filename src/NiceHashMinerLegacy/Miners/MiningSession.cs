@@ -80,7 +80,7 @@ namespace NiceHashMiner.Miners
             }
         }
 
-        public MiningSession(List<ComputeDevice> devices, IRatesComunication ratesComunication,
+        public MiningSession(IEnumerable<ComputeDevice> devices, IRatesComunication ratesComunication,
             string miningLocation, string worker, string btcAdress)
         {
             // init fixed
@@ -244,32 +244,6 @@ namespace NiceHashMiner.Miners
             return string.Join(", ", group);
         }
 
-        public string GetActiveMinersGroup()
-        {
-            if (IsCurrentlyIdle)
-            {
-                return "IDLE";
-            }
-
-            var activeMinersGroup = "";
-
-            //get unique miner groups like CPU, NVIDIA, AMD,...
-            var uniqueMinerGroups = new HashSet<string>();
-            foreach (var miningDevice in _miningDevices)
-            {
-                //if (miningDevice.MostProfitableKey != AlgorithmType.NONE) {
-                uniqueMinerGroups.Add(GroupNames.GetNameGeneral(miningDevice.Device.DeviceType));
-                //}
-            }
-
-            if (uniqueMinerGroups.Count > 0 && _isProfitable)
-            {
-                activeMinersGroup = string.Join("/", uniqueMinerGroups);
-            }
-
-            return activeMinersGroup;
-        }
-
         public double GetTotalRate()
         {
             double totalRate = 0;
@@ -327,12 +301,12 @@ namespace NiceHashMiner.Miners
                     // change msg
                     if (log) Helpers.ConsolePrint(Tag, "NO INTERNET!!! Stopping mining.");
                     _ratesComunication.ShowNotProfitable(
-                        International.GetText("Form_Main_MINING_NO_INTERNET_CONNECTION"));
+                        Translations.Tr("CURRENTLY NOT MINING. NO INTERNET CONNECTION."));
                 }
                 else
                 {
                     _ratesComunication.ShowNotProfitable(
-                        International.GetText("Form_Main_MINING_NOT_PROFITABLE"));
+                        Translations.Tr("CURRENTLY MINING NOT PROFITABLE."));
                 }
 
                 // return don't group

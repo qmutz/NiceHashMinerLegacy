@@ -27,15 +27,14 @@ namespace NiceHashMiner.Devices
                 name,
                 true,
                 DeviceGroupType.CPU,
-                false,
                 DeviceType.CPU,
-                string.Format(International.GetText("ComputeDevice_Short_Name_CPU"), cpuCount),
+                string.Format(Translations.Tr("CPU#{0}"), cpuCount),
                 0)
         {
             Threads = threads;
             AffinityMask = affinityMask;
             Uuid = GetUuid(ID, GroupNames.GetGroupName(DeviceGroupType, ID), Name, DeviceGroupType);
-            AlgorithmSettings = GroupAlgorithms.CreateForDeviceList(this);
+            AlgorithmSettings = DefaultAlgorithms.GetAlgorithmsForDevice(this);
             Index = ID; // Don't increment for CPU
 
             _cpuCounter = new PerformanceCounter
