@@ -43,15 +43,7 @@ namespace NiceHashMiner.Forms.Components
             _algorithmsListView = algorithmsListView;
         }
 
-        public virtual void SetComputeDevices(List<ComputeDevice> computeDevices)
-        {
-            foreach (ListViewItem lvi in listViewDevices.Items)
-            {
-                _listItemCheckColorSetter?.LviSetColor(lvi);
-            }
-        }
-
-        public void SetComputeDevices(IEnumerable<ComputeDevice> computeDevices)
+        public virtual void SetComputeDevices(IEnumerable<ComputeDevice> computeDevices)
         {
             // to not run callbacks when setting new
             var tmpSaveToGeneralConfig = SaveToGeneralConfig;

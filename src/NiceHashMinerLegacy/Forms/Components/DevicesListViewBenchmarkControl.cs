@@ -121,8 +121,7 @@ namespace NiceHashMiner.Forms.Components
                     {
                         if (listViewDevices.FocusedItem.Tag is ComputeDevice cDevice)
                         {
-                            var sameDevTypes =
-                                ComputeDeviceManager.Available.GetSameDevicesTypeAsDeviceWithUuid(cDevice.Uuid);
+                            var sameDevTypes = AvailableDevices.GetSameDevicesTypeAsDeviceWithUuid(cDevice.Uuid);
                             if (sameDevTypes.Count > 0)
                             {
                                 var copyBenchItem = new ToolStripMenuItem();
@@ -150,8 +149,8 @@ namespace NiceHashMiner.Forms.Components
                                         copyTuningItem.DropDownItems.Add(copyTuningDropDownItem);
                                     }
                                 }
-                                copyBenchItem.Text = International.GetText("DeviceListView_ContextMenu_CopySettings");
-                                copyTuningItem.Text = International.GetText("DeviceListView_ContectMenu_CopyTuning");
+                                copyBenchItem.Text = Translations.Tr("Copy Settings From (Benchmarks, algorithm parameters, ...");
+                                copyTuningItem.Text = Translations.Tr("Copy tuning settings only");
                                 contextMenuStrip1.Items.Add(copyBenchItem);
                                 contextMenuStrip1.Items.Add(copyTuningItem);
                             }
@@ -165,13 +164,13 @@ namespace NiceHashMiner.Forms.Components
         private void ToolStripMenuItem_Click(object sender, bool justTuning) {
             if (sender is ToolStripMenuItem item && item.Tag is string uuid
                 && listViewDevices.FocusedItem.Tag is ComputeDevice CDevice) {
-                var copyBenchCDev = ComputeDeviceManager.Available.GetDeviceWithUuid(uuid);
+                var copyBenchCDev = AvailableDevices.GetDeviceWithUuid(uuid);
 
                 var result = MessageBox.Show(
                     string.Format(
-                        International.GetText("DeviceListView_ContextMenu_CopySettings_Confirm_Dialog_Msg"),
+                        Translations.Tr("Are you sure you want to copy settings from {0} to {1}?"),
                         copyBenchCDev.GetFullName(), CDevice.GetFullName()),
-                    International.GetText("DeviceListView_ContextMenu_CopySettings_Confirm_Dialog_Title"),
+                        Translations.Tr("Confirm Settings Copy"),
                     MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes) 
                 {

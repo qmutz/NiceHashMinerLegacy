@@ -59,7 +59,7 @@
             this.buttonHelp = new System.Windows.Forms.Button();
             this.linkLabelNewVersion = new System.Windows.Forms.LinkLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.devicesListViewEnableControl1 = new NiceHashMiner.Forms.Components.DevicesListViewEnableControl();
+            this.devicesListViewEnableControl1 = new NiceHashMiner.Forms.Components.DevicesListViewSpeedControl();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -82,7 +82,6 @@
             this.textBoxBTCAddress.Size = new System.Drawing.Size(237, 20);
             this.textBoxBTCAddress.TabIndex = 1;
             this.textBoxBTCAddress.Enter += new System.EventHandler(this.TextBoxBTCAddress_Enter);
-            this.textBoxBTCAddress.Leave += new System.EventHandler(this.TextBoxCheckBoxMain_Leave);
             // 
             // labelServiceLocation
             // 
@@ -347,10 +346,7 @@
             // 
             // devicesListViewEnableControl1
             // 
-            this.devicesListViewEnableControl1.BenchmarkCalculation = null;
             this.devicesListViewEnableControl1.FirstColumnText = "Enabled";
-            this.devicesListViewEnableControl1.IsInBenchmark = false;
-            this.devicesListViewEnableControl1.IsMining = false;
             this.devicesListViewEnableControl1.Location = new System.Drawing.Point(11, 109);
             this.devicesListViewEnableControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.devicesListViewEnableControl1.Name = "devicesListViewEnableControl1";

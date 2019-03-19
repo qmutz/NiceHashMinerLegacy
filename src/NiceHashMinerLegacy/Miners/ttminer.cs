@@ -35,7 +35,7 @@ namespace NiceHashMiner.Miners
         {
 
             CurrentMinerReadStatus = MinerApiReadStatus.NONE;
-            var ad = new ApiData(MiningSetup.CurrentAlgorithmType, MiningSetup.CurrentSecondaryAlgorithmType);
+            var ad = new ApiData(MiningSetup);
 
             var elapsedSeconds = DateTime.Now.Subtract(_started).Seconds;
             if (elapsedSeconds < 15)
@@ -115,8 +115,7 @@ namespace NiceHashMiner.Miners
         protected override string BenchmarkCreateCommandLine(Algorithm algorithm, int time)
         {
             var id = MiningSetup.MiningPairs.Select(pair => pair.Device.ID).FirstOrDefault();
-            var url = Globals.GetLocationUrl(algorithm.NiceHashID, Globals.MiningLocation[ConfigManager.GeneralConfig.ServiceLocation],
-                ConectionType);
+            var url = GetServiceUrl(algorithm.NiceHashID);
             return CreateCommandLine(url, Globals.DemoUser, "benchmark");
         }
 

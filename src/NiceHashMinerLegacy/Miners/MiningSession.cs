@@ -180,13 +180,16 @@ namespace NiceHashMiner.Miners
             _internetCheckTimer.Stop();
             Helpers.AllowMonitorPowerdownAndSleep();
 
+            // TODO move this/make it better
+
             foreach (var algo in _benchCheckers.Keys)
             {
                 var info = _benchCheckers[algo].FinalizeIsDeviant(algo.BenchmarkSpeed, 0);
                 if (!info.IsDeviant) continue;
                 var result = MessageBox.Show(
-                    International.GetText("BenchChecker_SingleDeviant", algo.NiceHashID, info.Deviation, algo.BenchmarkSpeed), 
-                    International.GetText("BenchChecker_DeviantTitle"),
+                    Translations.Tr("Algorithm {0} was running at {1} but benchmarked at {2}. Replace speed with new value?", 
+                        algo.NiceHashID, info.Deviation, algo.BenchmarkSpeed), 
+                    Translations.Tr("Speed deviation from benchmark"),
                     MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
@@ -199,8 +202,9 @@ namespace NiceHashMiner.Miners
                 var info = _dualBenchCheckers[algo].FinalizeIsDeviant(algo.SecondaryBenchmarkSpeed, 0);
                 if (!info.IsDeviant) continue;
                 var result = MessageBox.Show(
-                    International.GetText("BenchChecker_DualDeviant", algo.DualNiceHashID, info.Deviation, algo.SecondaryBenchmarkSpeed), 
-                    International.GetText("BenchChecker_DeviantTitle"),
+                    Translations.Tr("Algorithm {0} secondary was running at {1} but benchmarked at {2}. Replace speed with new value?",
+                        algo.DualNiceHashID, info.Deviation, algo.SecondaryBenchmarkSpeed),
+                    Translations.Tr("Speed deviation from benchmark"),
                     MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {

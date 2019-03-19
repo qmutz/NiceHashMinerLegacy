@@ -1150,7 +1150,7 @@ namespace NiceHashMiner
             where TJsonModel : IApiResult
         {
             CurrentMinerReadStatus = MinerApiReadStatus.NONE;
-            var api = new ApiData(MiningSetup.CurrentAlgorithmType);
+            var api = new ApiData(MiningSetup);
             try
             {
                 var result = await _httpClient.Value.GetStringAsync($"http://127.0.0.1:{ApiPort}/{endpoint}");

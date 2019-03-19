@@ -90,11 +90,11 @@ namespace NiceHashMiner.Switching
         public static void UpdateSmaPaying(Dictionary<AlgorithmType, double> newSma)
         {
             CheckInit();
-            lock (_currentPayingRates)
+            lock (_currentSma)
             {
                 foreach (var algo in newSma.Keys)
                 {
-                    if (_currentPayingRates.ContainsKey(algo))
+                    if (_currentSma.ContainsKey(algo))
                     {
                         _currentSma[algo] = newSma[algo];
                     }
@@ -124,9 +124,9 @@ namespace NiceHashMiner.Switching
         internal static void UpdatePayingForAlgo(AlgorithmType algo, double paying)
         {
             CheckInit();
-            lock (_currentPayingRates)
+            lock (_currentSma)
             {
-                if (!_currentPayingRates.ContainsKey(algo))
+                if (!_currentSma.ContainsKey(algo))
                     throw new ArgumentException("Algo not setup in SMA");
                 _currentSma[algo] = paying;
             }

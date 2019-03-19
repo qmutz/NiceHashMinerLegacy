@@ -111,7 +111,6 @@
     <Compile Include="ApplicationStateManager.cs" />
     <Compile Include="Benchmarking\BenchChecker.cs" />
     <Compile Include="Benchmarking\BenchDeviationInfo.cs" />
-    <Compile Include="Benchmarking\BenchHelpers\CpuBenchHelper.cs" />
     <Compile Include="Benchmarking\BenchHelpers\PowerHelper.cs" />
     <Compile Include="Benchmarking\BenchmarkHandler.cs" />
     <Compile Include="Devices\Algorithms\DefaultAlgorithms.cs" />
@@ -170,7 +169,6 @@
     <Compile Include="Forms\Components\DevicesListViewSpeedControl.Designer.cs">
       <DependentUpon>DevicesListViewSpeedControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormHelpers.cs" />
     <Compile Include="IFTTT.cs" />
     <Compile Include="Configs\Data\DualAlgorithmConfig.cs" />
     <Compile Include="Forms\Form_DcriValues.cs">
@@ -310,9 +308,7 @@
     <Compile Include="Interfaces\IBenchmarkCalculation.cs" />
     <Compile Include="Interfaces\IBenchmarkComunicator.cs" />
     <Compile Include="Interfaces\IListItemCheckColorSetter.cs" />
-    <Compile Include="Interfaces\IMainFormRatesComunication.cs" />
     <Compile Include="Interfaces\IRatesComunication.cs" />
-    <Compile Include="Interfaces\IMessageNotifier.cs" />
     <Compile Include="Interfaces\IMinerUpdateIndicator.cs" />
     <Compile Include="Miners\IdleChecking\IdleCheckManager.cs" />
     <Compile Include="Utils\Links.cs" />

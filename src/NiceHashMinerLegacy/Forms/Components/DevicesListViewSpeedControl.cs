@@ -29,11 +29,9 @@ namespace NiceHashMiner.Forms.Components
 
         private const string DefaultKey = "default";
 
-        private List<ComputeDevice> _devices;
+        private IEnumerable<ComputeDevice> _devices;
 
         private readonly List<List<int>> _indexTotals = new List<List<int>>();
-
-        public IGlobalRatesUpdate GlobalRates;
 
         private readonly Timer _diagTimer = new Timer();
 
@@ -73,8 +71,8 @@ namespace NiceHashMiner.Forms.Components
         {
             base.InitLocale();
 
-            speedHeader.Text = International.GetText("Form_DevicesListViewSpeed_Hs");
-            secondarySpeedHeader.Text = International.GetText("Form_DevicesListViewSpeed_SecondaryHs");
+            speedHeader.Text = Translations.Tr("Speed (h/s)");
+            secondarySpeedHeader.Text = Translations.Tr("Secondary speed (H/s)");
         }
 
         protected override void ListViewDevicesItemChecked(object sender, ItemCheckedEventArgs e)
@@ -85,7 +83,7 @@ namespace NiceHashMiner.Forms.Components
 
         #region ListView updating
 
-        public override void SetComputeDevices(List<ComputeDevice> devices)
+        public override void SetComputeDevices(IEnumerable<ComputeDevice> devices)
         {
             _devices = devices;
             UpdateListView();
@@ -183,7 +181,7 @@ namespace NiceHashMiner.Forms.Components
         {
             var total = new ListViewItem
             {
-                Text = International.GetText("Form_DevicesListViewSpeed_Total"),
+                Text = Translations.Tr("Total"),
                 Tag = indices
             };
             for (var i = 0; i < numSubs; i++)
@@ -324,12 +322,12 @@ namespace NiceHashMiner.Forms.Components
                 switch (index)
                 {
                     case 0:
-                        langKey = "Form_Settings_Algo_PowerUsage";
+                        langKey = "Power Usage";
                         break;
                     case 1:
-                        return International.GetText("Form_DevicesListViewSpeed_PowerCost", CurrencyPerTimeUnit());
+                        return Translations.Tr("Power Cost ({0})", CurrencyPerTimeUnit());
                     case 2:
-                        return International.GetText("Form_DevicesListViewSpeed_Profit", CurrencyPerTimeUnit());
+                        return Translations.Tr("Profit ({0})", CurrencyPerTimeUnit());
                 }
             }
             else
@@ -337,18 +335,18 @@ namespace NiceHashMiner.Forms.Components
                 switch (index)
                 {
                     case 0:
-                        langKey = "Form_DevicesListViewSpeed_Load";
+                        langKey = "Load (%)";
                         break;
                     case 1:
-                        langKey = "Form_DevicesListViewSpeed_Temp";
+                        langKey = "Temperature (C)";
                         break;
                     case 2:
-                        langKey = "Form_DevicesListViewSpeed_RPM";
+                        langKey = "RPM";
                         break;
                 }
             }
 
-            return International.GetText(langKey);
+            return Translations.Tr(langKey);
         }
 
         #endregion
@@ -378,7 +376,7 @@ namespace NiceHashMiner.Forms.Components
             {
                 _ignoreChecks = true;  // For some reason without this it will enable some checkboxes
                 listViewDevices.Groups.Clear();
-                var disGrp = new ListViewGroup(DefaultKey, International.GetText("Form_DevicesListViewSpeed_Disabled"));
+                var disGrp = new ListViewGroup(DefaultKey, Translations.Tr("Disabled"));
                 listViewDevices.Groups.Add(disGrp);
                 _ignoreChecks = false;
             }
@@ -435,8 +433,6 @@ namespace NiceHashMiner.Forms.Components
                     }
                 }
             }
-
-            GlobalRates?.UpdateGlobalRate();
         }
 
         public void ShowNotProfitable(string msg)
@@ -467,7 +463,7 @@ namespace NiceHashMiner.Forms.Components
 
         private static string FormatPerTimeUnit(string unit)
         {
-            var timeUnit = International.GetText(ConfigManager.GeneralConfig.TimeUnit.ToString());
+            var timeUnit = Translations.Tr(ConfigManager.GeneralConfig.TimeUnit.ToString());
             return $"{unit}/{timeUnit}";
         }
         

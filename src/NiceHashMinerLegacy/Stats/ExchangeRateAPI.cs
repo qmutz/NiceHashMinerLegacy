@@ -68,14 +68,6 @@ namespace NiceHashMiner.Stats
             return ConvertToActiveCurrency(amount * GetUsdExchangeRate());
         }
 
-        public static string GetCurrencyString(double amount)
-        {
-            return ConvertToActiveCurrency(amount * GetUsdExchangeRate())
-                       .ToString("F2", CultureInfo.InvariantCulture)
-                   + $" {ActiveDisplayCurrency}/"
-                   + International.GetText(ConfigManager.GeneralConfig.TimeUnit.ToString());
-        }
-
         public static double GetUsdExchangeRate()
         {
             return UsdBtcRate > 0 ? UsdBtcRate : 0.0;

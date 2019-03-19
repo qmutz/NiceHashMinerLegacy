@@ -16,7 +16,7 @@ using static NiceHashMiner.Translations;
 
 namespace NiceHashMiner.Forms
 {
-    public partial class Form_Settings : Form, IDataVisualizer, IBTCDisplayer, IWorkerNameDisplayer, IServiceLocationDisplayer
+    public partial class Form_Settings : Form
     {
         private readonly bool _isInitFinished = false;
         private bool _isChange = false;
@@ -40,15 +40,9 @@ namespace NiceHashMiner.Forms
 
         private bool _isStartupChanged = false;
 
-        ~Form_Settings()
-        {
-            ApplicationStateManager.UnsubscribeStateDisplayer(this);
-        }
-
         public Form_Settings()
         {
             InitializeComponent();
-            ApplicationStateManager.SubscribeStateDisplayer(this);
             Icon = Properties.Resources.logo;
 
             //ret = 1; // default
@@ -380,10 +374,12 @@ namespace NiceHashMiner.Forms
 
             checkBox_RunEthlargement.Enabled = Helpers.IsElevated && ConfigManager.GeneralConfig.Use3rdPartyMiners == Use3rdPartyMiners.YES;
 
-            label_IdleType.Text = International.GetText("Form_Settings_IdleType");
+            label_IdleType.Text = Tr("Idle type");
             foreach (var type in Enum.GetNames(typeof(IdleCheckType)))
             {
-                comboBox_IdleType.Items.Add(International.GetText($"Form_Settings_IdleType_{type}"));
+                // TODO
+                comboBox_IdleType.Items.Add(type);
+                //comboBox_IdleType.Items.Add(International.GetText($"Form_Settings_IdleType_{type}"));
             }
             comboBox_IdleType.Enabled = ConfigManager.GeneralConfig.StartMiningWhenIdle;
         }
@@ -1019,30 +1015,6 @@ namespace NiceHashMiner.Forms
             IsChange = true;
             ConfigManager.GeneralConfig.StartMiningWhenIdle = checkBox_StartMiningWhenIdle.Checked;
             comboBox_IdleType.Enabled = checkBox_StartMiningWhenIdle.Checked;
-        }
-
-        void IBTCDisplayer.DisplayBTC(string btc)
-        {
-            FormHelpers.SafeInvoke(this, () =>
-            {
-                textBox_BitcoinAddress.Text = btc;
-            });
-        }
-
-        void IWorkerNameDisplayer.DisplayWorkerName(string workerName)
-        {
-            FormHelpers.SafeInvoke(this, () =>
-            {
-                textBox_WorkerName.Text = workerName;
-            });
-        }
-
-        void IServiceLocationDisplayer.DisplayServiceLocation(int serviceLocation)
-        {
-            FormHelpers.SafeInvoke(this, () =>
-            {
-                comboBox_ServiceLocation.SelectedIndex = serviceLocation;
-            });
         }
     }
 }

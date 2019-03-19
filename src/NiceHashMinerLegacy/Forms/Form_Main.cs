@@ -23,12 +23,11 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace NiceHashMiner
 {
-    public partial class Form_Main : Form, Form_Loading.IAfterInitializationCaller, IMainFormRatesComunication
+    public partial class Form_Main : Form, Form_Loading.IAfterInitializationCaller
     {
         private Timer _minerStatsCheck;
         private Timer _startupTimer;
         private Timer _idleCheck;
-        private SystemTimer _computeDevicesCheckTimer;
 
         private bool _showWarningNiceHashData;
         private bool _demoMode;
@@ -129,7 +128,6 @@ namespace NiceHashMiner
             }
 
             devicesListViewEnableControl1.SetPayingColumns();
-            devicesListViewEnableControl1.GlobalRates = this;
         }
 
         public void AfterLoadComplete()
@@ -980,39 +978,6 @@ namespace NiceHashMiner
         {
             ConfigManager.GeneralConfig.MainFormSize.X = Width;
             ConfigManager.GeneralConfig.MainFormSize.Y = Height;
-        }
-
-        // StateDisplay interfaces
-        void IBTCDisplayer.DisplayBTC(string btc)
-        {
-            FormHelpers.SafeInvoke(this, () =>
-            {
-                textBoxBTCAddress.Text = btc;
-            });
-        }
-
-        void IWorkerNameDisplayer.DisplayWorkerName(string workerName)
-        {
-            FormHelpers.SafeInvoke(this, () =>
-            {
-                textBoxWorkerName.Text = workerName;
-            });
-        }
-
-        void IServiceLocationDisplayer.DisplayServiceLocation(int serviceLocation)
-        {
-            FormHelpers.SafeInvoke(this, () =>
-            {
-                comboBoxLocation.SelectedIndex = serviceLocation;
-            });
-        }
-
-        void IVersionDisplayer.DisplayVersion(string version)
-        {
-            FormHelpers.SafeInvoke(this, () =>
-            {
-                linkLabelNewVersion.Text = version;
-            });
         }
 
         private void TextBoxBTCAddress_Enter(object sender, EventArgs e)

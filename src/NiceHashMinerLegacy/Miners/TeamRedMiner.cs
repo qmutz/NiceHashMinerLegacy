@@ -93,8 +93,7 @@ namespace NiceHashMiner.Miners
         protected override string BenchmarkCreateCommandLine(Algorithm algorithm, int time)
         {
             var id = MiningSetup.MiningPairs.Select(pair => pair.Device.ID).FirstOrDefault();
-            var url = Globals.GetLocationUrl(algorithm.NiceHashID, Globals.MiningLocation[ConfigManager.GeneralConfig.ServiceLocation],
-                ConectionType);
+            var url = GetServiceUrl(algorithm.NiceHashID);
             return GetStartCommand(url, Globals.DemoUser, "benchmark") + " --disable_colors";
         }
 
@@ -111,7 +110,7 @@ namespace NiceHashMiner.Miners
         // sgminer copy paste
         public override async Task<ApiData> GetSummaryAsync()
         {
-            var ad = new ApiData(MiningSetup.CurrentAlgorithmType);
+            var ad = new ApiData(MiningSetup);
 
             var resp = await GetApiDataAsync(ApiPort, "summary");
             if (resp == null)
