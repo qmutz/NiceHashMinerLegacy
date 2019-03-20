@@ -193,7 +193,7 @@ namespace NiceHashMiner.Stats
         private static void SetVersion(string version)
         {
             Version = version;
-            ApplicationStateManager.OnVersionUpdate(version);
+            ApplicationStateManager.VersionUpdated(version);
         }
 
         private static void SetExchangeRates(string data)

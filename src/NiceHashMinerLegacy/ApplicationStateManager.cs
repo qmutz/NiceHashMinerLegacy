@@ -1,51 +1,14 @@
 ﻿using NiceHashMiner.Configs;
-using NiceHashMiner.Interfaces.DataVisualizer;
 using NiceHashMiner.Stats;
 using NiceHashMinerLegacy.Common.Enums;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NiceHashMiner
 {
-    static class ApplicationStateManager
+    internal static class ApplicationStateManager
     {
-        #region StateDisplayers boilerplate
-        static List<IDataVisualizer> _stateDisplayers = new List<IDataVisualizer>();
-
-        public static void SubscribeStateDisplayer(IDataVisualizer stateDisplayer)
-        {
-            _stateDisplayers.Add(stateDisplayer);
-            //// Init added state displayer
-            if (stateDisplayer is IBTCDisplayer sBtcDisplayer)
-            {
-                sBtcDisplayer.DisplayBTC(ConfigManager.GeneralConfig.BitcoinAddress);
-            }
-            if (stateDisplayer is IWorkerNameDisplayer sWorkerNameDisplayer)
-            {
-                sWorkerNameDisplayer.DisplayWorkerName(ConfigManager.GeneralConfig.WorkerName);
-            }
-            if (stateDisplayer is IServiceLocationDisplayer sServiceLocationDisplayer)
-            {
-                sServiceLocationDisplayer.DisplayServiceLocation(ConfigManager.GeneralConfig.ServiceLocation);
-            }
-        }
-
-        public static void UnsubscribeStateDisplayer(IDataVisualizer stateDisplayer)
-        {
-            var success = _stateDisplayers.Remove(stateDisplayer);
-            if (!success)
-            {
-                // TODO maybe log but than again we don't care about this shouldn't cause any issues
-            }
-        }
-        #endregion
-
-
         public static string Title
         {
             get
@@ -54,12 +17,18 @@ namespace NiceHashMiner
             }
         }
 
+        public static event EventHandler<Version> OnVersionUpdate;
+        public static event EventHandler<int> ServiceLocationChanged;
+        public static event EventHandler<string> WorkerNameChanged;
+        public static event EventHandler<string> BtcAddressChanged;
+
         #region Version
+
         private const string BetaAlphaPostfixString = " - Alpha";
         public static string LocalVersion { get; private set; }
         public static string OnlineVersion { get; private set; }
 
-        public static void OnVersionUpdate(string version)
+        public static void VersionUpdated(string version)
         {
             // update version
             if (OnlineVersion != version)
@@ -78,16 +47,9 @@ namespace NiceHashMiner
             
             if (ret < 0)
             {
-                var displayNewVer = string.Format(Translations.Tr("IMPORTANT! New version v{0} has\r\nbeen released. Click here to download it."), version);
                 // display new version
                 // notify all components
-                foreach (var s in _stateDisplayers)
-                {
-                    if (s is IVersionDisplayer sVersionDisplayer)
-                    {
-                        sVersionDisplayer.DisplayVersion(displayNewVer);
-                    }
-                }
+                OnVersionUpdate?.Invoke(null, onlineVersion);
             }
         }
 
@@ -101,6 +63,7 @@ namespace NiceHashMiner
             }
             Process.Start(url);
         }
+
         #endregion
 
         #region Balance
@@ -188,13 +151,7 @@ namespace NiceHashMiner
             ConfigManager.GeneralConfig.ServiceLocation = serviceLocation;
             ConfigManager.GeneralConfigFileCommit();
             // notify all components
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IServiceLocationDisplayer sServiceLocationDisplayer)
-                {
-                    sServiceLocationDisplayer.DisplayServiceLocation(serviceLocation);
-                }
-            }
+            ServiceLocationChanged?.Invoke(null, serviceLocation);
         }
         #endregion
 
@@ -222,13 +179,7 @@ namespace NiceHashMiner
             ConfigManager.GeneralConfig.BitcoinAddress = btc;
             ConfigManager.GeneralConfigFileCommit();
             // notify all components
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IBTCDisplayer sBtcDisplayer)
-                {
-                    sBtcDisplayer.DisplayBTC(btc);
-                }
-            }
+            BtcAddressChanged?.Invoke(null, btc);
         }
         #endregion
 
@@ -256,13 +207,7 @@ namespace NiceHashMiner
             ConfigManager.GeneralConfig.WorkerName = workerName;
             ConfigManager.GeneralConfigFileCommit();
             // notify all components
-            foreach (var s in _stateDisplayers)
-            {
-                if (s is IWorkerNameDisplayer sWorkerNameDisplayer)
-                {
-                    sWorkerNameDisplayer.DisplayWorkerName(workerName);
-                }
-            }
+            WorkerNameChanged?.Invoke(null, workerName);
         }
         #endregion
     }

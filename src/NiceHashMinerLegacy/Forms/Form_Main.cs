@@ -2,8 +2,6 @@
 using NiceHashMiner.Devices;
 using NiceHashMiner.Devices.Querying;
 using NiceHashMiner.Forms;
-using NiceHashMiner.Interfaces;
-using NiceHashMiner.Interfaces.DataVisualizer;
 using NiceHashMiner.Miners;
 using NiceHashMiner.Miners.IdleChecking;
 using NiceHashMiner.Stats;
@@ -106,6 +104,15 @@ namespace NiceHashMiner
         // InitMainConfigGuiData gets called after settings are changed and whatnot but this is a crude and tightly coupled way of doing things
         private void InitMainConfigGuiData()
         {
+            if (ConfigManager.GeneralConfig.ServiceLocation >= 0 &&
+                ConfigManager.GeneralConfig.ServiceLocation < comboBoxLocation.Items.Count)
+                comboBoxLocation.SelectedIndex = ConfigManager.GeneralConfig.ServiceLocation;
+            else
+                comboBoxLocation.SelectedIndex = 0;
+
+            textBoxBTCAddress.Text = ConfigManager.GeneralConfig.BitcoinAddress;
+            textBoxWorkerName.Text = ConfigManager.GeneralConfig.WorkerName;
+
             _showWarningNiceHashData = true;
             _demoMode = false;
 
@@ -366,6 +373,12 @@ namespace NiceHashMiner
                     StopMining();
                 }
             }
+
+            // Register callbacks
+            ApplicationStateManager.OnVersionUpdate += OnVersionUpdate;
+            ApplicationStateManager.BtcAddressChanged += OnBtcAddressChanged;
+            ApplicationStateManager.WorkerNameChanged += OnWorkerNameChanged;
+            ApplicationStateManager.ServiceLocationChanged += OnServiceLocationChanged;
         }
 
         private void ShowQueryWarnings(QueryResult query)
@@ -996,5 +1009,31 @@ namespace NiceHashMiner
             //    }
             //}
         }
+
+        #region State callbacks
+
+        private void OnServiceLocationChanged(object sender, int e)
+        {
+            FormHelpers.SafeInvoke(this, () => { comboBoxLocation.SelectedIndex = e; });
+        }
+
+        private void OnWorkerNameChanged(object sender, string e)
+        {
+            FormHelpers.SafeInvoke(this, () => { textBoxWorkerName.Text = e; });
+        }
+
+        private void OnBtcAddressChanged(object sender, string e)
+        {
+            FormHelpers.SafeInvoke(this, () => { textBoxBTCAddress.Text = e; });
+        }
+
+        private void OnVersionUpdate(object sender, Version version)
+        {
+            // Trying to keep GUI-specific stuff (such as version update label translation) out of business code
+            var displayNewVer = string.Format(Tr("IMPORTANT! New version v{0} has\r\nbeen released. Click here to download it."), version);
+            FormHelpers.SafeInvoke(this, () => { linkLabelNewVersion.Text = displayNewVer; });
+        }
+
+        #endregion
     }
 }
