@@ -40,5 +40,19 @@ namespace NiceHashMiner.Forms
             }
         }
 
+        public static void SafeUpdateTextbox(TextBox t, string text)
+        {
+            if (t.InvokeRequired)
+            {
+                t.Invoke(new Action(() =>
+                {
+                    SafeUpdateTextbox(t, text);
+                }));
+            }
+            else
+            {
+                t.Text = text;
+            }
+        }
     }
 }

@@ -1019,12 +1019,12 @@ namespace NiceHashMiner
 
         private void OnWorkerNameChanged(object sender, string e)
         {
-            FormHelpers.SafeInvoke(this, () => { textBoxWorkerName.Text = e; });
+            FormHelpers.SafeUpdateTextbox(textBoxWorkerName, e);
         }
 
         private void OnBtcAddressChanged(object sender, string e)
         {
-            FormHelpers.SafeInvoke(this, () => { textBoxBTCAddress.Text = e; });
+            FormHelpers.SafeUpdateTextbox(textBoxBTCAddress, e);
         }
 
         private void OnVersionUpdate(object sender, Version version)

@@ -90,6 +90,10 @@ namespace NiceHashMiner.Forms
                 Helpers.ConsolePrint("SETTINGS", e.ToString());
             }
             FormHelpers.TranslateFormControls(this);
+
+            ApplicationStateManager.BtcAddressChanged += OnBtcAddressChanged;
+            ApplicationStateManager.WorkerNameChanged += OnWorkerNameChanged;
+            ApplicationStateManager.ServiceLocationChanged += OnServiceLocationChanged;
         }
 
         #region Initializations
@@ -1015,6 +1019,21 @@ namespace NiceHashMiner.Forms
             IsChange = true;
             ConfigManager.GeneralConfig.StartMiningWhenIdle = checkBox_StartMiningWhenIdle.Checked;
             comboBox_IdleType.Enabled = checkBox_StartMiningWhenIdle.Checked;
+        }
+
+        private void OnServiceLocationChanged(object sender, int e)
+        {
+            FormHelpers.SafeInvoke(this, () => { comboBox_ServiceLocation.SelectedIndex = e; });
+        }
+
+        private void OnWorkerNameChanged(object sender, string e)
+        {
+            FormHelpers.SafeUpdateTextbox(textBox_WorkerName, e);
+        }
+
+        private void OnBtcAddressChanged(object sender, string e)
+        {
+            FormHelpers.SafeUpdateTextbox(textBox_BitcoinAddress, e);
         }
     }
 }
