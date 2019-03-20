@@ -211,9 +211,9 @@ namespace NiceHashMiner.Devices.Algorithms
                 MinerBaseType.trex,
                 new List<Algorithm>
                 {
-                    new Algorithm(MinerBaseType.trex, AlgorithmType.Skunk, "skunk") { Enabled = false },
-                    new Algorithm(MinerBaseType.trex, AlgorithmType.Lyra2z, "lyra2z") { Enabled = false },
-                    new Algorithm(MinerBaseType.trex, AlgorithmType.X16R, "x16r") { Enabled = false }
+                    new Algorithm(MinerBaseType.trex, AlgorithmType.Skunk, "skunk") { Enabled = true },
+                    new Algorithm(MinerBaseType.trex, AlgorithmType.Lyra2z, "lyra2z") { Enabled = true },
+                    new Algorithm(MinerBaseType.trex, AlgorithmType.X16R, "x16r") { Enabled = true }
                 }
             },
             {

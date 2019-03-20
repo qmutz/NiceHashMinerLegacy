@@ -108,8 +108,8 @@
     </Link>
     <PostBuildEvent>
       <Command>REM the path is absolute maybe fix
-copy /Y "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Redist\MSVC\14.10.25008\x64\Microsoft.VC150.CRT\msvcp140.dll" "$(SolutionDir)$(Configuration)\msvcp140.dll"
-copy /Y "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Redist\MSVC\14.10.25008\x64\Microsoft.VC150.CRT\vcruntime140.dll" "$(SolutionDir)$(Configuration)\vcruntime140.dll"</Command>
+REM copy /Y "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Redist\MSVC\14.10.25008\x64\Microsoft.VC150.CRT\msvcp140.dll" "$(SolutionDir)$(Configuration)\msvcp140.dll"
+REM copy /Y "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Redist\MSVC\14.10.25008\x64\Microsoft.VC150.CRT\vcruntime140.dll" "$(SolutionDir)$(Configuration)\vcruntime140.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -45,6 +45,7 @@ namespace NiceHashMiner
         public Form_Main()
         {
             InitializeComponent();
+            textBoxBTCAddress.TextChanged += textBoxBTCAddress_TextChanged;
             devicesListViewEnableControl1 = devicesMainBoard1.SpeedsControl;
             FormHelpers.SubscribeAllControls(this);
 
@@ -891,6 +892,30 @@ namespace NiceHashMiner
                 UpdateGlobalRate(0);
                 devicesMainBoard1.HidePanel2();
             });
+        }
+
+        private void textBoxBTCAddress_TextChanged(object sender, EventArgs e)
+        {
+            var trimmedBtcText = textBoxBTCAddress.Text.Trim();
+            var result = ApplicationStateManager.SetBTCIfValidOrDifferent(trimmedBtcText);
+            // TODO GUI stuff get back to this
+            switch (result)
+            {
+                case ApplicationStateManager.SetResult.INVALID:
+                    //var dialogResult = MessageBox.Show(Tr("Invalid Bitcoin address!\n\nPlease enter a valid Bitcoin address or choose Yes to create one."),
+                    //Tr("Error!"),
+                    //MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+                    //if (dialogResult == DialogResult.Yes)
+                    //    Process.Start(Links.NhmBtcWalletFaq);
+
+                    //textBoxBTCAddress.Focus();
+                    break;
+                case ApplicationStateManager.SetResult.CHANGED:
+                    break;
+                case ApplicationStateManager.SetResult.NOTHING_TO_CHANGE:
+                    break;
+            }
         }
     }
 }
