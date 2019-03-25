@@ -1,0 +1,91 @@
+[
+    {
+      "PluginUUID": "92a7fd10-498d-11e9-87d3-6b57d758e2c6",
+      "PluginVersion": {
+        "major": "2",
+        "minor": "0"
+      },
+      "PluginPackageURL": "https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/BMiner_v1.1_mptoolkitV1_92a7fd10-498d-11e9-87d3-6b57d758e2c6.zip",
+      "MinerPackageURL": "https://www.bminercontent.com/releases/bminer-lite-v15.1.0-2d30b6f-amd64.zip",
+      "SupportedDevicesAlgorithms": {
+        "NVIDIA": [
+          "GrinCuckaroo29",
+          "GrinCuckatoo31",
+          "ZHash",
+          "Beam"
+        ],
+        "AMD": [
+          "Beam"
+        ],
+        "CPU": []
+      },
+      "PluginAuthor": "rado@nicehash.com",
+      "PluginDescription": "BMiner v15.3.0 wrapper for NVIDIA SM 5.0+ devices with support for CUDA 9.2 (this means you need to have NVIDIA 397.44 drivers and newer).nEach algorithm has minimum required RAM in order to work properly:n  - ZHash ~ 1.8 GBn  - Beam ~ 3GBn  - GrinCuckaroo29 ~ 6GBn  - GrinCuckatoo31 ~ 9GB",
+      "PluginName": "BMiner"
+    },
+    {
+      "PluginUUID": "563960f0-4990-11e9-87d3-6b57d758e2c6",
+      "PluginVersion": {
+        "major": "1",
+        "minor": "5"
+      },
+      "PluginPackageURL": "https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/CCMinerTpruvotCuda10_v1.1_mptoolkitV1_563960f0-4990-11e9-87d3-6b57d758e2c6.zip",
+      "MinerPackageURL": "https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/ccminer_tpruvot.zip",
+      "SupportedDevicesAlgorithms": {
+        "NVIDIA": [
+          "NeoScrypt",
+          "Keccak",
+          "Skunk",
+          "X16R",
+          "Lyra2REv3"
+        ],
+        "AMD": [],
+        "CPU": []
+      },
+      "PluginAuthor": "rado@nicehash.com",
+      "PluginDescription": "Plugin for https://github.com/tpruvot/ccminer. Requires CUDA10 minimum supported drivers 410.48 and newer and supports SM 3.0+ NVIDIA GPUs. Blablalbalalbalala",
+      "PluginName": "CCMinerTpruvotCuda10"
+    },
+    {
+      "PluginUUID": "3e627d60-4bfa-11e9-a481-e144ccd86993",
+      "PluginVersion": {
+        "major": "2",
+        "minor": "5"
+      },
+      "PluginPackageURL": "https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/Ewbf_v1.1_mptoolkitV1_3e627d60-4bfa-11e9-a481-e144ccd86993.zip",
+      "MinerPackageURL": "https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/ewbf_144.zip",
+      "SupportedDevicesAlgorithms": {
+        "NVIDIA": [
+          "ZHash"
+        ],
+        "AMD": [],
+        "CPU": []
+      },
+      "PluginAuthor": "rado@nicehash.com",
+      "PluginDescription": "Plugin for EWBF 0.6 miner. Supports NVIDIA SM5.0+, CUDA 9.1+.n",
+      "PluginName": "Ewbf"
+    },
+    {
+      "PluginUUID": "5def7740-4bfb-11e9-a481-e144ccd86993",
+      "PluginVersion": {
+        "major": "7",
+        "minor": "1"
+      },
+      "PluginPackageURL": "https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/GMinerCuda9.0+_v1.1_mptoolkitV1_5def7740-4bfb-11e9-a481-e144ccd86993.zip",
+      "MinerPackageURL": "https://github.com/develsoftware/GMinerRelease/releases/download/1.35/gminer_1_35_minimal_windows64.zip",
+      "SupportedDevicesAlgorithms": {
+        "NVIDIA": [
+          "ZHash",
+          "Beam",
+          "GrinCuckaroo29"
+        ],
+        "AMD": [
+          "Beam"
+        ],
+        "CPU": []
+      },
+      "PluginAuthor": "rado@nicehash.com",
+      "PluginDescription": "GMinerCuda9.0+ plugin for NVIDIA SM 5.0+ GPUs. System must support CUDA9.0+ drivers.",
+      "PluginName": "GMinerCuda9.0+"
+    }
+  ]

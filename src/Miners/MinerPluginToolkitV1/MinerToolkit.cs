@@ -36,6 +36,20 @@ namespace MinerPluginToolkitV1
             return (AlgorithmType.NONE, false);
         }
 
+        public static (AlgorithmType algorithmType, bool hasOnlyOneAlgorithmType) GetAlgorithmDualType(this IEnumerable<(BaseDevice device, Algorithm algorithm)> mps)
+        {
+            var algorithmTypes = mps.Select(pair => {
+                var (_, algo) = pair;
+                return algo.IDs.Last();
+            });
+            var mustIncludeDual = new HashSet<AlgorithmType>(algorithmTypes);
+            if (mustIncludeDual.Count == 1)
+            {
+                return (mustIncludeDual.First(), true);
+            }
+            return (AlgorithmType.NONE, false);
+        }
+
 
         public static IEnumerable<string> GetDevicesIDsInOrder(this IEnumerable<(BaseDevice device, Algorithm algorithm)> mps)
         {
