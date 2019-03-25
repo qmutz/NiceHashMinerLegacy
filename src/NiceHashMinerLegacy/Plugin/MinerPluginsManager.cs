@@ -67,6 +67,7 @@ namespace NiceHashMiner.Plugin
             {
                 var pluginUuid = kvp.Key;
                 var plugin = kvp.Value;
+                var pluginName = plugin.Name;
                 var supported = plugin.GetSupportedAlgorithms(baseDevices);
                 // check out the supported algorithms
                 foreach (var pair in supported)
@@ -74,7 +75,7 @@ namespace NiceHashMiner.Plugin
                     var bd = pair.Key;
                     var algos = pair.Value;
                     var dev = AvailableDevices.GetDeviceWithUuid(bd.UUID);
-                    var pluginAlgos = algos.Select(a => new PluginAlgorithm(a)).ToList();
+                    var pluginAlgos = algos.Select(a => new PluginAlgorithm(pluginName, a)).ToList();
                     dev.UpdatePluginAlgorithms(pluginUuid, pluginAlgos);
                 }
             }
@@ -249,16 +250,20 @@ namespace NiceHashMiner.Plugin
                 // download plugin dll
                 var pluginPackageDownloaded = Path.Combine(installingPluginPath, "plugin.zip");
                 var downloadPluginOK = await DownloadFile(plugin.PluginPackageURL, pluginPackageDownloaded, downloadPluginProgressChangedEventHandler, stop);
+                if (!downloadPluginOK || stop.IsCancellationRequested) return;
                 // unzip 
                 var unzipPluginOK = await UnzipFile(pluginPackageDownloaded, installingPluginPath, zipProgressPluginChangedEventHandler, stop);
+                if (!unzipPluginOK || stop.IsCancellationRequested) return;
                 File.Delete(pluginPackageDownloaded);
 
                 // download plugin dll
                 var binsPackageDownloaded = Path.Combine(installingPluginPath, "miner_bins.zip");
                 var downloadMinerBinsOK = await DownloadFile(plugin.MinerPackageURL, binsPackageDownloaded, downloadMinerProgressChangedEventHandler, stop);
+                if (!downloadMinerBinsOK || stop.IsCancellationRequested) return;
                 // unzip 
                 var binsUnzipPath = Path.Combine(installingPluginPath, "bins");
                 var unzipMinerBinsOK = await UnzipFile(binsPackageDownloaded, binsUnzipPath, zipProgressMinerChangedEventHandler, stop);
+                if (!unzipMinerBinsOK || stop.IsCancellationRequested) return;
                 File.Delete(binsPackageDownloaded);
 
 
