@@ -162,6 +162,22 @@ namespace NiceHashMiner.Plugin
             }
         }
 
+
+        private static int ApiCall = 0;
+        private static List<string> ApiResponses = new List<string>() {
+            Properties.Resources.DefaultJSON,
+            Properties.Resources.addCpuAlgo,
+            Properties.Resources.hVersionJSON,
+            Properties.Resources.lVersionJSON,
+            Properties.Resources.noNvidiaAlgoJSON
+        };
+        private static string fakeApiCall()
+        {
+            var index = ApiCall % ApiResponses.Count;
+            ApiCall++;
+            return ApiResponses[index];
+        }
+
         public static bool GetOnlineMinerPlugins()
         {
             const string pluginsJsonApiUrl = "https://miner-plugins.nicehash.com/api/plugins";
@@ -169,9 +185,9 @@ namespace NiceHashMiner.Plugin
             {
                 using (var client = new WebClient())
                 {
-                    string s = client.DownloadString(pluginsJsonApiUrl);
+                    //string s = client.DownloadString(pluginsJsonApiUrl);
                     //// local fake string
-                    //string s = Properties.Resources.pluginJSON;
+                    string s = fakeApiCall();
                     var onlinePlugins = JsonConvert.DeserializeObject<List<PluginPackageInfo>>(s, Globals.JsonSettings);
                     OnlinePlugins = onlinePlugins;
                 }

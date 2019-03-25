@@ -61,6 +61,46 @@ namespace NiceHashMiner.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///    {
+        ///      &quot;PluginUUID&quot;: &quot;92a7fd10-498d-11e9-87d3-6b57d758e2c6&quot;,
+        ///      &quot;PluginVersion&quot;: {
+        ///        &quot;major&quot;: &quot;1&quot;,
+        ///        &quot;minor&quot;: &quot;0&quot;
+        ///      },
+        ///      &quot;PluginPackageURL&quot;: &quot;https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/BMiner_v1.1_mptoolkitV1_92a7fd10-498d-11e9-87d3-6b57d758e2c6.zip&quot;,
+        ///      &quot;MinerPackageURL&quot;: &quot;https://www.bminercontent.com/releases/bminer-lite-v15.1.0-2d30b6f-amd64.zip&quot;,
+        ///      &quot;SupportedDevicesAlgorithms&quot;: {
+        ///        &quot;NVIDIA&quot;: [
+        ///          &quot;GrinCuckar [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string addCpuAlgo {
+            get {
+                return ResourceManager.GetString("addCpuAlgo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///    {
+        ///      &quot;PluginUUID&quot;: &quot;92a7fd10-498d-11e9-87d3-6b57d758e2c6&quot;,
+        ///      &quot;PluginVersion&quot;: {
+        ///        &quot;major&quot;: &quot;1&quot;,
+        ///        &quot;minor&quot;: &quot;0&quot;
+        ///      },
+        ///      &quot;PluginPackageURL&quot;: &quot;https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/BMiner_v1.1_mptoolkitV1_92a7fd10-498d-11e9-87d3-6b57d758e2c6.zip&quot;,
+        ///      &quot;MinerPackageURL&quot;: &quot;https://www.bminercontent.com/releases/bminer-lite-v15.1.0-2d30b6f-amd64.zip&quot;,
+        ///      &quot;SupportedDevicesAlgorithms&quot;: {
+        ///        &quot;NVIDIA&quot;: [
+        ///          &quot;GrinCuckar [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DefaultJSON {
+            get {
+                return ResourceManager.GetString("DefaultJSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {\rtf1\ansi\deff3\adeflang1025
         ///{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset2 Symbol;}{\f2\fswiss\fprq2\fcharset0 Arial;}{\f3\froman\fprq2\fcharset0 Liberation Serif{\*\falt Times New Roman};}{\f4\froman\fprq2\fcharset0 Liberation Sans{\*\falt Arial};}{\f5\fnil\fprq2\fcharset0 OpenSymbol{\*\falt Arial Unicode MS};}{\f6\fnil\fprq2\fcharset0 Arial;}{\f7\fnil\fprq2\fcharset0 Liberation Serif{\*\falt Times New Roman};}}
         ///{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red [rest of string was truncated]&quot;;.
@@ -68,6 +108,26 @@ namespace NiceHashMiner.Properties {
         internal static string Eula {
             get {
                 return ResourceManager.GetString("Eula", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///    {
+        ///      &quot;PluginUUID&quot;: &quot;92a7fd10-498d-11e9-87d3-6b57d758e2c6&quot;,
+        ///      &quot;PluginVersion&quot;: {
+        ///        &quot;major&quot;: &quot;2&quot;,
+        ///        &quot;minor&quot;: &quot;0&quot;
+        ///      },
+        ///      &quot;PluginPackageURL&quot;: &quot;https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/BMiner_v1.1_mptoolkitV1_92a7fd10-498d-11e9-87d3-6b57d758e2c6.zip&quot;,
+        ///      &quot;MinerPackageURL&quot;: &quot;https://www.bminercontent.com/releases/bminer-lite-v15.1.0-2d30b6f-amd64.zip&quot;,
+        ///      &quot;SupportedDevicesAlgorithms&quot;: {
+        ///        &quot;NVIDIA&quot;: [
+        ///          &quot;GrinCuckar [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string hVersionJSON {
+            get {
+                return ResourceManager.GetString("hVersionJSON", resourceCulture);
             }
         }
         
@@ -102,6 +162,26 @@ namespace NiceHashMiner.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///    {
+        ///      &quot;PluginUUID&quot;: &quot;92a7fd10-498d-11e9-87d3-6b57d758e2c6&quot;,
+        ///      &quot;PluginVersion&quot;: {
+        ///        &quot;major&quot;: &quot;0&quot;,
+        ///        &quot;minor&quot;: &quot;9&quot;
+        ///      },
+        ///      &quot;PluginPackageURL&quot;: &quot;https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/BMiner_v1.1_mptoolkitV1_92a7fd10-498d-11e9-87d3-6b57d758e2c6.zip&quot;,
+        ///      &quot;MinerPackageURL&quot;: &quot;https://www.bminercontent.com/releases/bminer-lite-v15.1.0-2d30b6f-amd64.zip&quot;,
+        ///      &quot;SupportedDevicesAlgorithms&quot;: {
+        ///        &quot;NVIDIA&quot;: [
+        ///          &quot;GrinCuckar [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string lVersionJSON {
+            get {
+                return ResourceManager.GetString("lVersionJSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap NHM_Cash_Register_Bitcoin_transparent {
@@ -128,6 +208,27 @@ namespace NiceHashMiner.Properties {
             get {
                 object obj = ResourceManager.GetObject("NHM_logo_xsmall_light", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///    {
+        ///      &quot;PluginUUID&quot;: &quot;92a7fd10-498d-11e9-87d3-6b57d758e2c6&quot;,
+        ///      &quot;PluginVersion&quot;: {
+        ///        &quot;major&quot;: &quot;1&quot;,
+        ///        &quot;minor&quot;: &quot;0&quot;
+        ///      },
+        ///      &quot;PluginPackageURL&quot;: &quot;https://github.com/nicehash/NiceHashMinerLegacyTest/releases/download/1.9.1.4/BMiner_v1.1_mptoolkitV1_92a7fd10-498d-11e9-87d3-6b57d758e2c6.zip&quot;,
+        ///      &quot;MinerPackageURL&quot;: &quot;https://www.bminercontent.com/releases/bminer-lite-v15.1.0-2d30b6f-amd64.zip&quot;,
+        ///      &quot;SupportedDevicesAlgorithms&quot;: {
+        ///        &quot;NVIDIA&quot;: [],
+        ///        &quot;AMD&quot;: [
+        ///  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string noNvidiaAlgoJSON {
+            get {
+                return ResourceManager.GetString("noNvidiaAlgoJSON", resourceCulture);
             }
         }
         

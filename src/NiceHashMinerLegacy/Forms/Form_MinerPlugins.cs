@@ -146,13 +146,14 @@ namespace NiceHashMiner.Forms
             var rankedUUIDs = MinerPluginsManager.RankedPlugins.Select(plugin => plugin.PluginUUID).ToList();
 
             // update existing
+            /*
             foreach (var controlsPair in _pluginInfoDetails.Values)
             {
                 var plugin = MinerPluginsManager.Plugins[controlsPair.Item.PluginUUID];
                 setPluginInfoItem(controlsPair.Item, plugin);
                 setPluginInfoDetails(controlsPair.Details, plugin);
             }
-
+            */
             var newPlugins = MinerPluginsManager.RankedPlugins.Where(plugin => _pluginInfoDetails.ContainsKey(plugin.PluginUUID) == false).ToList();
             var lastSingleItemRow = rankedUUIDs.Count % 2 == 1;
 
